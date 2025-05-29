@@ -1,20 +1,20 @@
 <template>
   <div>
-
+    <RouterView />
   </div>
 </template>
 
 <script setup>
 import { onMounted } from 'vue'
-
-import '@/assets/css/animate.css'
-import '@/assets/css/owl.carousel.min.css'
-import '@/assets/css/owl.theme.default.min.css'
-import '@/assets/css/magnific-popup.css'
-import '@/assets/css/bootstrap-datepicker.css'
-import '@/assets/css/jquery.timepicker.css'
-import '@/assets/css/flaticon.css'
-import '@/assets/css/style.css'
+import { RouterView } from 'vue-router'
+import '@/assets/Client/css/animate.css'
+import '@/assets/Client/css/owl.carousel.min.css'
+import '@/assets/Client/css/owl.theme.default.min.css'
+import '@/assets/Client/css/magnific-popup.css'
+import '@/assets/Client/css/bootstrap-datepicker.css'
+import '@/assets/Client/css/jquery.timepicker.css'
+import '@/assets/Client/css/flaticon.css'
+import '@/assets/Client/css/style.css'
 
 // Thêm link ngoài như Google Fonts, Font Awesome
 onMounted(() => {
