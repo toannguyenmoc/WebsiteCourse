@@ -8,11 +8,11 @@
 
    <div class="collapse navbar-collapse" id="ftco-nav">
        <ul class="navbar-nav ml-auto">
-         <li class="nav-item active"><RouterLink to="#" class="nav-link ">Trang chủ</RouterLink></li>
-         <li class="nav-item"><RouterLink to="#" class="nav-link">Về chúng tôi</RouterLink></li>
+         <li class="nav-item active"><RouterLink to="/" class="nav-link ">Trang chủ</RouterLink></li>
+         <li class="nav-item"><RouterLink to="about" class="nav-link">Về chúng tôi</RouterLink></li>
          <li class="nav-item"><RouterLink to="#" class="nav-link">Khóa học</RouterLink></li>
          <li class="nav-item"><RouterLink to="#" class="nav-link">Giáo viên</RouterLink></li>
-         <li class="nav-item"><RouterLink to="#" class="nav-link">Blog</RouterLink></li>
+         <li class="nav-item"><RouterLink to="blog" class="nav-link">Blog</RouterLink></li>
          <li class="nav-item"><RouterLink to="#" class="nav-link">Liên hệ</RouterLink></li>
      </ul>
  </div>

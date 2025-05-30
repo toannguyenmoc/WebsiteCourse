@@ -1,6 +1,8 @@
 <template>
   <div>
+    <ClientHeader/>
     <RouterView />
+    <ClientFooter/>
   </div>
 </template>
 
@@ -15,12 +17,14 @@ import '@/assets/Client/css/bootstrap-datepicker.css'
 import '@/assets/Client/css/jquery.timepicker.css'
 import '@/assets/Client/css/flaticon.css'
 import '@/assets/Client/css/style.css'
+import ClientHeader from '@/components/Client/ClientHeader.vue'
+import ClientFooter from '@/components/Client/ClientFooter.vue'
 
 // Thêm link ngoài như Google Fonts, Font Awesome
 onMounted(() => {
   const links = [
     {
-      href: 'https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900',
+      href: "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap&subset=vietnamese",
       rel: 'stylesheet'
     },
     {
@@ -37,5 +41,7 @@ onMounted(() => {
       document.head.appendChild(link)
     }
   })
+
 })
+
 </script>

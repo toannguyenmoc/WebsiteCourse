@@ -2,42 +2,44 @@
     <nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-white" id="sidenav-main">
         <div class="container-fluid">
             <!-- Brand -->
-            <router-link to="#" class="navbar-brand pt-0">
-                <img src="../assets/Admin/img/brand/blue.png" class="navbar-brand-img" alt="...">
-            </router-link>
+            <div class="mt-2">
+                <RouterLink to="/admin/dashboard" class="pt-0">
+                    <img :src="Logo" class="navbar-brand-img" alt="..." width="180px;">
+                </RouterLink>
+            </div>
             <!-- Collapse -->
-            <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+            <div class="collapse navbar-collapse mt--4" id="sidenav-collapse-main">
                 <!-- Navigation -->
                 <ul class="navbar-nav">
                     <li class="nav-item  active ">
-                        <router-link to="#" class="nav-link  active " href="./index.html">
+                        <RouterLink to="/admin/dashboard" class="nav-link active " >
                             <i class="ni ni-tv-2 text-primary"></i> Dashboard
-                        </router-link>
+                        </RouterLink>
                     </li>
                     <li class="nav-item">
-                        <router-link to="#" class="nav-link " href="./examples/icons.html">
+                        <RouterLink to="/admin/course/list" class="nav-link " >
                             <i class="ni ni-paper-diploma"></i> Quản lý khóa học
-                        </router-link>
+                        </RouterLink>
                     </li>
                     <li class="nav-item">
-                        <router-link to="#" class="nav-link " href="./examples/tables.html">
+                        <RouterLink to="/admin/course-type/list" class="nav-link " >
                             <i class="ni ni-book-bookmark"></i> Quản lý loại khóa học
-                        </router-link>
+                        </RouterLink>
                     </li>
                     <li class="nav-item">
-                        <router-link to="#" class="nav-link " href="./examples/profile.html">
+                        <RouterLink to="/admin/lesson/list" class="nav-link " >
                             <i class="ni ni-books"></i> Quản lý tiết học
-                        </router-link>
+                        </RouterLink>
                     </li>
                     <li class="nav-item">
-                        <router-link to="#" class="nav-link " href="./examples/tables.html">
+                        <RouterLink to="/admin/teacher/list" class="nav-link " >
                             <i class="ni ni-badge"></i> Quản lý giáo viên
-                        </router-link>
+                        </RouterLink>
                     </li>
                     <li class="nav-item">
-                        <router-link to="#" class="nav-link " href="./examples/maps.html">
+                        <RouterLink to="/admin/student/list" class="nav-link " >
                             <i class="ni ni-hat-3"></i> Quản lý học sinh
-                        </router-link>
+                        </RouterLink>
                     </li>
                 </ul>
                 <!-- Divider -->
@@ -47,26 +49,26 @@
                 <!-- Navigation -->
                 <ul class="navbar-nav mb-md-3">
                     <li class="nav-item">
-                        <router-link to="#" class="nav-link">
+                        <RouterLink to="#" class="nav-link">
                             <i class="ni ni-chart-bar-32"></i> Thống kê
-                        </router-link>
+                        </RouterLink>
                     </li>
                     <li class="nav-item">
-                        <router-link to="#" class="nav-link">
+                        <RouterLink to="/admin/payment/list" class="nav-link">
                             <i class="ni ni-credit-card"></i> Thanh toán
-                        </router-link>
+                        </RouterLink>
                     </li>
                     <li class="nav-item">
-                        <router-link to="#" class="nav-link">
+                        <RouterLink to="/admin/commission/list" class="nav-link">
                             <i class="ni ni-money-coins"></i> Chiết khấu
-                        </router-link>
+                        </RouterLink>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item active active-pro">
-                        <a class="nav-link" href="./examples/upgrade.html">
+                        <RouterLink to="#" class="nav-link">
                             <i class="ni ni-settings-gear-65"></i> Cài đặt
-                        </a>
+                        </RouterLink>
                     </li>
                 </ul>
             </div>
@@ -75,7 +77,12 @@
 </template>
 
 <script setup>
-
+import { RouterLink } from 'vue-router';
+import Logo from '@/assets/logoIT.png'
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.navbar-brand-img{
+    max-height: 4.5rem !important;
+}
+</style>
