@@ -1,7 +1,7 @@
 <template>
     <div class="project-wrap">
         <a href="#" class="img" :style="{ backgroundImage: `url(${image})`}" >
-            <span class="category">{{ category }}</span>
+            <span class="price">{{ category }}</span>
         </a>
         <div class="text p-4">
             <h3><a href="#">{{ title }}</a></h3>

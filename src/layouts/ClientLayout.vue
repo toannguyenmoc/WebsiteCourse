@@ -1,7 +1,9 @@
 <template>
+<ClientHeader></ClientHeader>
   <div>
     <RouterView />
   </div>
+<ClientFooter></ClientFooter>
 </template>
 
 <script setup>
@@ -15,6 +17,9 @@ import '@/assets/Client/css/bootstrap-datepicker.css'
 import '@/assets/Client/css/jquery.timepicker.css'
 import '@/assets/Client/css/flaticon.css'
 import '@/assets/Client/css/style.css'
+
+import ClientHeader from '@/components/Client/ClientHeader.vue'
+import ClientFooter from '@/components/Client/ClientFooter.vue'
 
 // Thêm link ngoài như Google Fonts, Font Awesome
 onMounted(() => {
@@ -35,6 +40,23 @@ onMounted(() => {
       link.rel = rel
       link.href = href
       document.head.appendChild(link)
+    }
+  })
+})
+
+onMounted(() => {
+  const scripts = [
+    'https://code.jquery.com/jquery-3.6.0.min.js',
+    'https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js',
+    'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'
+  ]
+
+  scripts.forEach(src => {
+    if (!document.querySelector(`script[src="${src}"]`)) {
+      const script = document.createElement('script')
+      script.src = src
+      script.async = false // Đảm bảo thứ tự load đúng
+      document.body.appendChild(script)
     }
   })
 })
