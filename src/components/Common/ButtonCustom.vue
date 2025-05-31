@@ -32,7 +32,7 @@ border:1px solid #e449ad;
 }
 
 .white{
-    background-color: #ffffff;
+  background-color: #ffffff;
   color: rgb(0, 0, 0);
   border:1px solid #ffffff;
 }

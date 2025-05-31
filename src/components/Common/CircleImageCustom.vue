@@ -6,7 +6,7 @@
         }">
             <div class="text w-100 text-center">
                 <h3>{{ name }}</h3>
-                <span>{{ courses }}</span>
+                <span>{{ courses  + ' course'}} </span>
             </div>
         </a>
     </div>

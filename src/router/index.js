@@ -1,4 +1,5 @@
 import AdminLayout from '@/layouts/AdminLayout.vue';
+import ClientLayout from '@/layouts/ClientLayout.vue';
 import ChangePasswordView from '@/views/Account/ChangePasswordView.vue';
 import ForgotPasswordView from '@/views/Account/ForgotPasswordView.vue';
 import InformationUserView from '@/views/Account/InformationUserView.vue';
@@ -40,7 +41,7 @@ const router = createRouter({
     //client
     {
       path: '/',
-      component: App, 
+      component: ClientLayout, 
       children: [
         { path: '', name: 'home', component: ClientHomeView},
         { path: 'about', name: 'about', component: ClientAboutView },
