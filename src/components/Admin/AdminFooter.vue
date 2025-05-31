@@ -1,38 +1,36 @@
 <template>
-    <div class="main-content">
+    
         <footer class="footer">
-            <div class="row align-items-center justify-content-xl-between">
+            <div class="row align-items-center justify-content-xl-between container-fluid">
                 <div class="col-xl-6">
                     <div class="copyright text-center text-xl-left text-muted">
-                        &copy; 2018 <a href="https://www.creative-tim.com" class="font-weight-bold ml-1"
-                            target="_blank">Creative Tim</a>
+                        &copy; 2018 <RouterLink to="" class="font-weight-bold ml-1"
+                            target="_blank">Creative Tim</RouterLink>
                     </div>
                 </div>
                 <div class="col-xl-6">
                     <ul class="nav nav-footer justify-content-center justify-content-xl-end">
                         <li class="nav-item">
-                            <a href="https://www.creative-tim.com" class="nav-link" target="_blank">Creative Tim</a>
+                            <RouterLink to="" class="nav-link" target="_blank">Creative Tim</RouterLink>
                         </li>
                         <li class="nav-item">
-                            <a href="https://www.creative-tim.com/presentation" class="nav-link" target="_blank">About
-                                Us</a>
+                            <RouterLink to="" class="nav-link" target="_blank">About Us</RouterLink>
                         </li>
                         <li class="nav-item">
-                            <a href="http://blog.creative-tim.com" class="nav-link" target="_blank">Blog</a>
+                            <RouterLink to="" class="nav-link" target="_blank">Blog</RouterLink>
                         </li>
                         <li class="nav-item">
-                            <a href="https://github.com/creativetimofficial/argon-dashboard/blob/master/LICENSE.md"
-                                class="nav-link" target="_blank">MIT License</a>
+                            <RouterLink to="" class="nav-link" target="_blank">MIT License</RouterLink>
                         </li>
                     </ul>
                 </div>
             </div>
         </footer>
-    </div>
+    
 </template>
 
 <script setup>
-
+import { RouterLink } from 'vue-router';
 </script>
 
 <style lang="scss" scoped></style>
