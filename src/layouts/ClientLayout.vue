@@ -1,11 +1,9 @@
 <template>
-<ClientHeader></ClientHeader>
   <div>
     <ClientHeader/>
     <RouterView />
     <ClientFooter/>
   </div>
-<ClientFooter></ClientFooter>
 </template>
 
 <script setup>

@@ -1,5 +1,5 @@
 <template>
-    <div class="sidebar-box bg-white p-4 ftco-animate">
+    <div class="sidebar-box bg-white p-4 ">
         <h3 class="heading-sidebar">{{ title }}</h3>
         <form action="#" class="browse-form">
             <label v-for="(option, index) in options" :key="index" :for="'option-category-' + index">
