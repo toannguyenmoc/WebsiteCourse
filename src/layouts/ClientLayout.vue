@@ -1,9 +1,9 @@
 <template>
-<ClientHeader></ClientHeader>
   <div>
+    <ClientHeader/>
     <RouterView />
+    <ClientFooter/>
   </div>
-<ClientFooter></ClientFooter>
 </template>
 
 <script setup>
@@ -25,7 +25,7 @@ import ClientFooter from '@/components/Client/ClientFooter.vue'
 onMounted(() => {
   const links = [
     {
-      href: 'https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900',
+      href: "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap&subset=vietnamese",
       rel: 'stylesheet'
     },
     {
@@ -42,6 +42,7 @@ onMounted(() => {
       document.head.appendChild(link)
     }
   })
+
 })
 
 onMounted(() => {

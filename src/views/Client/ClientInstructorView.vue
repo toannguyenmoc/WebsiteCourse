@@ -1,28 +1,18 @@
 <template>
-    <section class="hero-wrap hero-wrap-2" :style="{ backgroundImage: `url(${banner})` }">
-        <div class="overlay"></div>
-        <div class="container">
-            <div class="row no-gutters slider-text align-items-end justify-content-center">
-                <div class="col-md-9 ftco-animate pb-5 text-center">
-                    <p class="breadcrumbs"><span class="mr-2"><router-link to="/">Trang chủ <i
-                                    class="fa fa-chevron-right"></i></router-link></span> <span>Giáo viên<i
-                                class="fa fa-chevron-right"></i></span></p>
-                    <h1 class="mb-0 bread">Giáo viên</h1>
-                </div>
-            </div>
-        </div>
-    </section>
+    <ClientBanner pageTitle="Giáo viên"/>
     <section class="ftco-section bg-light">
         <div class="container">
             <div class="row">
                 <div v-for="item in instructors" :key="item"
-                    class="col-md-6 col-lg-3 ftco-animate d-flex align-items-stretch">
+                    class="col-md-6 col-lg-3 d-flex align-items-stretch">
                     <CardProfileCustom :image="item.image" :name="item.name" :position="item.position"
                         :description="item.description" :link="item.link" :twitter="item.twitter"
                         :facebook="item.facebook" :instagram="item.instagram" />
                 </div>
             </div>
-            <PaginationCustom />
+            <div class="text-center">
+                <PaginationCustom />
+            </div>
         </div>
     </section>
 </template>
@@ -31,7 +21,7 @@
 import PaginationCustom from '@/components/Common/PaginationCustom.vue';
 import CardProfileCustom from '@/components/Common/CardProfileCustom.vue';
 //img banner
-import banner from '@/assets/Client/images/bg_2.jpg'
+import ClientBanner from '@/components/Client/ClientBanner.vue';
 //dữ liệu mẫu
 import avata from '@/assets/Client/images/teacher-1.jpg'
 const instructors = [

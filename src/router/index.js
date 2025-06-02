@@ -73,53 +73,53 @@ const router = createRouter({
         {
           path: 'course-type',
           children: [
-            { path: 'list', name: 'list', component: CourseTypeList },
-            { path: 'create', name: 'create', component: CourseTypeCreate },
-            { path: 'update/:id', name: 'update', component: CourseTypeUpdate },
+            { path: 'list', name: 'course-type-list', component: CourseTypeList },
+            { path: 'create', name: 'course-type-create', component: CourseTypeCreate },
+            { path: 'update/:id', name: 'course-type-update', component: CourseTypeUpdate },
           ],
         },
         {
           path: 'course',
           children: [
-            { path: 'list', name: 'list', component: CourseList },
-            { path: 'create', name: 'create', component: CourseCreate },
-            { path: 'update/:id', name: 'update', component: CourseUpdate },
+            { path: 'list', name: 'course-list', component: CourseList },
+            { path: 'create', name: 'course-create', component: CourseCreate },
+            { path: 'update/:id', name: 'course-update', component: CourseUpdate },
           ],
         },
         {
           path: 'lesson',
           children: [
-            { path: 'list', name: 'list', component: LessonList },
-            { path: 'create', name: 'create', component: LessonCreate },
-            { path: 'update/:id', name: 'update', component: LessonUpdate },
+            { path: 'list', name: 'lesson-list', component: LessonList },
+            { path: 'create', name: 'lesson-create', component: LessonCreate },
+            { path: 'update/:id', name: 'lesson-update', component: LessonUpdate },
           ],
         },
         {
           path: 'commission',
           children: [
-            { path: 'list', name: 'list', component: CommissionList },
-            { path: 'create', name: 'create', component: CommissionCreate },
-            { path: 'update/:id', name: 'update', component: CommissionUpdate },
+            { path: 'list', name: 'commission-list', component: CommissionList },
+            { path: 'create', name: 'commission-create', component: CommissionCreate },
+            { path: 'update/:id', name: 'commission-update', component: CommissionUpdate },
           ],
         },
         {
           path: 'student',
           children: [
-            { path: 'list', name: 'list', component: StudentList },
-            { path: 'create', name: 'create', component: StudentCreate },
+            { path: 'list', name: 'student-list', component: StudentList },
+            { path: 'create', name: 'student-create', component: StudentCreate },
           ],
         },
         {
           path: 'teacher',
           children: [
-            { path: 'list', name: 'list', component: TeacherList },
-            { path: 'create', name: 'create', component: TeacherCreate },
+            { path: 'list', name: 'teacher-list', component: TeacherList },
+            { path: 'create', name: 'teacher-create', component: TeacherCreate },
           ],
         },
         {
           path: 'payment',
           children: [
-            { path: 'list', name: 'list', component: PaymentList },
+            { path: 'list', name: 'payment-list', component: PaymentList },
           ],
         },
         //{ path: 'statistical', name: 'statistical', component: Statistical }

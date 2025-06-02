@@ -1,15 +1,5 @@
 <template>
-    <section class="hero-wrap hero-wrap-2" :style="{ backgroundImage: `url(${banner})` }">
-        <div class="overlay"></div>
-        <div class="container">
-            <div class="row no-gutters slider-text align-items-end justify-content-center">
-                <div class="col-md-9 ftco-animate pb-5 text-center">
-                    <BreadCrumbCustom :page-title="'Thanh toán'" />
-                    <h1 class="mb-0 bread">Thanh toán</h1>
-                </div>
-            </div>
-        </div>
-    </section>
+    <ClientBanner pageTitle="Thanh toán"/>
     <section class="ftco-section bg-light">
         <div class="container">
             <div class="row">
@@ -76,7 +66,7 @@
 </template>
 <script setup>
 import ButtonCustom from '@/components/Common/ButtonCustom.vue';
-import BreadCrumbCustom from '@/components/Common/BreadCrumbCustom.vue';
+import ClientBanner from '@/components/Client/ClientBanner.vue';
 //img banner
 import banner from '@/assets/Client/images/bg_2.jpg'
 

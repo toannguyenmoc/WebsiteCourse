@@ -1,6 +1,13 @@
 <template>
     <div>
-        <RouterView />
+        <AdminSidebar/>
+        <div class="main-content">
+          <AdminHeader/>
+          <div class="container-fluid">
+          <RouterView />
+        </div>
+        <AdminFooter/>
+        </div>
     </div>
 </template>
 
@@ -10,7 +17,9 @@ import { RouterView } from 'vue-router'
 import '@/assets/Admin/js/plugins/nucleo/css/nucleo.css'
 import '@/assets/Admin/js/plugins/@fortawesome/fontawesome-free/css/all.min.css'
 import '@/assets/Admin/css/argon-dashboard.css'
-
+import AdminSidebar from '@/components/Admin/AdminSidebar.vue'
+import AdminHeader from '@/components/Admin/AdminHeader.vue'
+import AdminFooter from '@/components/Admin/AdminFooter.vue'
 onMounted(() => {
   const links = [
     {
@@ -28,8 +37,10 @@ onMounted(() => {
     }
   })
 })
+
+
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 
 </style>

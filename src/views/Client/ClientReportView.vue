@@ -1,15 +1,5 @@
 <template>
-    <section class="hero-wrap hero-wrap-2" :style="{ backgroundImage: `url(${banner})` }">
-        <div class="overlay"></div>
-        <div class="container">
-            <div class="row no-gutters slider-text align-items-end justify-content-center">
-                <div class="col-md-9 ftco-animate pb-5 text-center">
-                    <BreadCrumbCustom :page-title="'Báo cáo'" />
-                    <h1 class="mb-0 bread">Báo cáo vi phạm</h1>
-                </div>
-            </div>
-        </div>
-    </section>
+    <ClientBanner pageTitle="Báo cáo"/>
     <section class="ftco-section bg-light">
         <div class="container">
             <form class="report-form">
@@ -65,9 +55,7 @@
 </template>
 
 <script setup>
-import BreadCrumbCustom from '@/components/Common/BreadCrumbCustom.vue';
-//img banner
-import banner from '@/assets/Client/images/bg_2.jpg'
+import ClientBanner from '@/components/Client/ClientBanner.vue';
 //img dữ liệu mẫu productproduct
 import imgp from '@/assets/Client/images/work-9.jpg'
 //dữ liệu mẫu product

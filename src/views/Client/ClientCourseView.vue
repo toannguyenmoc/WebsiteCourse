@@ -1,15 +1,5 @@
 <template>
-    <section class="hero-wrap hero-wrap-2" :style="{ backgroundImage: `url(${banner})` }">
-        <div class="overlay"></div>
-        <div class="container">
-            <div class="row no-gutters slider-text align-items-end justify-content-center">
-                <div class="col-md-9 ftco-animate pb-5 text-center">
-                    <BreadCrumbCustom :page-title="'Khóa học'" />
-                    <h1 class="mb-0 bread">Danh sách khóa học</h1>
-                </div>
-            </div>
-        </div>
-    </section>
+    <ClientBanner pageTitle="Khoá học"/>
     <section class="ftco-section bg-light">
         <div class="container">
             <div class="row">
@@ -22,12 +12,14 @@
                 <div class="col-lg-9">
                     <div class="row">
                         <div v-for="item in cardProducts" :key="item"
-                            class="col-md-6 d-flex align-items-stretch ftco-animate">
+                            class="col-md-6 d-flex align-items-stretch ">
                             <CardProductCustom :image="item.image" :title="item.title" :advisor="item.advisor"
                                 :students="item.students" :price="item.price" :category="item.category" />
                         </div>
                     </div>
-                    <PaginationCustom />
+                    <div class="text-center">
+                        <PaginationCustom />
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,11 +27,11 @@
 </template>
 
 <script setup>
-import BreadCrumbCustom from '@/components/Common/BreadCrumbCustom.vue';
 import InputSearchCustom from '@/components/Common/InputSearchCustom.vue';
 import SidebarBoxCustom from '@/components/Common/SidebarBoxCustom.vue';
 import CardProductCustom from '@/components/Common/CardProductCustom.vue';
 import PaginationCustom from '@/components/Common/PaginationCustom.vue';
+import ClientBanner from '@/components/Client/ClientBanner.vue';
 //img banner
 import banner from '@/assets/Client/images/bg_2.jpg'
 //dữ liệu mẫu sidebar
@@ -66,14 +58,6 @@ const courses = [
             { label: "Marketing Online", value: "online-marketing" },
             { label: "SEO online-marketing", value: "seo " },
             { label: "Content Marketing", value: "content-marketing" }
-        ]
-    },
-    {
-        nameCourseCourse: "Kinh doanh",
-        list: [
-            { label: "Quản trị Kinh doanh", value: "business-management" },
-            { label: "Khởi nghiệp", value: "startup" },
-            { label: "Bán hàng", value: "sales" }
         ]
     }
 ]
@@ -133,4 +117,6 @@ const cardProducts = [
 
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>
