@@ -17,7 +17,7 @@
      </ul>
 
      <div>
-        <ButtonCustom :variant="pink">Đăng nhập</ButtonCustom>
+        <RouterLink to="/login"><ButtonCustom :variant="pink">Đăng nhập</ButtonCustom></RouterLink>
      </div>
  </div>
 </div>
