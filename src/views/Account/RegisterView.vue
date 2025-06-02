@@ -4,7 +4,7 @@
     <!-- Navbar -->
    
     <!-- Header -->
-    <div class="header bg-gradient-primary py-7 py-lg-8">
+    <div class="header bg-gradient-primary py-7 py-lg-7 pb-5">
       <div class="container">
         <div class="header-body text-center mb-7">
           <div class="row justify-content-center">
@@ -13,7 +13,6 @@
              <p class="text-lead text-light">Xa nơi dữ liệu trôi chảy và các dòng mã lặng lẽ hoạt động, phía sau những
                                             bức tường firewall vững chắc, tồn tại một thế giới của các lập trình viên
                                             đam mê.</p>
-                <button class="btn btn-secondary"> << Trở về trang chủ</button>
             </div>
           </div>
         </div>

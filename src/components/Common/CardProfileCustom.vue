@@ -9,10 +9,10 @@
         <div class="faded">
           <p>{{ description }}</p>
           <ul class="ftco-social text-center">
-            <li class="ftco-animate"><router-link :to="twitter"><span class="fa fa-twitter"></span></router-link></li>
-            <li class="ftco-animate"><router-link :to="facebook"><span class="fa fa-facebook"></span></router-link></li>
-            <li class="ftco-animate"><router-link :to="google"><span class="fa fa-google"></span></router-link></li>
-            <li class="ftco-animate"><router-link :to="instagram"><span class="fa fa-instagram"></span></router-link></li>
+            <li class=""><router-link :to="twitter"><span class="fa fa-twitter"></span></router-link></li>
+            <li class=""><router-link :to="facebook"><span class="fa fa-facebook"></span></router-link></li>
+            <li class=""><router-link :to="google"><span class="fa fa-google"></span></router-link></li>
+            <li class=""><router-link :to="instagram"><span class="fa fa-instagram"></span></router-link></li>
           </ul>
         </div>
       </div>
