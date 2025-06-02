@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="sidebar-box bg-white ftco-animate">
+    <div class="sidebar-box bg-white ">
       <form action="#" class="search-form">
         <div class="form-group">
           <span class="icon fa fa-search"></span>
