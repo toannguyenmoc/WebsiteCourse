@@ -41,8 +41,10 @@
                                         </span>
                                     </td>
                                     <td class="text-right">
-                                        <DropdownActionCustom @edit="handleEdit(lesson)"
-                                            @delete="handleDelete(lesson)" />
+                                        <DropdownActionCustom
+                                            :item="lesson"
+                                            @edit="handleEdit"
+                                            @delete="handleDelete" />
                                     </td>
                                 </tr>
                             </tbody>
@@ -85,7 +87,9 @@
 <script setup>
 import { ref } from 'vue'
 import DropdownActionCustom from '@/components/Common/DropdownActionCustom.vue';
-
+import { showSuccess } from '@/assets/Admin/js/alert';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const lessons = ref([
     {
         id: 1,
@@ -105,6 +109,25 @@ const lessons = ref([
     },
 
 ])
+
+
+//function chuyên trang
+const handleEdit = (lesson) => {
+  //Chuyển trang để sửa
+  router.push(`/admin/lesson/update/${lesson.id}`)
+}
+
+//function xóa
+const handleDelete = (lesson) =>{
+    if(lesson){
+        //Thực hiện xóa ở đây
+
+        
+
+        //Thông báo xóa thành công
+        showSuccess("Xóa thành công!");
+    }
+}
 
 function formatDate(date) {
     const d = new Date(date)

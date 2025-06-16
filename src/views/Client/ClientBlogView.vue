@@ -4,7 +4,7 @@
     <section class="ftco-section bg-light">
       <div class="container">
         <div class="row d-flex">
-          <CardBlogCustom v-for="(blog, index) in blogs" :key="index" 
+          <CardBlogCustom data-aos="fade-up" v-for="(blog, index) in blogs" :key="index" 
             :image="blog.image" 
             :title="blog.title"
             :description="blog.description" 
@@ -16,7 +16,6 @@
             <PaginationCustom />
           </div>
         </div>
-
       </div>
     </section>
   </div>

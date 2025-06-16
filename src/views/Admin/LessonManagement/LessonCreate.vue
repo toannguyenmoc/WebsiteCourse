@@ -15,7 +15,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form>
+                            <form @submit.prevent="createLesson">
                                 <div class="pl-lg-12">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -92,7 +92,7 @@
                                 </div>
                                 <hr class="my-4" />
                                 <div class="d-flex justify-content-between">
-                                    <RouterLink to="/admin/course/list" class="btn btn-secondary">Quay lại</RouterLink>
+                                    <RouterLink to="/admin/lesson/list" class="btn btn-secondary">Quay lại</RouterLink>
                                     <button class="btn btn-primary">Thêm Mới</button>
                                 </div>
                             </form>
@@ -106,6 +106,20 @@
 
 <script setup>
 import { RouterLink } from 'vue-router';
+import { showSuccess, showError } from '@/assets/Admin/js/alert';
+//function thêm 
+const createLesson = () => {
+
+
+
+
+    //Thông báo sau khi thêm thành công
+    showSuccess("Thêm thành công!");
+
+
+    //Thông báo khi lỗi khi thêm thất bại
+    // showError("Thêm thất bại!");
+}
 </script>
 
 <style scoped></style>

@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <div >
         <section class="hero-wrap hero-wrap-2" :style="{ backgroundImage: `url(${ImgBanner})`}">
             <div class="overlay"></div>
-            <div class="container">
+            <div data-aos="fade-up" class="container">
                 <div class="row no-gutters slider-text align-items-end justify-content-center">
                     <div class="col-md-9 pb-5 text-center">
                         <BreadCrumbCustom :page-title="pageTitle" />
