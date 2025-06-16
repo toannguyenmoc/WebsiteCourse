@@ -53,8 +53,11 @@
                                         </span>
                                     </td>
                                     <td class="text-right">
-                                        <DropdownActionCustom @edit="handleEdit(course)"
-                                            @delete="handleDelete(course)" />
+                                        <DropdownActionCustom
+                                            :item="course" 
+                                            @edit="handleEdit"
+                                            @delete="handleDelete"
+                                        />
                                     </td>
                                 </tr>
                             </tbody>
@@ -107,52 +110,58 @@
 </template>
 
 <script setup>
-import { RouterLink, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import LogoBootstrap from '@/assets/Admin/images/theme/bootstrap.jpg'
 import DropdownActionCustom from '@/components/Common/DropdownActionCustom.vue';
-import { useCourses } from '@/composables/useCourses'
+import { showSuccess } from '@/assets/Admin/js/alert';
+const router = useRouter();
+const courses = [
+    {
+        id: 1,
+        name: 'Design System',
+        price: 2500,
+        createdAt: '25/05/2025',
+        status: 'pending',
+        image: LogoBootstrap
+    },
+    {
+        id: 2,
+        name: 'Frontend Vue 3',
+        price: 3000,
+        createdAt: '26/05/2025',
+        status: 'active',
+        image: LogoBootstrap
+    },
+    {
+        id: 3,
+        name: 'Frontend Vue 3',
+        price: 3000,
+        createdAt: '26/05/2025',
+        status: 'pending',
+        image: LogoBootstrap
+    }
+]
 
-const router = useRouter()
-
-const {
-  courses,
-  loading,
-  error,
-  fetchCourses,
-  removeCourse,
-  currentPage,
-  totalPages,
-  pageSize
-} = useCourses()
-
-const goToPage = (page) => {
-  if (page < 0 || page >= totalPages.value) return
-  fetchCourses(page, pageSize.value)
-}
-
-const handlePageSizeChange = () => {
-  fetchCourses(0, pageSize.value)
-}
-
-//Sửa
+//function chuyên trang
 const handleEdit = (course) => {
-    router.push(`/admin/course/update/${course.id}`)
+  //Chuyển trang để sửa
+  router.push(`/admin/course/update/${course.id}`)
 }
 
-//xoá
-const handleDelete = async (course) => {
-    const confirmDelete = window.confirm(`Xác nhận xoá khoá học "${course.title}"?`)
-    if (!confirmDelete) return
+//function xóa
+const handleDelete = (course) =>{
+    if(course){
+        //Thực hiện xóa ở đây
 
-    try {
-        await removeCourse(course.id)
-        alert('Xoá thành công!')
-    } catch (err) {
-        console.error(err)
-        alert('Có lỗi khi xoá khoá học!')
+        
+
+        //Thông báo xóa thành công
+        showSuccess("Xóa thành công!");
     }
 }
 
+
 </script>
 
-<style lang="scss" scoped></style>
+<style>
+</style>

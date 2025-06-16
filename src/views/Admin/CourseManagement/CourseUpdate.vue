@@ -9,13 +9,10 @@
                                 <div class="col-8">
                                     <h3 class="mb-0">Cập Nhật Khoá Học</h3>
                                 </div>
-                                <div class="col-4 text-right">
-                                    <button class="btn btn-danger">Xoá</button>
-                                </div>
                             </div>
                         </div>
                         <div class="card-body">
-                            <form @submit.prevent="handleUpdate">
+                            <form @submit.prevent="updateCourse">
                                 <div class="pl-lg-4">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -89,106 +86,23 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import axios from 'axios'
-import { useCourses } from '@/composables/useCourses'
+import { RouterLink } from 'vue-router';
+import { showSuccess, showError } from '@/assets/Admin/js/alert';
 
-const router = useRouter()
-const route = useRoute()
-const courseId = route.params.id
+//function update
+const updateCourse = ()=>{
 
-// Composable để gọi API
-const { fetchCourseById, editCourse, removeCourse } = useCourses()
 
-// Danh sách loại khoá học
-const courseTypes = ref([])
+    //Thông báo sau khi cập nhật thành công
+    showSuccess("Cập nhật thành công!");
 
-// Form hiển thị và cập nhật
-const form = reactive({
-  title: '',
-  slug: '',
-  description: '',
-  price: '',
-  image: '',
-  status: true,
-  courseTypeId: '',
-  accountId: 2,
-  commissionId: 1
-})
 
-// Sinh slug tự động khi nhập tiêu đề
-const slugify = (text) =>
-  text.toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
+    //Thông báo khi lỗi khi cập nhật thất bại
 
-// Tự cập nhật slug khi đổi tiêu đề
-watch(() => form.title, (newTitle) => {
-  if (newTitle) {
-    form.slug = slugify(newTitle)
-  }
-})
-
-// Fetch loại khoá học và dữ liệu khoá học khi mounted
-onMounted(async () => {
-  await loadCourseTypes()
-  await loadCourse()
-})
-
-const loadCourseTypes = async () => {
-  try {
-    const res = await axios.get('/api/course-types')
-    courseTypes.value = res.data
-  } catch (err) {
-    console.error('Lỗi lấy loại khoá học:', err)
-  }
+    // showError("Cập nhật thất bại!");
 }
 
-const loadCourse = async () => {
-  try {
-    const data = await fetchCourseById(courseId)
-    if (!data) {
-      alert('Không tìm thấy khoá học! ' + courseId)
-      router.push('/admin/course/list')
-      return
-    }
-    Object.assign(form, data)
-  } catch (err) {
-    console.error('Lỗi khi tải dữ liệu khoá học:', err)
-  }
-}
 
-const handleUpdate = async () => {
-  try {
-    await editCourse(courseId, { ...form })
-    alert('Cập nhật thành công!')
-    router.push('/admin/course/list')
-  } catch (err) {
-    alert('Cập nhật thất bại!')
-    console.error(err)
-  }
-}
-
-const handleDelete = async () => {
-  if (!confirm(`Bạn chắc chắn muốn xoá "${form.title}"?`)) return
-  try {
-    await removeCourse(courseId)
-    alert('Đã xoá khoá học!')
-    router.push('/admin/course/list')
-  } catch (err) {
-    alert('Lỗi khi xoá khoá học!')
-    console.error(err)
-  }
-}
-
-// Lấy tên file ảnh nếu chọn mới
-const handleFileChange = (e) => {
-  const file = e.target.files[0]
-  form.image = file?.name || ''
-}
 </script>
 
 

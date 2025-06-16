@@ -65,7 +65,7 @@
                                                 <span class="input-group-text bg-white"><i
                                                         class="ni ni-lock-circle-open"></i></span>
                                             </div>
-                                            <input class="form-control" placeholder="Password" type="password">
+                                            <input class="form-control" placeholder="Mật khẩu" type="password">
                                         </div>
                                     </div>
                                     <div class="custom-control custom-control-alternative custom-checkbox">

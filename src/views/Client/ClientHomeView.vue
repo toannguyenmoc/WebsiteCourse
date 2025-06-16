@@ -2,8 +2,8 @@
     <!-- banner -->
     <div class="hero-wrap h-100 py-5" :style="{ backgroundImage: `url(${bgImg})` }">
         <div class="container">
-            <div class="row no-gutters slider-text align-items-center" data-scrollax-parent="true">
-                <div class="col-md-7 content">
+            <div class="row no-gutters slider-text align-items-center"  data-scrollax-parent="true">
+                <div data-aos="fade-up" class="col-md-7 content">
                     <span class="subheading">Chào mừng đến DevCourse</span>
                     <h1 class="mb-4">Chúng tôi là nền tảng trực tuyến để học tập</h1>
                     <p class="caps">Nơi học lập trình uy tính và chất lượng cho học viên và hỗ trợ
@@ -20,7 +20,7 @@
     <section class="ftco-section">
         <div class="container">
             <div class="row justify-content-center pb-4">
-                <div class="col-md-12 heading-section text-center ">
+                <div data-aos="fade-up" class="col-md-12 heading-section text-center ">
                     <span class="subheading">Bắt đầu học hôm nay</span>
                     <h2 class="mb-4">Danh mục khóa học trực tuyến</h2>
                 </div>
@@ -40,14 +40,14 @@
 
     <section class="ftco-section bg-light">
         <div class="container">
-            <div class="row justify-content-center pb-4">
-                <div class="col-md-12 heading-section text-center">
+            <div data-aos="fade-up" class="row justify-content-center pb-4">
+                <div  class="col-md-12 heading-section text-center">
                     <span class="subheading">Bắt đầu học hôm nay</span>
                     <h2 class="mb-4">Chọn khóa học của bạn</h2>
                 </div>
             </div>
             <div class="row">
-                <div v-for="(course, index) in courses" class="col-md-4 ">
+                <div data-aos="fade-up" v-for="(course, index) in courses" class="col-md-4 ">
                     <CardProductCustom :category="course.typeCourse" :advisor="course.teacher" :image="course.image"
                         :students="course.numberStudent" :price="course.price" :title="course.title"></CardProductCustom>
                 </div>

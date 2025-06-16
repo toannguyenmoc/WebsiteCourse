@@ -15,7 +15,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form @submit.prevent="handleSubmit">
+                            <form @submit.prevent="createCourse">
                                 <div class="pl-lg-12">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -92,51 +92,20 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import { useCourses } from '@/composables/useCourses'
+import { RouterLink } from 'vue-router';
+import { showSuccess, showError } from '@/assets/Admin/js/alert';
+//function thêm 
+const createCourse = () =>{
 
-const router = useRouter()
-const { addCourse } = useCourses()
 
-const slugify = (text) =>
-    text.toLowerCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-z0-9\s-]/g, "")
-        .trim()
-        .replace(/\s+/g, "-")
 
-const form = reactive({
-    title: '',
-    slug: '',
-    courseTypeId: "-1",
-    price: '',
-    image: '',
-    description: '',
-    status: true,
-    accountId: 1,
-    commissionId: 1
-})
 
-watch(() => form.title, (newTitle) => {
-    form.slug = slugify(newTitle)
-})
+    //Thông báo sau khi thêm thành công
+    showSuccess("Thêm thành công!");
 
-const handleSubmit = async () => {
-    const payload = { ...form }
-    try {
-        await addCourse(payload)
-        alert('Tạo khóa học thành công!')
-        router.push('/admin/course/list')
-    } catch (err) {
-        alert('Lỗi khi tạo khoá học')
-        console.error(err)
-    }
-}
 
-const handleFileChange = (e) => {
-    const file = e.target.files[0]
-    form.value.image = file?.name || ''
+    //Thông báo khi lỗi khi thêm thất bại
+    // showError("Thêm thất bại!");
 }
 </script>
 
