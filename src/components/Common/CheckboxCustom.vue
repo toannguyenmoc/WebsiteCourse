@@ -59,7 +59,7 @@ defineEmits(['update:modelValue'])
 
 /* Chữ NO */
 .custom-toggle-slider::after {
-  content: "No";
+  content: "NO";
   position: absolute;
   right: 6px;
   top: 50%;
@@ -81,7 +81,7 @@ defineEmits(['update:modelValue'])
 }
 
 .custom-toggle input:checked + .custom-toggle-slider::after {
-  content: "Yes";
+  content: "YES";
   left: 6px;
   right: auto;
   color: #2196F3;
