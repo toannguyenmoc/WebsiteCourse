@@ -49,7 +49,7 @@
                 <!-- Navigation -->
                 <ul class="navbar-nav mb-md-3">
                     <li class="nav-item">
-                        <RouterLink to="#" class="nav-link">
+                        <RouterLink to="/admin/statistical" class="nav-link">
                             <i class="ni ni-chart-bar-32"></i> Thống kê
                         </RouterLink>
                     </li>

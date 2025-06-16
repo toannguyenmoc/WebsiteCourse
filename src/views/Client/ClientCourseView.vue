@@ -4,16 +4,16 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 sidebar">
-                    <InputSearchCustom />
+                    <InputSearchCustom  data-aos="fade-up"/>
                     <div v-for="item in courses" :key="item">
-                        <SidebarBoxCustom :title="item.nameCourseCourse" :options="item.list" />
+                        <SidebarBoxCustom data-aos="fade-up" :title="item.nameCourseCourse" :options="item.list" />
                     </div>
                 </div>
                 <div class="col-lg-9">
                     <div class="row">
                         <div v-for="item in cardProducts" :key="item"
                             class="col-md-6 d-flex align-items-stretch ">
-                            <CardProductCustom :image="item.image" :title="item.title" :advisor="item.advisor"
+                            <CardProductCustom data-aos="fade-up" :image="item.image" :title="item.title" :advisor="item.advisor"
                                 :students="item.students" :price="item.price" :category="item.category" />
                         </div>
                     </div>

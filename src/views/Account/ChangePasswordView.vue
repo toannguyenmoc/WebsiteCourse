@@ -7,7 +7,7 @@
 						<div class="row no-gutters">
 							<div class="col-lg-8 col-md-7 order-md-last d-flex align-items-stretch">
 								<div class="contact-wrap w-100 p-md-5 p-4">
-									<h3 class="mb-4">Change Password</h3>
+									<h3 class="mb-4">Đổi mật khẩu</h3>
 									<form method="POST" id="contactForm" name="contactForm" class="contactForm">
 										<div class="row">
 											<div class="col-md-12">
@@ -18,25 +18,25 @@
 											</div>
 											<div class="col-md-12">
 												<div class="form-group">
-													<label class="label" for="subject">Old Password</label>
-													<input type="text" class="form-control" name="subject" id="subject" placeholder="">
+													<label class="label" for="subject">Mật khẩu cũ</label>
+													<input type="password" class="form-control" name="subject" id="subject" placeholder="Mật khẩu cũ">
 												</div>
 											</div>
                                             <div class="col-md-12">
 												<div class="form-group">
-													<label class="label" for="subject">New Password</label>
-													<input type="text" class="form-control" name="subject" id="subject" placeholder="">
+													<label class="label" for="subject">Mật khẩu mới</label>
+													<input type="password" class="form-control" name="subject" id="subject" placeholder="Mật khẩu mới">
 												</div>
 											</div>
 											  <div class="col-md-12">
 												<div class="form-group">
-													<label class="label" for="subject">Confirm Password</label>
-													<input type="text" class="form-control" name="subject" id="subject" placeholder="">
+													<label class="label" for="subject">Xác nhận mật khẩu</label>
+													<input type="password" class="form-control" name="subject" id="subject" placeholder="Xác nhận mật khẩu">
 												</div>
 											</div>
 											<div class="col-md-12">
 												<div class="form-group">
-													<input type="submit" value="Update" class="btn btn-primary">
+													<input type="submit" value="Cập nhật" class="btn btn-primary">
 													<div class="submitting"></div>
 												</div>
 											</div>

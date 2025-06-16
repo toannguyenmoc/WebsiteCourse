@@ -6,7 +6,7 @@
                 <div class="row d-flex">
                     <div class="col-md-12 about-intro">
                         <div class="row">
-                            <div class="col-md-6 d-flex">
+                            <div data-aos="fade-right" class="col-md-6 d-flex">
                                 <div class="d-flex about-wrap">
                                     <div class="img d-flex align-items-center justify-content-center"
                                         :style="{ backgroundImage: `url(${ImgAbout1})` }"></div>
@@ -16,7 +16,7 @@
                             </div>
                             <div class="col-md-6 pl-md-5 py-5">
                                 <div class="row justify-content-start pb-3">
-                                    <div class="col-md-12 heading-section ">
+                                    <div data-aos="fade-left" class="col-md-12 heading-section ">
                                         <span class="subheading">Nâng cao kỹ năng của bạn</span>
                                         <h2 class="mb-4">Học bất cứ điều gì bạn muốn ngay hôm nay</h2>
                                         <p>
@@ -88,7 +88,7 @@
             <div class="overlay" :style="{ backgroundImage: `url(${ImgBg2})` }"></div>
             <div class="container">
                 <div class="row pb-4">
-                    <div class="col-md-7 heading-section ">
+                    <div data-aos="fade-up" class="col-md-7 heading-section ">
                         <span class="subheading">Lời chứng thực</span>
                         <h2 class="mb-4">Những gì sinh viên nói</h2>
                     </div>
@@ -132,7 +132,7 @@
             <div class="container">
                 <div class="row d-flex">
                     <div class="col-md-6 heading-section pr-md-5 d-flex align-items-center ">
-                        <div class="w-100 mb-4 mb-md-0">
+                        <div data-aos="fade-up" class="w-100 mb-4 mb-md-0">
                             <span class="subheading">Chào mừng đến với StudyLab</span>
                             <h2 class="mb-4">Chúng tôi là StudyLab, một trung tâm học tập trực tuyến</h2>
 
@@ -157,7 +157,7 @@
                     <div class="col-md-6">
                         <div class="row">
                             <div class="col-md-12 col-lg-6 d-flex align-self-stretch ">
-                                <div class="services">
+                                <div data-aos="fade-up" class="services">
                                     <div class="icon d-flex align-items-center justify-content-center"><span
                                             class="flaticon-tools"></span>
                                     </div>
@@ -168,7 +168,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-lg-6 d-flex align-self-stretch ">
-                                <div class="services">
+                                <div data-aos="fade-up" class="services">
                                     <div class="icon icon-2 d-flex align-items-center justify-content-center"><span
                                             class="flaticon-instructor"></span></div>
                                     <div class="media-body">
@@ -178,7 +178,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-lg-6 d-flex align-self-stretch ">
-                                <div class="services">
+                                <div data-aos="fade-up" class="services">
                                     <div class="icon icon-3 d-flex align-items-center justify-content-center"><span
                                             class="flaticon-quiz"></span></div>
                                     <div class="media-body">
@@ -188,7 +188,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 col-lg-6 d-flex align-self-stretch ">
-                                <div class="services">
+                                <div data-aos="fade-up" class="services">
                                     <div class="icon icon-4 d-flex align-items-center justify-content-center"><span
                                             class="flaticon-browser"></span></div>
                                     <div class="media-body">

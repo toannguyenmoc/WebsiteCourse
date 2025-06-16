@@ -19,9 +19,11 @@ import LessonCreate from '@/views/Admin/LessonManagement/LessonCreate.vue';
 import LessonList from '@/views/Admin/LessonManagement/LessonList.vue';
 import LessonUpdate from '@/views/Admin/LessonManagement/LessonUpdate.vue';
 import PaymentList from '@/views/Admin/Payment/PaymentList.vue';
+import StatisticalView from '@/views/Admin/Statistical/StatisticalView.vue';
 import StudentCreate from '@/views/Admin/StudentManagement/StudentCreate.vue';
 import StudentList from '@/views/Admin/StudentManagement/StudentList.vue';
 import TeacherCreate from '@/views/Admin/TeacherManagement/TeacherCreate.vue';
+import TeacherDetail from '@/views/Admin/TeacherManagement/TeacherDetail.vue';
 import TeacherList from '@/views/Admin/TeacherManagement/TeacherList.vue';
 import ClientAboutView from '@/views/Client/ClientAboutView.vue';
 import ClientBlogView from '@/views/Client/ClientBlogView.vue';
@@ -114,6 +116,7 @@ const router = createRouter({
           children: [
             { path: 'list', name: 'teacher-list', component: TeacherList },
             { path: 'create', name: 'teacher-create', component: TeacherCreate },
+            { path: 'detail', name: 'teacher-detail', component: TeacherDetail },
           ],
         },
         {
@@ -122,7 +125,7 @@ const router = createRouter({
             { path: 'list', name: 'payment-list', component: PaymentList },
           ],
         },
-        //{ path: 'statistical', name: 'statistical', component: Statistical }
+        { path: 'statistical', name: 'statistical', component: StatisticalView }
 
       ],
     },

@@ -49,8 +49,9 @@
                                     </td>
                                     <td class="text-right">
                                         <DropdownActionCustom
-                                            @edit="handleEdit(course)"
-                                            @delete="handleDelete(course)"
+                                            :item="course"
+                                            @edit="handleEdit"
+                                            @delete="handleDelete"
                                         />
                                     </td>
                                 </tr>
@@ -91,10 +92,11 @@
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import LogoBootstrap from '@/assets/Admin/images/theme/bootstrap.jpg'
 import DropdownActionCustom from '@/components/Common/DropdownActionCustom.vue';
-
+import { showSuccess } from '@/assets/Admin/js/alert';
+const router = useRouter();
 const courses = [
     {
         id: 1,
@@ -121,6 +123,24 @@ const courses = [
         image: LogoBootstrap
     }
 ]
+
+//function chuyên trang
+const handleEdit = (courseType) => {
+  //Chuyển trang để sửa
+  router.push(`/admin/course-type/update/${courseType.id}`)
+}
+
+//function xóa
+const handleDelete = (courseType) =>{
+    if(courseType){
+        //Thực hiện xóa ở đây
+
+        
+
+        //Thông báo xóa thành công
+        showSuccess("Xóa thành công!");
+    }
+}
 
 </script>
 

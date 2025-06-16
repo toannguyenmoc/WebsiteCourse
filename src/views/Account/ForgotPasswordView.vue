@@ -81,7 +81,7 @@
 
                                     <!-- Xác nhận -->
                                     <div class="text-center mt-4">
-                                        <button class="btn btn-success" type="button" @click="confirmOTP">Xác
+                                        <button class="btn btn-primary" type="button" @click="confirmOTP">Xác
                                             nhận</button>
                                     </div>
                                 </form>

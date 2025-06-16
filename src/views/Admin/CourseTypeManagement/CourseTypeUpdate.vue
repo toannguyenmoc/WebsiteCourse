@@ -9,13 +9,13 @@
                                 <div class="col-8">
                                     <h3 class="mb-0">Cập Nhật Loại Khoá Học</h3>
                                 </div>
-                                <div class="col-4 text-right">
+                                <!-- <div class="col-4 text-right">
                                     <button class="btn btn-danger">Xoá</button>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                         <div class="card-body">
-                            <form>
+                            <form @submit.prevent="updateCourseType">
                                 <div class="pl-lg-12">
                                     <div class="row">
                                         <div class="col-lg-12">
@@ -71,7 +71,23 @@
                             </div>
                         </div>
                         <div class="card-body">
-
+                            <form action="">
+                                <input type="text" hidden value="">
+                                <div class="form-group">
+                                                <label class="form-control-label" for="">Ngày áp dụng</label>
+                                                <select class="form-select form-control form-control-alternative"
+                                                    aria-label="Default select example">
+                                                    <option selected>Ngày áp dụng</option>
+                                                    <option value="1">13-02-2024</option>
+                                                    <option value="2">13-02-2024</option>
+                                                    <option value="3">13-02-2024</option>
+                                                </select>
+                                            </div>
+                                <div class="form-group">
+                                    <label class="form-control-label" for="commission">Phần trăm</label><br>
+                                    <input type="text" id="commission" class="form-control form-control-alternative" value="10%" disabled>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -82,6 +98,20 @@
 
 <script setup>
 import { RouterLink } from 'vue-router';
+import { showSuccess, showError } from '@/assets/Admin/js/alert';
+
+//function update
+const updateCourseType = ()=>{
+
+
+    //Thông báo sau khi cập nhật thành công
+    showSuccess("Cập nhật thành công!");
+
+
+    //Thông báo khi lỗi khi cập nhật thất bại
+
+    // showError("Cập nhật thất bại!");
+}
 </script>
 
 <style scoped></style>
