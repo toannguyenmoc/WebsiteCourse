@@ -1,13 +1,7 @@
 <template>
   <div class="dropdown" ref="dropdownRef">
-    <a
-      class="btn btn-sm btn-icon-only text-dark"
-      href="#"
-      role="button"
-      aria-haspopup="true"
-      :aria-expanded="isOpen.toString()"
-      @click.prevent="toggleDropdown"
-    >
+    <a class="btn btn-sm btn-icon-only text-dark" href="#" role="button" aria-haspopup="true"
+      :aria-expanded="isOpen.toString()" @click.prevent="toggleDropdown">
       <i class="fas fa-ellipsis-v"></i>
     </a>
 
@@ -19,9 +13,16 @@
 </template>
 
 <script setup>
+import { showConfirm } from '@/assets/Admin/js/alert'
 import { ref, onMounted, onBeforeUnmount } from 'vue'
-
 const emit = defineEmits(['edit', 'delete'])
+const props = defineProps({
+  item: {
+    type: Object,
+    required: true
+  }
+});
+
 const isOpen = ref(false)
 const dropdownRef = ref(null)
 
@@ -36,12 +37,24 @@ const handleClickOutside = (e) => {
 }
 
 const onEdit = () => {
-  emit('edit')
-  isOpen.value = false
+  emit('edit', props.item);
+  isOpen.value = false;
 }
 
-const onDelete = () => {
-  emit('delete')
+const onDelete = async () => {
+  //alert thông báo 
+  await showConfirm({
+    title: 'Xác nhận xoá',
+    text: 'Bạn sẽ không thể khôi phục dữ liệu này!',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Thực hiện xóa
+      emit('delete', props.item);
+    } else {
+      //Hủy bỏ không xóa
+      emit('delete', undefined);
+    }
+  });
   isOpen.value = false
 }
 
@@ -58,6 +71,7 @@ onBeforeUnmount(() => {
 .dropdown-menu {
   display: none;
 }
+
 .dropdown-menu.show {
   display: block;
 }

@@ -1,0 +1,97 @@
+import { ref, onMounted } from 'vue'
+import {
+  getCourses,
+  getCourseById,
+  createCourse,
+  updateCourse,
+  deleteCourse
+} from '@/api/courseApi'
+
+export function useCourses() {
+  const courses = ref([])
+  const course = ref(null)
+  const loading = ref(false)
+  const error = ref(null)
+
+  // Phân trang
+  const currentPage = ref(0)
+  const pageSize = ref(4)
+  const totalPages = ref(0)
+  const totalItems = ref(0)
+
+  const fetchCourses = async (page = currentPage.value, size = pageSize.value) => {
+    loading.value = true
+    try {
+      const res = await getCourses(page, size)
+      courses.value = res.data.data
+      currentPage.value = res.data.currentPage
+      totalPages.value = res.data.totalPages
+      totalItems.value = res.data.totalItems
+    } catch (err) {
+      error.value = err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const fetchCourseById = async (id) => {
+    loading.value = true
+    try {
+      const res = await getCourseById(id)
+      course.value = res.data
+      return res.data
+    } catch (err) {
+      error.value = err
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const addCourse = async (data) => {
+    try {
+      await createCourse(data)
+      await fetchCourses(0) // Quay lại trang đầu sau khi thêm
+    } catch (err) {
+      error.value = err
+    }
+  }
+
+  const editCourse = async (id, data) => {
+    try {
+      await updateCourse(id, data)
+      await fetchCourses()
+    } catch (err) {
+      error.value = err
+    }
+  }
+
+  const removeCourse = async (id) => {
+    try {
+      await deleteCourse(id)
+      await fetchCourses() // Vẫn ở trang hiện tại
+    } catch (err) {
+      error.value = err
+    }
+  }
+
+  onMounted(() => {
+    fetchCourses()
+  })
+
+  return {
+    courses,
+    course,
+    loading,
+    error,
+    currentPage,
+    pageSize,
+    totalPages,
+    totalItems,
+    fetchCourses,
+    fetchCourseById,
+    addCourse,
+    editCourse,
+    removeCourse
+  }
+}

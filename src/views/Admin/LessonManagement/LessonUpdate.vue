@@ -9,13 +9,13 @@
                                 <div class="col-8">
                                     <h3 class="mb-0">Cập Nhật Bài Học</h3>
                                 </div>
-                                <div class="col-4 text-right">
+                                <!-- <div class="col-4 text-right">
                                     <button class="btn btn-danger">Xoá</button>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                         <div class="card-body">
-                            <form>
+                            <form @submit.prevent="updateLesson">
                                 <div class="pl-lg-12">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -92,7 +92,7 @@
                                 </div>
                                 <hr class="my-4" />
                                 <div class="d-flex justify-content-between">
-                                    <RouterLink to="/admin/course/list" class="btn btn-secondary">Quay lại</RouterLink>
+                                    <RouterLink to="/admin/lesson/list" class="btn btn-secondary">Quay lại</RouterLink>
                                     <button class="btn btn-primary">Cập Nhật</button>
                                 </div>
                             </form>
@@ -106,6 +106,20 @@
 
 <script setup>
 import { RouterLink } from 'vue-router';
+import { showSuccess, showError } from '@/assets/Admin/js/alert';
+
+//function update
+const updateLesson = ()=>{
+
+
+    //Thông báo sau khi cập nhật thành công
+    showSuccess("Cập nhật thành công!");
+
+
+    //Thông báo khi lỗi khi cập nhật thất bại
+
+    // showError("Cập nhật thất bại!");
+}
 </script>
 
 <style scoped></style>

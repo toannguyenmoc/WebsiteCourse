@@ -6,10 +6,10 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h3 class="mb-0">Danh Sách Học Viên</h3>
+                                <h3 class="mb-0">Thống Kê</h3>
                             </div>
                             <div class="col text-right">
-                                <a href="/admin/student/create" class="btn btn-sm btn-primary">Thêm mới</a>
+                                <!-- <RouterLink to="/admin/teacher/create" class="btn btn-sm btn-primary">Thêm mới</RouterLink> -->
                             </div>
                         </div>
                     </div>
@@ -18,29 +18,22 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">STT</th>
-                                    <th scope="col">Tên Học Viên</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Giới Tính</th>
-                                    <th scope="col">Ngày Đăng Ký</th>
-                                    <th scope="col">Hoạt động</th>
+                                    <th scope="col">Loại Khóa Học</th>
+                                    <th scope="col">Số lượng học viên</th>
+                                    <th scope="col">Doanh thu</th>
+                                      <th scope="col">Chiết khấu</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                <tr v-for="(student, index) in students" :key="student.id">
+                                <tr v-for="(item, index) in statisticals" :key="item.id">
                                     <td>{{ index + 1 }}</td>
-                                    <td>{{ student.name }}</td>
-                                    <td>{{ student.email }}</td>
-                                    <td>{{ student.gender }}</td>
-                                    <td>{{ formatDate(student.registerDate) }}</td>
-                                    <td>
-                                        <CheckboxCustom v-model:model-value="student.status"/>
-                                    </td>
-                                    
+                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.totlalStudent }}</td>
+                                    <td>{{ item.sum }}</td>
+                                    <td>{{ item.percent }}</td>
                                 </tr>
-
                             </tbody>
-
                         </table>
                     </div>
                     <div class="card-footer py-4">
@@ -75,34 +68,35 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import CheckboxCustom from '@/components/Common/CheckboxCustom.vue'
-
-const students = ref([
+import { ref } from 'vue';
+const statisticals = ref([
     {
         id: 1,
-        name: 'Nguyễn Văn A',
-        email: 'vana@gmail.com',
-        gender: 'Nam',
-        registerDate: '2025-05-10',
-        status: 'active'
+        name: 'Frontend',
+        totlalStudent: 200,
+        sum: 200000,
+        percent:20000,
     },
     {
-        id: 2,
-        name: 'Trần Thị B',
-        email: 'thib@gmail.com',
-        gender: 'Nữ',
-        registerDate: '2025-05-12',
-        status: 'inactive'
+        id: 1,
+        name: 'Frontend',
+        totlalStudent: 200,
+        sum: 200000,
+        percent:20000,
     },
+    {
+        id: 1,
+        name: 'Frontend',
+        totlalStudent: 200,
+        sum: 200000,
+        percent:20000,
+    },
+    
 ])
-
-
-function formatDate(date) {
+const  formatDate = (date) => {
     const d = new Date(date)
     return d.toLocaleDateString('vi-VN')
 }
-
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped></style>
