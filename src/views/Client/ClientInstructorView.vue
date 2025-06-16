@@ -5,7 +5,7 @@
             <div class="row">
                 <div v-for="item in instructors" :key="item"
                     class="col-md-6 col-lg-3 d-flex align-items-stretch">
-                    <CardProfileCustom :image="item.image" :name="item.name" :position="item.position"
+                    <CardProfileCustom data-aos="fade-up" :image="item.image" :name="item.name" :position="item.position"
                         :description="item.description" :link="item.link" :twitter="item.twitter"
                         :facebook="item.facebook" :instagram="item.instagram" />
                 </div>

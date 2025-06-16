@@ -9,13 +9,10 @@
                                 <div class="col-8">
                                     <h3 class="mb-0">Cập Nhật Khoá Học</h3>
                                 </div>
-                                <div class="col-4 text-right">
-                                    <button class="btn btn-danger">Xoá</button>
-                                </div>
                             </div>
                         </div>
                         <div class="card-body">
-                            <form>
+                            <form @submit.prevent="updateCourse">
                                 <div class="pl-lg-4">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -82,6 +79,22 @@
 
 <script setup>
 import { RouterLink } from 'vue-router';
+import { showSuccess, showError } from '@/assets/Admin/js/alert';
+
+//function update
+const updateCourse = ()=>{
+
+
+    //Thông báo sau khi cập nhật thành công
+    showSuccess("Cập nhật thành công!");
+
+
+    //Thông báo khi lỗi khi cập nhật thất bại
+
+    // showError("Cập nhật thất bại!");
+}
+
+
 </script>
 
 <style scoped></style>

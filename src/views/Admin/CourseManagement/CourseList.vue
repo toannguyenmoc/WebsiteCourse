@@ -52,9 +52,10 @@
                                         </span>
                                     </td>
                                     <td class="text-right">
-                                        <DropdownActionCustom 
-                                            @edit="handleEdit(course)"
-                                            @delete="handleDelete(course)"
+                                        <DropdownActionCustom
+                                            :item="course" 
+                                            @edit="handleEdit"
+                                            @delete="handleDelete"
                                         />
                                     </td>
                                 </tr>
@@ -94,10 +95,11 @@
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router';
+import { useRouter } from 'vue-router';
 import LogoBootstrap from '@/assets/Admin/images/theme/bootstrap.jpg'
 import DropdownActionCustom from '@/components/Common/DropdownActionCustom.vue';
-
+import { showSuccess } from '@/assets/Admin/js/alert';
+const router = useRouter();
 const courses = [
     {
         id: 1,
@@ -125,6 +127,26 @@ const courses = [
     }
 ]
 
+//function chuyên trang
+const handleEdit = (course) => {
+  //Chuyển trang để sửa
+  router.push(`/admin/course/update/${course.id}`)
+}
+
+//function xóa
+const handleDelete = (course) =>{
+    if(course){
+        //Thực hiện xóa ở đây
+
+        
+
+        //Thông báo xóa thành công
+        showSuccess("Xóa thành công!");
+    }
+}
+
+
 </script>
 
-<style lang="scss" scoped></style>
+<style>
+</style>

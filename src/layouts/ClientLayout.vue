@@ -8,7 +8,8 @@
 
 <script setup>
 import { onMounted } from 'vue'
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
+import { watch } from 'vue'
 import '@/assets/Client/css/animate.css'
 import '@/assets/Client/css/owl.carousel.min.css'
 import '@/assets/Client/css/owl.theme.default.min.css'
@@ -17,6 +18,8 @@ import '@/assets/Client/css/bootstrap-datepicker.css'
 import '@/assets/Client/css/jquery.timepicker.css'
 import '@/assets/Client/css/flaticon.css'
 import '@/assets/Client/css/style.css'
+
+
 
 import ClientHeader from '@/components/Client/ClientHeader.vue'
 import ClientFooter from '@/components/Client/ClientFooter.vue'
@@ -32,6 +35,7 @@ onMounted(() => {
       href: 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css',
       rel: 'stylesheet'
     }
+
   ]
 
   links.forEach(({ href, rel }) => {
@@ -49,7 +53,8 @@ onMounted(() => {
   const scripts = [
     'https://code.jquery.com/jquery-3.6.0.min.js',
     'https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js',
-    'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'
+    'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js',
+    '../src/assets/Client/aos/aos.js',
   ]
 
   scripts.forEach(src => {
@@ -61,4 +66,22 @@ onMounted(() => {
     }
   })
 })
+
+//import aos
+import {loadAOS} from '@/assets/Client/js/animation.js'
+const route = useRoute();
+//link aos
+import '@/assets/Client/aos/aos.css'
+//aos 
+onMounted(() => {
+  setTimeout(() => {
+    loadAOS()
+  }, 300)
+})
+watch(() => route.fullPath, () => {
+  setTimeout(() => {
+    loadAOS()
+  }, 300)
+})
+
 </script>
