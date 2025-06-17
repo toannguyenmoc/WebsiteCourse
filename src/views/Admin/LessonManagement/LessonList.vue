@@ -52,29 +52,14 @@
                         </table>
                     </div>
                     <div class="card-footer py-4">
-                        <nav aria-label="...">
-                            <ul class="pagination justify-content-end mb-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">
-                                        <i class="fas fa-angle-left"></i>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                </li>
-                                <li class="page-item active">
-                                    <a class="page-link" href="#">1</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">
-                                        <i class="fas fa-angle-right"></i>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        
+                         <PaginationAdminCustom
+                            :currentPage="currentPage"
+                            :totalPages="totalPages"
+                            :pageSize="pageSize"
+                            @update:currentPage="goToPage"
+                            @update:pageSize="handlePageSizeChange"
+                        />
                     </div>
                 </div>
             </div>
@@ -90,6 +75,7 @@ import DropdownActionCustom from '@/components/Common/DropdownActionCustom.vue';
 import { showSuccess,showError } from '@/assets/Admin/js/alert';
 import { useRouter } from 'vue-router';
 import { useLessons } from '@/composables/useLessons';
+import PaginationAdminCustom from '@/components/Common/PaginationAdminCustom.vue';
 const router = useRouter();
 
 const{
@@ -105,7 +91,15 @@ removeLesson
 
 
 
+const goToPage = (page) => {
+  if (page < 0 || page >= totalPages.value) return
+  fetchLessons(page, pageSize.value)
+}
 
+const handlePageSizeChange = (newPageSize) => {
+  pageSize.value = newPageSize
+  fetchLessons(0, newPageSize)
+}
 
 
 
@@ -123,7 +117,7 @@ const handleEdit = (lesson) => {
 //function xóa
 const handleDelete = (lesson) =>{
     if(lesson){
-        removeLesson(lesson.id)``
+        removeLesson(lesson.id)
 
         
 
