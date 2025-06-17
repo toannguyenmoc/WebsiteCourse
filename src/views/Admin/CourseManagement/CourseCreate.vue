@@ -83,7 +83,7 @@
                                             <label class="form-control-label" for="">Hình Ảnh</label>
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input form-control-alternative"
-                                                    id="customFileLang" @change="handleFileChange">
+                                                    id="customFileLang" @change="handleImageUpload">
                                                 <label class="custom-file-label" for="customFileLang">Chọn file</label>
                                             </div>
                                         </div>
@@ -121,6 +121,7 @@ import { useRouter } from 'vue-router'
 import { useCourses } from '@/composables/useCourses'
 import { useCourseTypes } from '@/composables/useCourseTypes'
 import { useCommissions } from '@/composables/useCommissions'
+import { uploadImageToCloudinary } from "@/utils/uploadImageUtils";
 
 const router = useRouter()
 const { addCourse } = useCourses()
@@ -180,7 +181,7 @@ const handleSubmit = async () => {
     form.courseTypeId === -1 ||
     form.commissionId === -1 ||
     !form.title.trim() ||
-    !form.price
+    !form.price 
   ) {
     showError("Vui lòng điền đầy đủ thông tin.")
     return
@@ -201,18 +202,27 @@ const handleSubmit = async () => {
 
   try {
     await addCourse(payload)
+
     await showSuccess("Thêm thành công!")
     router.push('/admin/course/list')
   } catch (err) {
     showError("Thêm thất bại!")
-    console.error("Lỗi khi thêm khoá học:", err?.response?.data || err.message || err)
+    console.error("Lỗi khi thêm khoá học:")
   }
 }
 
-const handleFileChange = (e) => {
-  const file = e.target.files[0]
-  form.image = file?.name || ''
-}
+const handleImageUpload = async (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  try {
+    const imageUrl = await uploadImageToCloudinary(file);
+    form.image = imageUrl;
+    console.log("Upload thành công:", imageUrl);
+  } catch (err) {
+    console.error("Không thể upload ảnh:", err);
+  }
+};
 </script>
 
 

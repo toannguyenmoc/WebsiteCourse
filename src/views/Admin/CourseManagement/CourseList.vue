@@ -31,8 +31,8 @@
                                     <td>{{ index + 1 }}</td>
                                     <th scope="row">
                                         <div class="media align-items-center">
-                                            <a href="#" class="avatar rounded-circle mr-3">
-                                                <img :src="course.image" alt="Logo Course" />
+                                            <a href="#" class="avatar rounded-circle mr-3 overflow-hidden">
+                                                <img :src="course.image" alt="Logo Course"/>
                                             </a>
                                             <div class="media-body">
                                                 <span class="mb-0 text-sm">{{ course.title }}</span>

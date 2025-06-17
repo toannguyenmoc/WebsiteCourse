@@ -51,7 +51,7 @@ export function showConfirm({
     showCancelButton: true,
     cancelButtonText,
     confirmButtonText,
-    reverseButtons: true,
+    reverseButtons: false,
     confirmButtonColor: useCustomClass ? undefined : '#3085d6',
     cancelButtonColor: useCustomClass ? undefined : '#d33',
     customClass: useCustomClass
