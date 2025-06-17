@@ -30,14 +30,14 @@
                             <tbody>
                                 <tr v-for="(lesson, index) in lessons" :key="lesson.id">
                                     <td>{{ index + 1 }}</td>
-                                    <td>{{ lesson.name }}</td>
+                                    <td>{{ lesson.title }}</td>
                                     <td>{{ lesson.courseName }}</td>
-                                    <td>Bài {{ lesson.lessonNumber }}</td>
-                                    <td>{{ formatDate(lesson.createdAt) }}</td>
+                                    <td>Bài {{ lesson.lesson }}</td>
+                                    <td>{{ lesson.postedDate }}</td>
                                     <td>
                                         <span class="badge badge-dot mr-4">
-                                            <i :class="lesson.status === 'active' ? 'bg-success' : 'bg-danger'"></i>
-                                            <span class="h6">{{ lesson.status === 'active' ? 'Hoạt Động' : 'Ngừng Hoạt Động' }}</span>
+                                            <i :class="lesson.status === true ? 'bg-success' : 'bg-danger'"></i>
+                                            <span class="h6">{{ lesson.status === true ? 'Hoạt Động' : 'Ngừng Hoạt Động' }}</span>
                                         </span>
                                     </td>
                                     <td class="text-right">
@@ -87,28 +87,31 @@
 <script setup>
 import { ref } from 'vue'
 import DropdownActionCustom from '@/components/Common/DropdownActionCustom.vue';
-import { showSuccess } from '@/assets/Admin/js/alert';
+import { showSuccess,showError } from '@/assets/Admin/js/alert';
 import { useRouter } from 'vue-router';
+import { useLessons } from '@/composables/useLessons';
 const router = useRouter();
-const lessons = ref([
-    {
-        id: 1,
-        name: 'Giới thiệu Vue 3',
-        courseName: 'Lập trình Vue',
-        lessonNumber: 1,
-        createdAt: '2025-05-10',
-        status: 'active'
-    },
-    {
-        id: 2,
-        name: 'Cài đặt môi trường',
-        courseName: 'Lập trình Vue',
-        lessonNumber: 2,
-        createdAt: '2025-05-12',
-        status: 'inactive'
-    },
 
-])
+const{
+lessons,
+fetchLessons,
+pageSize,
+totalPages,
+currentPage,
+totalItems,
+removeLesson
+
+}=useLessons();
+
+
+
+
+
+
+
+
+
+
 
 
 //function chuyên trang
@@ -120,7 +123,7 @@ const handleEdit = (lesson) => {
 //function xóa
 const handleDelete = (lesson) =>{
     if(lesson){
-        //Thực hiện xóa ở đây
+        removeLesson(lesson.id)``
 
         
 

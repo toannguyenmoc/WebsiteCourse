@@ -15,7 +15,7 @@ export function useCourses() {
 
   // Phân trang
   const currentPage = ref(0)
-  const pageSize = ref(4)
+  const pageSize = ref(5)
   const totalPages = ref(0)
   const totalItems = ref(0)
 
@@ -75,8 +75,29 @@ export function useCourses() {
     }
   }
 
-  onMounted(() => {
-    fetchCourses()
+  const fetchAllCourses = async () => {
+  loading.value = true
+  try {
+    // Gọi trước để lấy totalItems
+    const res = await getCourses(0, 1) // chỉ cần 1 item để lấy metadata
+    const total = res.data.totalItems
+
+    // Gọi lại với size = totalItems
+    const fullRes = await getCourses(0, total)
+    courses.value = fullRes.data.data
+    currentPage.value = 0
+    pageSize.value = total
+    totalPages.value = 1
+    totalItems.value = total
+  } catch (err) {
+    error.value = err
+  } finally {
+    loading.value = false
+  }
+}
+
+  onMounted(async () => {
+    await fetchCourses();
   })
 
   return {
@@ -89,6 +110,7 @@ export function useCourses() {
     totalPages,
     totalItems,
     fetchCourses,
+    fetchAllCourses,
     fetchCourseById,
     addCourse,
     editCourse,

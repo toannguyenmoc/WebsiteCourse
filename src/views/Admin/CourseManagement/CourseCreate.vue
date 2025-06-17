@@ -15,7 +15,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form @submit.prevent="createCourse">
+                            <form @submit.prevent="handleSubmit">
                                 <div class="pl-lg-12">
                                     <div class="row">
                                         <div class="col-lg-6">
@@ -40,11 +40,33 @@
                                                 <label class="form-control-label" for="">Loại Khoá Học</label>
                                                 <select class="form-select form-control form-control-alternative"
                                                     v-model="form.courseTypeId" aria-label="Default select example">
-                                                    <option disabled value="-1" selected>-- Chọn loại khoá học --</option>
+                                                    <option disabled value="-1" selected>-- Chọn loại khoá học --
+                                                    </option>
                                                     <option v-for="type in courseTypes" :key="type.id" :value="type.id">
                                                         {{ type.name }}
                                                     </option>
                                                 </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="">Chiết khấu</label>
+                                                <select class="form-select form-control form-control-alternative"
+                                                    v-model="form.commissionId" aria-label="Default select example">
+                                                    <option disabled value="-1" selected>-- Chọn ngày áp dụng --</option>
+                                                    <option v-for="c in commissions" :key="c.id" :value="c.id">
+                                                        {{ c.effectiveDate }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label class="form-control-label" for="percentage">Phần trăm chiết khấu</label>
+                                                <input type="text" id="percentage"
+                                                    class="form-control form-control-alternative" 
+                                                    :value="selectedCommission ? selectedCommission.percentage + '%' : '0%'"
+                                                    disabled>
                                             </div>
                                         </div>
                                     </div>
@@ -92,22 +114,107 @@
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router';
-import { showSuccess, showError } from '@/assets/Admin/js/alert';
-//function thêm 
-const createCourse = () =>{
+import { RouterLink } from 'vue-router'
+import { showSuccess, showError } from '@/assets/Admin/js/alert'
+import { onMounted, reactive, ref, watch, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useCourses } from '@/composables/useCourses'
+import { useCourseTypes } from '@/composables/useCourseTypes'
+import { useCommissions } from '@/composables/useCommissions'
 
+const router = useRouter()
+const { addCourse } = useCourses()
+const { fetchAllCourseTypes } = useCourseTypes()
+const { fetchAllCommissions } = useCommissions()
 
+const courseTypes = ref([])
+const commissions = ref([])
 
+onMounted(async () => {
+  courseTypes.value = await fetchAllCourseTypes()
+  commissions.value = await fetchAllCommissions()
+})
 
-    //Thông báo sau khi thêm thành công
-    showSuccess("Thêm thành công!");
+const slugify = (text) =>
+  text
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
 
+const form = reactive({
+  title: '',
+  slug: '',
+  courseTypeId: -1,
+  price: 0,
+  image: '',
+  description: '',
+  createdDate: new Date(),
+  status: true,
+  accountId: 1,
+  commissionId: -1
+})
 
-    //Thông báo khi lỗi khi thêm thất bại
-    // showError("Thêm thất bại!");
+// Slug tự động theo title
+watch(() => form.title, (newTitle) => {
+  form.slug = slugify(newTitle)
+})
+
+const selectedCommission = computed(() => {
+  return commissions.value.find(c => c.id === form.commissionId)
+})
+
+// Format ngày sang dd/MM/yyyy
+const formatDate = (date) => {
+  const d = new Date(date)
+  const day = String(d.getDate()).padStart(2, '0')
+  const month = String(d.getMonth() + 1).padStart(2, '0')
+  const year = d.getFullYear()
+  return `${day}/${month}/${year}`
+}
+
+// Submit form thêm khoá học
+const handleSubmit = async () => {
+  if (
+    form.courseTypeId === -1 ||
+    form.commissionId === -1 ||
+    !form.title.trim() ||
+    !form.price
+  ) {
+    showError("Vui lòng điền đầy đủ thông tin.")
+    return
+  }
+
+  const payload = {
+    title: form.title,
+    slug: form.slug,
+    image: form.image,
+    description: form.description,
+    price: form.price,
+    createdDate: formatDate(form.createdDate),
+    status: form.status,
+    accountId: 1,
+    courseTypeId: form.courseTypeId,
+    commissionId: form.commissionId
+  }
+
+  try {
+    await addCourse(payload)
+    await showSuccess("Thêm thành công!")
+    router.push('/admin/course/list')
+  } catch (err) {
+    showError("Thêm thất bại!")
+    console.error("Lỗi khi thêm khoá học:", err?.response?.data || err.message || err)
+  }
+}
+
+const handleFileChange = (e) => {
+  const file = e.target.files[0]
+  form.image = file?.name || ''
 }
 </script>
+
 
 
 <style scoped></style>
