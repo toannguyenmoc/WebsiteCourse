@@ -27,14 +27,14 @@
                             </thead>
 
                             <tbody>
-                                <tr v-for="(student, index) in students" :key="student.id">
+                                <tr v-for="(student, index) in users" :key="student.id">
                                     <td>{{ index + 1 }}</td>
-                                    <td>{{ student.name }}</td>
+                                    <td>{{ student.fullname }}</td>
                                     <td>{{ student.email }}</td>
-                                    <td>{{ student.gender }}</td>
-                                    <td>{{ formatDate(student.registerDate) }}</td>
+                                    <td>{{ student.gender ? 'Nam' : 'Nữ' }}</td>
+                                    <td>{{ formatDate(student.registeredDate) }}</td>
                                     <td>
-                                        <CheckboxCustom v-model:model-value="student.status"/>
+                                        <CheckboxCustom v-model:model-value="student.active"/>
                                     </td>
                                     
                                 </tr>
@@ -75,8 +75,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import {onMounted, ref , computed} from 'vue';
+import apiClient from "@/services/axiosMiddleware.js";
 import CheckboxCustom from '@/components/Common/CheckboxCustom.vue'
+
+const users = ref([])
+const API = "/account";
+const searchQuery = ref("")
 
 const students = ref([
     {
@@ -98,10 +103,55 @@ const students = ref([
 ])
 
 
+const getUsersList = async () => {
+  try {
+    const response = await apiClient.get(API);
+    users.value = response.data.reverse();
+  } catch (error) {
+    console.error("Lỗi!", error);
+  }
+};
+
 function formatDate(date) {
     const d = new Date(date)
     return d.toLocaleDateString('vi-VN')
 }
+
+const handleDelete = async (id) => {
+  Swal.fire({
+    title: "Bạn có chắc muốn xóa?",
+    text: "Hành động này không thể hoàn tác!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Xóa",
+    cancelButtonText: "Hủy"
+  }).then( async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await apiClient(API+ `/${id}`, {
+          method: "DELETE",
+        });
+        await Swal.fire("Đã xóa!", "Dữ liệu đã được xóa thành công.", "success");
+        await getUsersList();
+      } catch (error) {
+        console.error("Lỗi!", error);
+        await Swal.fire("Lỗi!", "Có lỗi xảy ra khi xóa.", "error");
+      }
+    }
+  });
+};
+
+onMounted(getUsersList);
+
+//Search by key word
+const filteredUser = computed(() => {
+    return users.value.filter(user =>
+        user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+});
+
 
 </script>
 
