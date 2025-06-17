@@ -89,6 +89,7 @@ export function useCourses() {
     pageSize.value = total
     totalPages.value = 1
     totalItems.value = total
+    return fullRes.data.data
   } catch (err) {
     error.value = err
   } finally {
