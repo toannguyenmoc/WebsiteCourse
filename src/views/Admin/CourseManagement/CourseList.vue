@@ -40,7 +40,7 @@
                                         </div>
                                     </th>
                                     <td>
-                                        {{ course.price.toLocaleString() }} USD
+                                        {{ course.price.toLocaleString() }} VND
                                     </td>
                                     <td>
                                         {{ course.createdDate }}
@@ -65,7 +65,7 @@
                         </table>
                     </div>
                     <div class="card-footer py-4">
-                        <div class="d-flex justify-content-between">
+                        <!-- <div class="d-flex justify-content-between">
                         <div class="d-flex justify-content-center align-items-center pr-4 mb-2">
                             <label class="mb-0">Hiển thị:</label>
                             <select class="form-control form-control-sm ml-2 w-auto" v-model.number="pageSize" @change="handlePageSizeChange">
@@ -101,7 +101,16 @@
 
                             </nav>
                         </div>
-                        </div>
+                        </div> -->
+
+                        <PaginationAdminCustom
+                            :currentPage="currentPage"
+                            :totalPages="totalPages"
+                            :pageSize="pageSize"
+                            @update:currentPage="goToPage"
+                            @update:pageSize="handlePageSizeChange"
+                        />
+
                     </div>
                 </div>
             </div>
@@ -110,37 +119,35 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import LogoBootstrap from '@/assets/Admin/images/theme/bootstrap.jpg'
 import DropdownActionCustom from '@/components/Common/DropdownActionCustom.vue';
-import { showSuccess } from '@/assets/Admin/js/alert';
-const router = useRouter();
-const courses = [
-    {
-        id: 1,
-        name: 'Design System',
-        price: 2500,
-        createdAt: '25/05/2025',
-        status: 'pending',
-        image: LogoBootstrap
-    },
-    {
-        id: 2,
-        name: 'Frontend Vue 3',
-        price: 3000,
-        createdAt: '26/05/2025',
-        status: 'active',
-        image: LogoBootstrap
-    },
-    {
-        id: 3,
-        name: 'Frontend Vue 3',
-        price: 3000,
-        createdAt: '26/05/2025',
-        status: 'pending',
-        image: LogoBootstrap
-    }
-]
+import { useCourses } from '@/composables/useCourses'
+import PaginationAdminCustom from '@/components/Common/PaginationAdminCustom.vue';
+
+const router = useRouter()
+
+const {
+  courses,
+  loading,
+  error,
+  fetchCourses,
+  removeCourse,
+  currentPage,
+  totalPages,
+  pageSize
+} = useCourses()
+
+const goToPage = (page) => {
+  if (page < 0 || page >= totalPages.value) return
+  fetchCourses(page, pageSize.value)
+}
+
+const handlePageSizeChange = (newPageSize) => {
+  pageSize.value = newPageSize
+  fetchCourses(0, newPageSize)
+}
+
 
 //function chuyên trang
 const handleEdit = (course) => {
@@ -152,16 +159,13 @@ const handleEdit = (course) => {
 const handleDelete = (course) =>{
     if(course){
         //Thực hiện xóa ở đây
-
-        
+        removeCourse(course.id)    
 
         //Thông báo xóa thành công
         showSuccess("Xóa thành công!");
     }
 }
 
-
 </script>
 
-<style>
-</style>
+<style lang="scss" scoped></style>
