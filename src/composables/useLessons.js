@@ -15,7 +15,7 @@ export function useLessons() {
 
   // Phân trang
   const currentPage = ref(0)
-  const pageSize = ref(4)
+  const pageSize = ref(5)
   const totalPages = ref(0)
   const totalItems = ref(0)
 
