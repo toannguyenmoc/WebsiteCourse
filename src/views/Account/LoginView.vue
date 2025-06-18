@@ -127,12 +127,13 @@ const login = async () => {
         const response =await api.post(API, payload)
         
         if (response?.data?.length > 0) {
-            // console.log("TOKEN" + response.data.token)
+            console.log("TOKEN" + response.data)
             sessionStorage.setItem(TOKEN, response.data);
 
             const decoded = jwtDecode(response?.data);
-            console.log(decoded[Role]);
-            if (decoded[Role] === 'ADMIN') {
+           
+            console.log("role:", JSON.stringify(decoded.role[0].authority, null, 2))
+            if (decoded.role[0].authority === 'Admin') {
                 await router.push("/admin");
             } else {
                 await router.push("/");
