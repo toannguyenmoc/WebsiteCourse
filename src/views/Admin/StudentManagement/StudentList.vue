@@ -27,16 +27,16 @@
                             </thead>
 
                             <tbody>
-                                <tr v-for="(student, index) in users" :key="student.id">
+                                <tr v-for="(student, index) in students" :key="student.id">
                                     <td>{{ index + 1 }}</td>
                                     <td>{{ student.fullname }}</td>
                                     <td>{{ student.email }}</td>
                                     <td>{{ student.gender ? 'Nam' : 'Nữ' }}</td>
                                     <td>{{ formatDate(student.registeredDate) }}</td>
                                     <td>
-                                        <CheckboxCustom v-model:model-value="student.active"/>
+                                        <CheckboxCustom v-model:model-value="student.active" />
                                     </td>
-                                    
+
                                 </tr>
 
                             </tbody>
@@ -44,30 +44,10 @@
                         </table>
                     </div>
                     <div class="card-footer py-4">
-                        <nav aria-label="...">
-                            <ul class="pagination justify-content-end mb-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">
-                                        <i class="fas fa-angle-left"></i>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                </li>
-                                <li class="page-item active">
-                                    <a class="page-link" href="#">1</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">
-                                        <i class="fas fa-angle-right"></i>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <PaginationAdminCustom :currentPage="currentPage" :totalPages="totalPages" :pageSize="pageSize"
+                            @update:currentPage="goToPage" @update:pageSize="handlePageSizeChange" />
                     </div>
+
                 </div>
             </div>
         </div>
@@ -75,42 +55,48 @@
 </template>
 
 <script setup>
-import {onMounted, ref , computed} from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import apiClient from "@/services/axiosMiddleware.js";
-import CheckboxCustom from '@/components/Common/CheckboxCustom.vue'
+import CheckboxCustom from '@/components/Common/CheckboxCustom.vue';
+import PaginationAdminCustom from '@/components/Common/PaginationAdminCustom.vue';
 
-const users = ref([])
-const API = "/account";
+const API = "/student";
 const searchQuery = ref("")
 
-const students = ref([
-    {
-        id: 1,
-        name: 'Nguyễn Văn A',
-        email: 'vana@gmail.com',
-        gender: 'Nam',
-        registerDate: '2025-05-10',
-        status: 'active'
-    },
-    {
-        id: 2,
-        name: 'Trần Thị B',
-        email: 'thib@gmail.com',
-        gender: 'Nữ',
-        registerDate: '2025-05-12',
-        status: 'inactive'
-    },
-])
+const students = ref([])
+const currentPage = ref(0);
+const totalPages = ref();
+const pageSize = ref(5);
 
 
-const getUsersList = async () => {
-  try {
-    const response = await apiClient.get(API);
-    users.value = response.data.reverse();
-  } catch (error) {
-    console.error("Lỗi!", error);
-  }
+const getUsersList = async (page, size) => {
+    try {
+        const response = await apiClient.get(API, {
+            params: {
+                page,
+                size
+            }
+        });
+
+        console.log("data :" + response.data.data)
+        students.value = response.data.data
+
+        currentPage.value = response.data.currentPage
+        totalPages.value = response.data.totalPages
+    } catch (error) {
+        console.error("Lỗi!", error);
+    }
 };
+
+const goToPage = (page) => {
+    if (page < 0 || page >= totalPages.value) return;
+    getUsersList(page, pageSize.value)
+}
+
+const handlePageSizeChange = (newPageSize) => {
+    pageSize.value = newPageSize
+    getUsersList(0, newPageSize)
+}
 
 function formatDate(date) {
     const d = new Date(date)
@@ -118,29 +104,29 @@ function formatDate(date) {
 }
 
 const handleDelete = async (id) => {
-  Swal.fire({
-    title: "Bạn có chắc muốn xóa?",
-    text: "Hành động này không thể hoàn tác!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#d33",
-    cancelButtonColor: "#3085d6",
-    confirmButtonText: "Xóa",
-    cancelButtonText: "Hủy"
-  }).then( async (result) => {
-    if (result.isConfirmed) {
-      try {
-        await apiClient(API+ `/${id}`, {
-          method: "DELETE",
-        });
-        await Swal.fire("Đã xóa!", "Dữ liệu đã được xóa thành công.", "success");
-        await getUsersList();
-      } catch (error) {
-        console.error("Lỗi!", error);
-        await Swal.fire("Lỗi!", "Có lỗi xảy ra khi xóa.", "error");
-      }
-    }
-  });
+    Swal.fire({
+        title: "Bạn có chắc muốn xóa?",
+        text: "Hành động này không thể hoàn tác!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy"
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                await apiClient(API + `/${id}`, {
+                    method: "DELETE",
+                });
+                await Swal.fire("Đã xóa!", "Dữ liệu đã được xóa thành công.", "success");
+                await getUsersList();
+            } catch (error) {
+                console.error("Lỗi!", error);
+                await Swal.fire("Lỗi!", "Có lỗi xảy ra khi xóa.", "error");
+            }
+        }
+    });
 };
 
 onMounted(getUsersList);

@@ -34,6 +34,14 @@
                                     <td>{{ lesson.courseName }}</td>
                                     <td>Bài {{ lesson.lesson }}</td>
                                     <td>{{ lesson.postedDate }}</td>
+                                    <td><iframe
+  :src="lesson.videoUrl"
+  width="640"
+  height="360"
+  frameborder="0"
+  allowfullscreen
+></iframe>
+</td>
                                     <td>
                                         <span class="badge badge-dot mr-4">
                                             <i :class="lesson.status === true ? 'bg-success' : 'bg-danger'"></i>

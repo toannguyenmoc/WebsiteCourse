@@ -73,7 +73,7 @@
                                             <label class="form-control-label" for="">Video URL</label>
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input form-control-alternative"
-                                                    id="customFileLang" @change="handleFileChange">
+                                                    id="customFileLang" @change="handleUpload">
                                                 <label class="custom-file-label" for="customFileLang">Chọn file</label>
                                             </div>
 
@@ -113,7 +113,7 @@
                                             <label class="form-control-label" for="">Bài Tập URL</label>
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input form-control-alternative"
-                                                    id="customFileLang" @change=handleFileChange1>
+                                                    id="customFileLang" @change="handleFileChange">
                                                 <label class="custom-file-label" for="customFileLang">Chọn file</label>
                                             </div>
                                         </div>
@@ -155,68 +155,14 @@ import { onMounted, reactive, ref, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLessons } from '@/composables/useLessons'
 import { useCourses } from '@/composables/useCourses'
-import { required, numeric, helpers } from "@vuelidate/validators";
-
-const form = reactive({
-    title: '',
-    lesson: '',
-    description: '',
-    videoUrl: '',
-    exerciseUrl: '',
-    postedDate: new Date(),
-    status: null,
-    courseId: -1,
-
-})
+import { createVideo, uploadVideoSource, normalizeTitle } from '@/utils/uploadVideoUtils'
 
 const router = useRouter()
 const { addLesson } = useLessons()
 const { fetchAllCourses } = useCourses()
 
 const course = ref([])
-
-
-const rules = computed(() => ({
-    title: { required: helpers.withMessage("Tên không được để trống", required) },
-    lesson: {
-        required: helpers.withMessage("Tiết không được để trống", required),
-        numeric: helpers.withMessage("Tiết phải là số", numeric)
-    },
-    courseId: { required: helpers.withMessage("Vui lòng chọn khoá học", (value) => value !== -1, required) },
-    description: {
-        required: helpers.withMessage("Mô tả không được để trống", required)
-
-    },
-    // videoUrl: {
-    //     required: helpers.withMessage("Vui lòng chọn ảnh", (value) => {
-    //         return value instanceof File || (Array.isArray(value) && value.length > 0);
-    //     })
-    // },
-    // exerciseUrl: {
-    //     required: helpers.withMessage("Vui lòng chọn ảnh", (value) => {
-    //         return value instanceof File || (Array.isArray(value) && value.length > 0);
-    //     })
-    // },
-    postedDate: {
-        required: helpers.withMessage("Vui lòng chọn ngày", (value) => {
-            return value !== null && value !== '';
-        })
-    }
-
-
-}));
-
-
-const $v = useVuelidate(rules, form);
-
-
-
-
-
-
-
-
-
+const videoUrl = ref('')
 
 onMounted(async () => {
     course.value = await fetchAllCourses()
@@ -281,10 +227,25 @@ const handleFileChange1 = (e) => {
     const file = e.target.files[0]
     form.exerciseUrl = file?.name || ''
 }
-const handleFileChange = (e) => {
-    const file = e.target.files[0]
-    form.videoUrl = file?.name || ''
+
+const handleUpload = async (e) => {
+  const file = e.target.files[0]
+  if (!file) return
+
+  try {
+    const publicId = await createVideo(file.name)
+    const url = await uploadVideoSource(publicId, file)
+
+    form.videoUrl = url
+    videoUrl.value = url
+  } catch (err) {
+    console.error('Lỗi upload:', err?.response?.data || err.message)
+    showError('Không thể upload video!')
+  }
 }
+
+
+
 </script>
 
 <style scoped></style>
