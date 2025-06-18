@@ -134,7 +134,7 @@ const slugify = (text) =>
 // Format date gửi string kiểu dd/MM/yyyy
 const formatDate = (date) => {
   const d = new Date(date)
-  const day = String(d.getDate()).padStart(2, '0')
+  const day = String(d.getDate()+1).padStart(2, '0')
   const month = String(d.getMonth() + 1).padStart(2, '0')
   const year = d.getFullYear()
   return `${day}/${month}/${year}`
@@ -177,7 +177,7 @@ const loadCourse = async () => {
     form.image = data.image
     form.price = data.price
     form.status = data.status
-    form.createdDate = data.createdDate
+    
     form.accountId = data.accountId
     form.courseTypeId = data.courseTypeId
     form.commissionId = data.commissionId

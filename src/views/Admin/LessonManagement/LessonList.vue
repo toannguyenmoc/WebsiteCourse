@@ -89,8 +89,6 @@ removeLesson
 
 }=useLessons();
 
-
-
 const goToPage = (page) => {
   if (page < 0 || page >= totalPages.value) return
   fetchLessons(page, pageSize.value)

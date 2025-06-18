@@ -18,11 +18,22 @@ export function useCourses() {
   const pageSize = ref(5)
   const totalPages = ref(0)
   const totalItems = ref(0)
+  
+  const keyword = ref('')
+  const minPrice = ref(null)
+  const maxPrice = ref(null)
+  const courseTypeIds = ref([])
 
-  const fetchCourses = async (page = currentPage.value, size = pageSize.value) => {
+  const fetchCourses = async (page = currentPage.value, size = pageSize.value, kw = keyword.value,
+    min = minPrice.value,
+    max = maxPrice.value,
+    types = courseTypeIds.value) => {
     loading.value = true
     try {
-      const res = await getCourses(page, size)
+      const res = await getCourses(page, size, kw,
+        min,
+        max,
+        types.length ? types : null)
       courses.value = res.data.data
       currentPage.value = res.data.currentPage
       totalPages.value = res.data.totalPages
@@ -102,6 +113,7 @@ export function useCourses() {
   })
 
   return {
+    // State
     courses,
     course,
     loading,
@@ -110,6 +122,14 @@ export function useCourses() {
     pageSize,
     totalPages,
     totalItems,
+
+    // Filter
+    keyword,
+    minPrice,
+    maxPrice,
+    courseTypeIds,
+
+    // Methods
     fetchCourses,
     fetchAllCourses,
     fetchCourseById,

@@ -4,12 +4,23 @@
             <div class="col">
                 <div class="card shadow">
                     <div class="card-header border-0">
-                        <div class="row align-items-center">
+                        <div class="row align-items-center justify-content-between">
                             <div class="col">
                                 <h3 class="mb-0">Thống Kê</h3>
                             </div>
-                            <div class="col text-right">
-                                <!-- <RouterLink to="/admin/teacher/create" class="btn btn-sm btn-primary">Thêm mới</RouterLink> -->
+                            <div class="col-auto text-right">
+                                <form class="navbar-search navbar-search-light form-inline ml-auto">
+                                    <div class="form-group mb-0">
+                                        <div class="input-group input-group-alternative">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                            </div>
+                                            <input class="form-control bg-transparent" placeholder="Tìm kiếm ..."
+                                                type="text" v-model="keyword" @input="handleSearch" />
+
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -18,48 +29,33 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">STT</th>
-                                    <th scope="col">Loại Khóa Học</th>
+                                    <th scope="col">Tên Khóa Học</th>
                                     <th scope="col">Số lượng học viên</th>
                                     <th scope="col">Doanh thu</th>
-                                      <th scope="col">Chiết khấu</th>
+                                    <th scope="col">Tên giảng viên</th>
+                                    <th scope="col">Đánh giá</th>
+                                    <th scope="col">Ngày tạo</th>
+                                    <th scope="col">Tổng bình luận</th>
                                 </tr>
                             </thead>
 
                             <tbody>
-                                <tr v-for="(item, index) in statisticals" :key="item.id">
+                                <tr v-for="(item, index) in statisticalCourses" :key="index">
                                     <td>{{ index + 1 }}</td>
-                                    <td>{{ item.name }}</td>
-                                    <td>{{ item.totlalStudent }}</td>
-                                    <td>{{ item.sum }}</td>
-                                    <td>{{ item.percent }}</td>
+                                    <td>{{ item.courseName }}</td>
+                                    <td>{{ item.totalStudent }}</td>
+                                    <td>{{ item.totalRevenue }}</td>
+                                    <td>{{ item.teacherName }}</td>
+                                    <td>{{ item.rating }}</td>
+                                    <td>{{ item.postedDate }}</td>
+                                    <td>{{ item.totalComment }}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="card-footer py-4">
-                        <nav aria-label="...">
-                            <ul class="pagination justify-content-end mb-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">
-                                        <i class="fas fa-angle-left"></i>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                </li>
-                                <li class="page-item active">
-                                    <a class="page-link" href="#">1</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">
-                                        <i class="fas fa-angle-right"></i>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                        <PaginationAdminCustom :currentPage="currentPage" :totalPages="totalPages" :pageSize="pageSize"
+                            @update:currentPage="goToPage" @update:pageSize="handlePageSizeChange" />
                     </div>
                 </div>
             </div>
@@ -69,34 +65,42 @@
 
 <script setup>
 import { ref } from 'vue';
-const statisticals = ref([
-    {
-        id: 1,
-        name: 'Frontend',
-        totlalStudent: 200,
-        sum: 200000,
-        percent:20000,
-    },
-    {
-        id: 1,
-        name: 'Frontend',
-        totlalStudent: 200,
-        sum: 200000,
-        percent:20000,
-    },
-    {
-        id: 1,
-        name: 'Frontend',
-        totlalStudent: 200,
-        sum: 200000,
-        percent:20000,
-    },
-    
-])
-const  formatDate = (date) => {
-    const d = new Date(date)
-    return d.toLocaleDateString('vi-VN')
+import PaginationAdminCustom from '@/components/Common/PaginationAdminCustom.vue';
+import { useStatisticalCourses } from '@/composables/useStatistical';
+
+const {
+    statisticalCourses,
+    loading,
+    error,
+    fetchStatisticalCourses,
+    keyword,
+    currentPage,
+    totalPages,
+    pageSize
+} = useStatisticalCourses()
+
+const goToPage = (page) => {
+    if (page < 0 || page >= totalPages.value) return
+    fetchStatisticalCourses(page, pageSize.value, keyword.value)
 }
+
+const handlePageSizeChange = (newPageSize) => {
+    pageSize.value = newPageSize
+    fetchStatisticalCourses(0, newPageSize, keyword.value)
+}
+
+const searchTimeout = ref(null);
+
+const handleSearch = () => {
+  clearTimeout(searchTimeout.value);
+
+  // Gọi lại API sau 500ms
+  searchTimeout.value = setTimeout(() => {
+    fetchStatisticalCourses(0, pageSize.value, keyword.value);
+    currentPage.value = 0; // Reset về trang đầu khi tìm kiếm mới
+  }, 500);
+};
+
 </script>
 
 <style lang="scss" scoped></style>
