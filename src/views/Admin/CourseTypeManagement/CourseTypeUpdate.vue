@@ -9,39 +9,43 @@
                                 <div class="col-8">
                                     <h3 class="mb-0">Cập Nhật Loại Khoá Học</h3>
                                 </div>
-                                <!-- <div class="col-4 text-right">
-                                    <button class="btn btn-danger">Xoá</button>
-                                </div> -->
+                               <div class="col-4 text-right">
+                  <button class="btn btn-danger" @click="handleDelete">Xoá</button>
+                </div>
                             </div>
                         </div>
                         <div class="card-body">
-                            <form @submit.prevent="updateCourseType">
+                            <form @submit.prevent="handleUpdate">
                                 <div class="pl-lg-12">
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="course-name">Tên Loại Khoá
-                                                    Học</label>
-                                                <input type="text" id="course-name"
+                                             <div class="form-group">
+                                                <label class="form-control-label" for="courseType-name">Tên Loại khóa học</label>
+                                                <input type="text" id="courseType-name" v-model="form.name"
                                                     class="form-control form-control-alternative"
-                                                    placeholder="Tên khoá học" value="">
+                                                    placeholder="Tên loại khoá học" value="">
                                             </div>
                                         </div>
 
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="unit-price">Trạng Thái</label><br>
+                                             <div class="form-group">
+                                                <label class="form-control-label" for="unit-price">Trạng
+                                                    Thái</label><br>
                                                 <div class="custom-control custom-radio custom-control-inline">
-                                                    <input type="radio" id="status-true"
-                                                        name="status" class="custom-control-input" checked>
-                                                    <label class="custom-control-label" for="status-true">Hoạt Động</label>
+                                                    <input type="radio" id="status-true" value="true"
+                                                        v-model="form.status" name="status"
+                                                        class="custom-control-input">
+                                                    <label class="custom-control-label" for="status-true">Hoạt
+                                                        Động</label>
                                                 </div>
                                                 <div class="custom-control custom-radio custom-control-inline">
-                                                    <input type="radio" id="status-false"
-                                                        name="status" class="custom-control-input">
-                                                    <label class="custom-control-label" for="status-false">Ngừng Hoạt Động</label>
+                                                    <input type="radio" id="status-false" value="false"
+                                                        v-model="form.status" name="status"
+                                                        class="custom-control-input">
+                                                    <label class="custom-control-label" for="status-false">Ngừng Hoạt
+                                                        Động</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -58,7 +62,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-6 order-xl-1">
+                <!-- <div class="col-xl-6 order-xl-1">
                     <div class="card bg-light shadow">
                         <div class="card-header bg-white border-0">
                             <div class="row align-items-center">
@@ -90,28 +94,108 @@
                             </form>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { RouterLink } from 'vue-router';
-import { showSuccess, showError } from '@/assets/Admin/js/alert';
+import { ref, reactive, watch, onMounted, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { showSuccess, showError, showConfirm, showAlert } from '@/assets/Admin/js/alert'
+import { useCourseTypes } from '@/composables/useCourseTypes'
+import Swal from 'sweetalert2'
+
+const router = useRouter()
+const route = useRoute()
+const courseTypeId = route.params.id
+
+
+const { fetchCourseTypeById, editCourseType, removeCourseType } = useCourseTypes()
+
+
+
+const form = reactive({
+    name: '',
+    status: true
+   
+})
+
+
+const loadCourseType= async () => {
+    try {
+        const data = await fetchCourseTypeById(courseTypeId)
+        if (!data) {
+            showError(`Không tìm thấy khoá học với ID ${courseTypeId}`)
+            router.push('/admin/course-type/list')
+            return
+        }
+
+        form.name = data.name
+        form.status = data.status
+     
+
+
+    } catch (err) {
+        showError("Không thể tải dữ liệu khoá học.")
+        console.error("Lỗi loadCourse:", err?.response?.data || err)
+    }
+
+}
+onMounted(async () => {
+  
+
+    await loadCourseType()
+})
+
+const handleUpdate = async () => {
+    if (
+        form.name === -1
+    ) {
+        showError("Vui lòng điền đầy đủ thông tin.")
+        return
+    }
+
+    const payload = {
+        name: form.name,
+        status: form.status,
+      
+    }
+
+    try {
+        await editCourseType(courseTypeId, payload)
+        await showSuccess("Cập nhật thành công!")
+        router.push('/admin/course-type/list')
+    } catch (err) {
+        showError("Cập nhật thất bại!")
+        console.error("Lỗi cập nhật")
+    }
+}
+const handleDelete = async () => {
+    const result = await Swal.fire({
+        title: `Xác nhận xoá`,
+        text: `Bạn chắc chắn muốn xoá "${form.name}"? Hành động này không thể hoàn tác.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Xoá',
+        cancelButtonText: 'Huỷ',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6'
+    })
+    if (!result.isConfirmed) return
+
+    try {
+        await removeCourseType(courseTypeId)
+        await showSuccess("Đã xoá tiết học")
+        router.push('/admin/course-type/list')
+    } catch (err) {
+        showError("Lỗi khi xoá khoá học!")
+        console.error("Lỗi xoá")
+    }
+}
 
 //function update
-const updateCourseType = ()=>{
-
-
-    //Thông báo sau khi cập nhật thành công
-    showSuccess("Cập nhật thành công!");
-
-
-    //Thông báo khi lỗi khi cập nhật thất bại
-
-    // showError("Cập nhật thất bại!");
-}
 </script>
 
 <style scoped></style>

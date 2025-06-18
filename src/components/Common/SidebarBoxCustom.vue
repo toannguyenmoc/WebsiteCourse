@@ -1,11 +1,11 @@
 <template>
     <div class="sidebar-box bg-white p-4 ">
-        <h3 class="heading-sidebar">{{ title }}</h3>
+        <!-- <h3 class="heading-sidebar">Loại khóa học</h3> -->
         <form action="#" class="browse-form">
-            <label v-for="(option, index) in options" :key="index" :for="'option-category-' + index">
-                <input type="checkbox" :id="'option-category-' + index" :value="option.value || option"
+            <label class="d-block" v-for="(option, index) in options" :key="index" :for="'option-category-' + index">
+                <input type="checkbox" :id="'option-category-' + index" :value="option.id || option"
                     v-model="selectedValues" />
-                {{ option.label || option }}
+                {{ option.name || option }}
             </label>
         </form>
     </div>
@@ -14,10 +14,6 @@
 import { ref, watch } from 'vue';
 
 const props = defineProps({
-    title: {
-        type: String,
-        default: 'Category'
-    },
     options: {
         type: Array,
         required: true
@@ -33,8 +29,8 @@ const emit = defineEmits(['update:modelValue'])
 const selectedValues = ref([...props.modelValue])
 
 watch(selectedValues, (newVal) => {
-    emit('update:modelValue', newVal)
-});
+  emit('update:modelValue', newVal);
+}, { deep: true });
 watch(() => props.modelValue, (newVal) => {
     selectedValues.value = [...newVal]
 });

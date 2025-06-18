@@ -1,10 +1,10 @@
 <template>
     <div class="project-wrap">
-        <a href="#" class="img" :style="{ backgroundImage: `url(${image})`}" >
+        <RouterLink :to="`/course-detail/${slug}`" class="img" :style="{ backgroundImage: `url(${image})`}" >
             <span class="price">{{ category }}</span>
-        </a>
+        </RouterLink>
         <div class="text p-4">
-            <h3><a href="#">{{ title }}</a></h3>
+            <h3><RouterLink :to="`/course-detail/${slug}`">{{ title }}</RouterLink></h3>
             <p class="advisor">Giáo viên <span>{{ advisor }}</span></p>
             <ul class="d-flex justify-content-between">
                 <li><span class="flaticon-shower"><span class="fa fa-user"></span></span>{{ students }}</li>
@@ -20,7 +20,8 @@ defineProps({
   advisor: String,
   students: Number,
   price: Number,
-  category: String
+  category: String,
+  slug: String
 });
 
 const formatPrice = (value) => {

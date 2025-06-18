@@ -5,67 +5,83 @@
                 <ul>
                     <!-- previous -->
                     <li><a class="me-2" href="#" @click.prevent="goToPage(currentPage - 1)"
-                            :class="{ 'disabled': currentPage === 1 }">&lt;</a></li>
+                            :class="{ 'disabled': currentPage === 0 }">&lt;</a></li>
                     <!-- pages number -->
-                    <li v-for="page in visiblePages" class="me-2" :key="page" :class="{ active: currentPage === page }">
-                        <a class="me-2" href="#" @click.prevent="goToPage(page)">{{ page }} </a>
+                    <!-- <li v-for="page in totalPage" class="me-2" :key="page"
+                        :class="{ active: currentPage === page - 1 }">
+                        <a class="me-2" href="#" @click.prevent="goToPage(page - 1)">{{ page }} </a>
+                    </li> -->
+                    <li v-for="(page, index) in visiblePages" :key="index" :class="{ active: page === currentPage }"
+                        class="me-2">
+                        <span v-if="page === '...'">...</span>
+                        <a v-else href="#" @click.prevent="goToPage(page)">{{ page + 1 }}</a>
                     </li>
 
                     <!-- next -->
-                    <li><a  href="#">&gt;</a></li>
+                    <li>
+                        <a href="#" @click.prevent="goToPage(currentPage + 1)"
+                            :class="{ 'disabled': currentPage === totalPage - 1 }">&gt;</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
 </template>
 <script setup>
-import { computed } from 'vue'
+import { computed } from 'vue';
+
+// import { computed } from 'vue'
 const props = defineProps({
     currentPage: {
         type: Number,
         default: 1
     },
-    totalItems: {
+    totalPage: {
         type: Number,
         required: true
     },
-    pageSize: {
-        type: Number,
-        default: 10
-    },
-    maxVisibleButtons: {
-        type: Number,
-        default: 5
-    }
+
 });
 
 const emit = defineEmits(['update:currentPage']);
 
-const totalPages = computed(() => Math.ceil(props.totalItems / props.pageSize));
-
 const goToPage = (page) => {
-  if (page >= 1 && page <= totalPages.value && page !== props.currentPage) {
-    emit('update:currentPage', page)
-  }
+    if (page >= 0 && page < props.totalPage && page !== props.currentPage) {
+        emit('update:currentPage', page)
+    }
 }
 
 const visiblePages = computed(() => {
-    const pages = []
-    let start = Math.max(1, props.currentPage - Math.floor(props.maxVisibleButtons / 2))
-    let end = start + props.maxVisibleButtons - 1
+    const pages = [];
+    const total = props.totalPage;
+    const current = props.currentPage;
 
-    if (end > totalPages.value) {
-        end = totalPages.value
-        start = Math.max(1, end - props.maxVisibleButtons + 1)
+    if (total <= 5) {
+        // Hiển thị toàn bộ
+        for (let i = 0; i < total; i++) {
+            pages.push(i);
+        }
+    } else {
+        pages.push(0); // Trang đầu tiên
+
+        if (current > 2) pages.push('...');
+
+        const start = Math.max(1, current - 1);
+        const end = Math.min(total - 2, current + 1);
+
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+
+        if (current < total - 4) pages.push('...');
+
+        pages.push(total - 1); // Trang cuối cùng
     }
 
-    for (let i = start; i <= end; i++) {
-        pages.push(i)
-    }
-    return pages
+    return pages;
 });
 
-</script>
-<style >
 
-</style>
+
+</script>
+<style></style>

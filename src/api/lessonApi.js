@@ -1,8 +1,4 @@
-import axios from 'axios'
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL
-})
+import api from '@/services/axiosMiddleware';
 
 export const getLessons = (page = 0, size = 10) => {
   return api.get('/lesson', {

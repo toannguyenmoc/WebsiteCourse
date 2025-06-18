@@ -1,5 +1,5 @@
 <template>
-      <div>
+    <div>
         <div class="mt--7">
             <div class="row">
                 <div class="col-xl-12 order-xl-1">
@@ -10,35 +10,37 @@
                                     <h3 class="mb-0">Thêm Mới Chiết Khấu</h3>
                                 </div>
                                 <div class="col-4 text-right">
-                                    
+
                                 </div>
                             </div>
                         </div>
                         <div class="card-body">
-                            <form @submit.prevent="createCommission">
+                            <form @submit.prevent="handleSubmit">
                                 <div class="pl-lg-12">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label class="form-control-label" for="commission">Hiệu Lực</label>
-                                                <input type="date" id="commission"
+                                                <label class="form-control-label" for="effectiveDate">Hiệu Lực</label>
+                                                <input  v-model="form.effectiveDate" type="date" id="effectiveDate"
                                                     class="form-control form-control-alternative"
-                                                 value="">
+                                                    placeholder="Chọn ngày hiệu lực">
                                             </div>
+
                                         </div>
                                         <div class="col-lg-6">
-                                          <div class="form-group">
+                                            <div class="form-group">
                                                 <label class="form-control-label" for="percent">Phần trăm</label>
-                                                <input type="text" id="percent"
+                                                <input v-model="form.percentage" type="text" id="lesson-name"
                                                     class="form-control form-control-alternative"
-                                                    placeholder="Nhập phần trăm" value="">
+                                                    placeholder="Phần trăm">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <hr class="my-4" />
                                 <div class="d-flex justify-content-between">
-                                    <RouterLink to="/admin/commission/list" class="btn btn-secondary">Quay lại</RouterLink>
+                                    <RouterLink to="/admin/commission/list" class="btn btn-secondary">Quay lại
+                                    </RouterLink>
                                     <button class="btn btn-primary">Thêm mới</button>
                                 </div>
                             </form>
@@ -51,23 +53,59 @@
 </template>
 
 <script setup>
-      import { showSuccess, showError } from '@/assets/Admin/js/alert';
-
+import { RouterLink } from 'vue-router'
+import { showSuccess, showError } from '@/assets/Admin/js/alert'
+import { onMounted, reactive, ref, watch, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useCommissions } from '@/composables/useCommissions'
+import PaginationAdminCustom from '@/components/Common/PaginationAdminCustom.vue';
 //function thêm 
-const createCommission = () => {
+
+const router = useRouter()
+const { addCommission } = useCommissions()
+
+const form = reactive({
+    effectiveDate: '',
+    percentage: ''
 
 
+})
+
+const handleSubmit = async () => {
+
+    if (
+        form.percentage === -1
+    ) {
+        showError("Vui lòng điền đầy đủ thông tin.")
+        return
+    }
+
+    const payload = {
+        effectiveDate: form.effectiveDate,
+        percentage: form.percentage,
+
+    }
+    try {
+        await addCommission(payload)
+        await showSuccess("Thêm thành công!")
+        router.push('/admin/commission/list')
+    } catch (err) {
+        showError("Thêm thất bại!")
+        console.error("Lỗi khi thêm tiết học:", err?.response?.data || err.message || err)
+    }
 
 
-    //Thông báo sau khi thêm thành công
-    showSuccess("Thêm thành công!");
-
-
-    //Thông báo khi lỗi khi thêm thất bại
-    // showError("Thêm thất bại!");
 }
+const  formatDate = (date) => {
+    const d = new Date(date)
+    return d.toLocaleDateString('vi-VN')
+}
+const formatDate1 = reactive(
+
+
+)
+
+
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

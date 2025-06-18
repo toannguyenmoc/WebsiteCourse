@@ -6,13 +6,14 @@
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h3 class="mb-0">Danh Chiết Khấu</h3>
+                                <h3 class="mb-0">Danh mục Chiết Khấu</h3>
                             </div>
                             <div class="col text-right">
                                 <RouterLink to="/admin/commission/create" class="btn btn-sm btn-primary">Thêm mới</RouterLink>
                             </div>
                         </div>
                     </div>
+                   
                     <div class="table">
                         <table class="table align-items-center table-flush">
                             <thead class="thead-light">
@@ -20,14 +21,16 @@
                                     <th scope="col">STT</th>
                                     <th scope="col">Hiệu lực</th>
                                     <th scope="col">Phần Trăm</th>
+                                  
                                 </tr>
                             </thead>
 
                             <tbody>
                                 <tr v-for="(item, index) in commissions" :key="item.id">
                                     <td>{{ index + 1 }}</td>
-                                    <td>{{ item.date }}</td>
-                                    <td>{{ item.percent }}%</td>
+                                    <td>{{ item.effectiveDate }}</td>
+                                    <td>{{ item.percentage }}%</td>
+                                  
                                 </tr>
 
                             </tbody>
@@ -35,29 +38,13 @@
                         </table>
                     </div>
                     <div class="card-footer py-4">
-                        <nav aria-label="...">
-                            <ul class="pagination justify-content-end mb-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">
-                                        <i class="fas fa-angle-left"></i>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                </li>
-                                <li class="page-item active">
-                                    <a class="page-link" href="#">1</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">
-                                        <i class="fas fa-angle-right"></i>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                       <PaginationAdminCustom
+                            :currentPage="currentPage"
+                            :totalPages="totalPages"
+                            :pageSize="pageSize"
+                            @update:currentPage="goToPage"
+                            @update:pageSize="handlePageSizeChange"
+                        />
                     </div>
                 </div>
             </div>
@@ -67,24 +54,36 @@
 
 <script setup>
 
-const commissions = [
-    {
-        id: 1,
-        date: "14-02-2025",
-        percent: 10
-    },
-    {
-        id: 1,
-        date: "14-02-2025",
-        percent: 10
-    },
-    {
-        id: 1,
-        date: "14-02-2025",
-        percent: 10
-    },
-]
+import { RouterLink, useRouter } from 'vue-router';
+import LogoBootstrap from '@/assets/Admin/images/theme/bootstrap.jpg'
+import DropdownActionCustom from '@/components/Common/DropdownActionCustom.vue';
+import { useCommissions} from '@/composables/useCommissions'
+import PaginationAdminCustom from '@/components/Common/PaginationAdminCustom.vue';
 
+
+const router = useRouter()
+
+const {
+  commissions,
+  loading,
+  error,
+  fetchCommissions,
+  removeCommission,
+  currentPage,
+  totalPages,
+  pageSize
+} = useCommissions()
+
+
+const goToPage = (page) => {
+  if (page < 0 || page >= totalPages.value) return
+  fetchCommissions(page, pageSize.value)
+}
+
+const handlePageSizeChange = (newPageSize) => {
+  pageSize.value = newPageSize
+  fetchCommissions(0, newPageSize)
+}
 const  formatDate = (date) => {
     const d = new Date(date)
     return d.toLocaleDateString('vi-VN')
