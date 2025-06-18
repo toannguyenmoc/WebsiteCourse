@@ -14,8 +14,9 @@ export const getCourses = (
     keyword,
     minPrice,
     maxPrice,
-    courseTypeIds: courseTypeIds?.length ? courseTypeIds : null
   };
+
+  
 
   // Xoá key có giá trị null hoặc undefined
   Object.keys(params).forEach(key => {
@@ -23,8 +24,22 @@ export const getCourses = (
       delete params[key];
     }
   });
+   // Dùng URLSearchParams để build URL thủ công
+  const query = new URLSearchParams();
 
-  return api.get('/course', { params });
+  // Thêm các param thường
+  for (const key in params) {
+    query.append(key, params[key]);
+  }
+
+  // Thêm thủ công courseTypeIds
+  if (Array.isArray(courseTypeIds) && courseTypeIds.length > 0) {
+    courseTypeIds.forEach(id => {
+      query.append('courseTypeIds', id);
+    });
+  }
+
+    return api.get('/course?' + query.toString());
 };
 
 export const getCourseById = id => api.get(`/course/${id}`)

@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col">
             <div class="block-27">
-                <ul>
+                <ul v-if="totalPage != 0">
                     <!-- previous -->
                     <li><a class="me-2" href="#" @click.prevent="goToPage(currentPage - 1)"
                             :class="{ 'disabled': currentPage === 0 }">&lt;</a></li>
