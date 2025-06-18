@@ -48,13 +48,13 @@
                 <div class="text-center text-muted mb-4">
 
                 </div>
-                <form role="form">
+                <form role="form" @submit.prevent="register">
                   <div class="form-group">
                     <div class="input-group input-group-alternative mb-3">
                       <div class="input-group-prepend">
                         <span class="input-group-text bg-white"><i class="ni ni-hat-3"></i></span>
                       </div>
-                      <input class="form-control" placeholder="Họ tên" type="text">
+                      <input class="form-control" v-model="form.fullname" placeholder="Họ tên" type="text">
                     </div>
                   </div>
                   <div class="form-group">
@@ -62,7 +62,7 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text bg-white"><i class="ni ni-email-83"></i></span>
                       </div>
-                      <input class="form-control" placeholder="Email" type="email">
+                      <input class="form-control" v-model="form.email" placeholder="Email" type="email">
                     </div>
                   </div>
                   <div class="form-group">
@@ -70,15 +70,15 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text bg-white"><i class="ni ni-lock-circle-open"></i></span>
                       </div>
-                      <input class="form-control" placeholder="Mật khẩu" type="password">
+                      <input class="form-control" v-model="form.password" placeholder="Mật khẩu" type="password">
                     </div>
                   </div>
                   <div class="form-group">
                     <div class="input-group input-group-alternative">
-                      <select name="" id="" class="form-control" required>
-                        <option value="">Chọn vai trò</option>
-                        <option value="teacher">Học viên</option>
-                        <option value="student">Giáo viên</option>
+                      <select name="" id="" v-model="form.role" class="form-control" required>
+                        <option value="-1">Chọn vai trò</option>
+                        <option value=3>Học viên</option>
+                        <option value=2>Giáo viên</option>
                       </select>
                     </div>
                   </div>
@@ -95,7 +95,7 @@
                     </div>
                   </div>
                   <div class="text-center">
-                    <button type="button" class="btn btn-primary mt-4">Tạo tài khoản</button>
+                    <button type="submit" class="btn btn-primary mt-4">Tạo tài khoản</button>
                   </div>
                 </form>
               </div>
@@ -113,39 +113,50 @@
       </div>
     </div>
     <!-- Footer -->
-
-
-
   </body>
 </template>
 
-<script>
-import whiteLogo from '@/assets/Admin/img/brand/white.png'
-import blueLogo from '@/assets/Admin/img/brand/blue.png'
+<script setup>
 import githubIcon from '@/assets/Admin/img/icons/common/github.svg'
 import googleIcon from '@/assets/Admin/img/icons/common/google.svg'
-import axios from 'axios';
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import apiClient from "@/services/axiosMiddleware.js";
+import { ref} from 'vue';
+import { useRouter, RouterLink } from 'vue-router';
+import { showSuccess, showError } from '@/assets/Admin/js/alert';
+import api from "@/services/axiosMiddleware.js";
 
-export default {
-  name: 'LoginView',
-  data() {
-    return {
-      whiteLogo,
-      githubIcon,
-      googleIcon,
-      blueLogo
+
+const API = "/auth/register";
+const router = useRouter();
+const form = ref({
+    fullname: "",
+    email: "",
+    password:  "",
+    role: 3,
+    active: true
+});
+
+const register = async () => {
+   
+    try {
+        console.log("Dữ liệu gửi đi:", JSON.stringify(form.value));
+        const payload = {
+            email: form.value.email,
+            password: form.value.password,
+            fullname: form.value.fullname,
+            role: form.value.role,
+            active: true
+        }
+        console.log(payload);
+
+        await api.post(API, payload);
+        showSuccess("Đăng ký thành công!");
+
+        router.push("/login");
+    } catch (error) {
+        console.error("Lỗi:", error);
+        showError("Đăng ký thất bại!");
     }
-  }
-
-}
-import ButtonCustom from '@/components/Common/ButtonCustom.vue'
-
-function handleClick() {
-  console.log('Button clicked!')
-}
+};
 </script>
 
 <style lang="scss" scoped></style>

@@ -1,9 +1,4 @@
-
-import api from '@/services/axiosMiddleware'
-
-// const api = axios.create({
-//   baseURL: import.meta.env.VITE_API_BASE_URL
-// })
+import api from '@/services/axiosMiddleware';
 
 export const getCommissions = (page = 0, size = 10) => {
   return api.get('/commission', {

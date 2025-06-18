@@ -1,5 +1,4 @@
-
-import api from '@/services/axiosMiddleware'
+import api from '@/services/axiosMiddleware';
 
 export const getCourseTypes = (page = 0, size = 10) => {
   return api.get('/course-type', {
