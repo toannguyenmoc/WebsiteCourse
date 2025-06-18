@@ -36,8 +36,8 @@
                                     <td>{{ lesson.postedDate }}</td>
                                     <td><iframe
   :src="lesson.videoUrl"
-  width="640"
-  height="360"
+  width="160"
+  height="96"
   frameborder="0"
   allowfullscreen
 ></iframe>

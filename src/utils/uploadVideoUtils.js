@@ -67,3 +67,36 @@ export const uploadVideoSource = async (publicId, file) => {
 
   return playerUrl
 }
+
+/**
+ * Cập nhật (ghi đè) video đã có bằng video mới
+ */
+export const updateVideoSource = async (publicId, file) => {
+  const timestamp = Math.floor(Date.now() / 1000)
+
+  const paramsToSign = {
+    public_id: publicId,
+    timestamp,
+    overwrite: true,
+  }
+
+  const signature = generateSignature(paramsToSign)
+
+  const form = new FormData()
+  form.append('file', file)
+  form.append('public_id', publicId)
+  form.append('overwrite', 'true')
+  form.append('api_key', API_KEY)
+  form.append('timestamp', timestamp)
+  form.append('signature', signature)
+
+  const res = await axios.post(
+    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`,
+    form
+  )
+
+  const playerUrl = res.data.secure_url
+  console.log('✅ Video đã cập nhật thành công:', playerUrl)
+
+  return playerUrl
+}
