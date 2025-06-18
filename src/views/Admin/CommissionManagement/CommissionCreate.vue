@@ -81,7 +81,7 @@ const handleSubmit = async () => {
     }
 
     const payload = {
-        effectiveDate: form.effectiveDate,
+        effectiveDate: formatDate(form.effectiveDate),
         percentage: form.percentage,
 
     }

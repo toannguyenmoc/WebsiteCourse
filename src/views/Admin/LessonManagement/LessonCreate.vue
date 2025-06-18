@@ -56,7 +56,7 @@
                                             <label class="form-control-label" for="">Video URL</label>
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input form-control-alternative"
-                                                    id="customFileLang" @change="handleFileChange">
+                                                    id="customFileLang" @change="handleUpload">
                                                 <label class="custom-file-label" for="customFileLang">Chọn file</label>
                                             </div>
                                         </div>
@@ -89,7 +89,7 @@
                                             <label class="form-control-label" for="">Bài Tập URL</label>
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input form-control-alternative"
-                                                    id="customFileLang" @change=handleFileChange1>
+                                                    id="customFileLang" @change="handleFileChange">
                                                 <label class="custom-file-label" for="customFileLang">Chọn file</label>
                                             </div>
                                         </div>
@@ -126,14 +126,14 @@ import { onMounted, reactive, ref, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLessons } from '@/composables/useLessons'
 import { useCourses } from '@/composables/useCourses'
-
+import { createVideo, uploadVideoSource, normalizeTitle } from '@/utils/uploadVideoUtils'
 
 const router = useRouter()
 const { addLesson } = useLessons()
 const { fetchAllCourses } = useCourses()
 
 const course = ref([])
-
+const videoUrl = ref('')
 
 onMounted(async () => {
     course.value = await fetchAllCourses()
@@ -200,10 +200,25 @@ const handleFileChange = (e) => {
     const file = e.target.files[0]
     form.exerciseUrl = file?.name || ''
 }
-const handleFileChange1 = (e) => {
-    const file = e.target.files[0]
-    form.videoUrl = file?.name || ''
+
+const handleUpload = async (e) => {
+  const file = e.target.files[0]
+  if (!file) return
+
+  try {
+    const publicId = await createVideo(file.name)
+    const url = await uploadVideoSource(publicId, file)
+
+    form.videoUrl = url
+    videoUrl.value = url
+  } catch (err) {
+    console.error('Lỗi upload:', err?.response?.data || err.message)
+    showError('Không thể upload video!')
+  }
 }
+
+
+
 </script>
 
 <style scoped></style>
