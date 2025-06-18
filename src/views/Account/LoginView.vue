@@ -35,11 +35,11 @@
                             <div class="card-header bg-transparent pb-5">
                                 <div class="text-muted text-center mt-2 mb-3"><small>Đăng nhập với</small></div>
                                 <div class="btn-wrapper text-center">
-                                    <RouterLink href="#" class="btn btn-neutral btn-icon">
+                                    <RouterLink to="#" class="btn btn-neutral btn-icon">
                                         <span class="btn-inner--icon"><img :src="githubIcon" /></span>
                                         <span class="btn-inner--text">Github</span>
                                     </RouterLink>
-                                    <RouterLink href="#" class="btn btn-neutral btn-icon">
+                                    <RouterLink to="#" class="btn btn-neutral btn-icon">
                                         <span class="btn-inner--icon"><img :src="googleIcon"></span>
                                         <span class="btn-inner--text">Google</span>
                                     </RouterLink>
@@ -49,14 +49,14 @@
                                 <div class="text-center text-muted mb-4">
 
                                 </div>
-                                <form role="form">
+                                <form role="form" @submit.prevent="login">
                                     <div class="form-group mb-3">
                                         <div class="input-group input-group-alternative">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text bg-white"><i
                                                         class="ni ni-email-83"></i></span>
                                             </div>
-                                            <input class="form-control" placeholder="Email" type="email">
+                                            <input class="form-control"  v-model="form.email"  placeholder="Email" type="email">
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -65,7 +65,7 @@
                                                 <span class="input-group-text bg-white"><i
                                                         class="ni ni-lock-circle-open"></i></span>
                                             </div>
-                                            <input class="form-control" placeholder="Mật khẩu" type="password">
+                                            <input class="form-control" v-model="form.password" placeholder="Mật khẩu" type="password">
                                         </div>
                                     </div>
                                     <div class="custom-control custom-control-alternative custom-checkbox">
@@ -75,12 +75,7 @@
                                         </label>
                                     </div>
                                     <div class="text-center">
-
-
-                                        <button class="btn btn-primary">Đăng Nhập</button>
-
-
-
+                                        <button class="btn btn-primary" type="submit">Đăng Nhập</button>
                                     </div>
                                 </form>
                             </div>
@@ -101,33 +96,70 @@
         </div>
     </body>
 </template>
-<script>
-import whiteLogo from '@/assets/Admin/img/brand/white.png'
-import blueLogo from '@/assets/Admin/img/brand/blue.png'
+<script setup>
 import githubIcon from '@/assets/Admin/img/icons/common/github.svg'
 import googleIcon from '@/assets/Admin/img/icons/common/google.svg'
-import ButtonCustom from '@/components/Common/ButtonCustom.vue'
 
-import axios from 'axios';
-import { ref , onMounted} from 'vue';
+import { ref } from 'vue';
 import { useRouter, RouterLink } from 'vue-router';
 import CryptoJS from 'crypto-js';
 import { jwtDecode } from "jwt-decode";
 import { Role, TOKEN } from "@/utils/constants.js";
+import api from "@/services/axiosMiddleware.js";
 
+const API = "/auth/login";
+// const code = "859703373367639792F=="
+const router = useRouter();
+const form = ref({
+    email: "",
+    password: "",
+});
 
-export default {
-    name: 'LoginView',
-    data() {
-        return {
-            whiteLogo,
-            githubIcon,
-            googleIcon,
-            blueLogo
+const login = async () => {
+    try {
+        console.log("Dữ liệu gửi đi:", JSON.stringify(form.value));
+        const payload = {
+            email: form.value.email,
+            password: form.value.password
         }
-    }
+        console.log(payload);
+        
+        const response =await api.post(API, payload)
+        
+        if (response?.data?.length > 0) {
+            console.log("TOKEN" + response.data)
+            sessionStorage.setItem(TOKEN, response.data);
 
-}
+            const decoded = jwtDecode(response?.data);
+           
+            console.log("role:", JSON.stringify(decoded.role[0].authority, null, 2))
+            if (decoded.role[0].authority === 'Admin') {
+                await router.push("/admin");
+            } else {
+                await router.push("/");
+            }
+        } else {
+            console.log(response.data);
+        }
+        
+    } catch (error) {
+        console.error("Lỗi: ", error.response.status);
+    }
+};
+
+// function encryptData(plainText, base64Key) {
+//     var key = CryptoJS.enc.Base64.parse(base64Key);
+//     var iv = CryptoJS.lib.WordArray.random(16);
+//     var encrypted = CryptoJS.AES.encrypt(plainText, key, {
+//         iv: iv,
+//         mode: CryptoJS.mode.CBC,
+//         padding: CryptoJS.pad.Pkcs7
+//     });
+//     var encryptedData = iv.concat(encrypted.ciphertext);
+
+//     return CryptoJS.enc.Base64.stringify(encryptedData);
+// }
+
 
 
 </script>
