@@ -9,9 +9,9 @@
                                 <div class="col-8">
                                     <h3 class="mb-0">Cập Nhật Bài Học</h3>
                                 </div>
-                                 <div class="col-4 text-right">
-                  <button class="btn btn-danger" @click="handleDelete">Xoá</button>
-                </div>
+                                <div class="col-4 text-right">
+                                    <button class="btn btn-danger" @click="handleDelete">Xoá</button>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">
@@ -19,34 +19,53 @@
                                 <div class="pl-lg-12">
                                     <div class="row">
                                         <div class="col-lg-6">
+
                                             <div class="form-group">
-                                                <label class="form-control-label" for="">Khoá Học</label>
-                                                <select v-model="form.courseId"
+                                                <label class="form-control-label">Khoá Học</label>
+                                                <select v-model="form.courseId" @blur="v$.courseId.$touch()"
+                                                    @change="v$.courseId.$touch()"
                                                     class="form-select form-control form-control-alternative">
-                                                    <option disabled value="-1">-- Chọn loại khoá học --</option>
                                                     <option v-for="type in courses" :key="type.id" :value="type.id">
                                                         {{ type.title }}
                                                     </option>
                                                 </select>
+                                                <small class="text-danger"
+                                                    v-if="v$.courseId.$dirty && v$.courseId.$error">
+                                                    <span>{{ v$.courseId.$errors[0].$message }}</span>
+                                                </small>
+
+
                                             </div>
+
+
+
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label class="form-control-label" for="lesson-name">Tên Bài Học</label>
                                                 <input type="text" id="lesson-name" v-model="form.title"
                                                     class="form-control form-control-alternative"
-                                                    placeholder="Tên khoá học" value="">
+                                                    placeholder="Tên bài học">
+                                                <div v-if="$v.title.$error" class="text-danger">
+                                                    {{ $v.title.$errors[0].$message }}
+                                                </div>
                                             </div>
+
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-lg-6">
+
                                             <div class="form-group">
                                                 <label class="form-control-label" for="lesson-no">Bài Học Số</label>
                                                 <input type="number" min="1" step="1" id="lesson-no"
                                                     v-model="form.lesson" class="form-control form-control-alternative"
-                                                    placeholder="Nhập số thứ tự bài học" value="">
+                                                    placeholder="Nhập số thứ tự bài học">
+                                                <div v-if="$v.lesson.$error" class="text-danger">
+                                                    {{ $v.lesson.$errors[0].$message }}
+                                                </div>
                                             </div>
+
                                         </div>
                                         <div class="col-lg-6">
                                             <label class="form-control-label" for="">Video URL</label>
@@ -60,8 +79,7 @@
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label class="form-control-label" for="unit-price">Trạng
-                                                    Thái</label><br>
+                                                <label class="form-control-label">Trạng Thái</label><br>
                                                 <div class="custom-control custom-radio custom-control-inline">
                                                     <input type="radio" id="status-true" value="true"
                                                         v-model="form.status" name="status"
@@ -76,7 +94,11 @@
                                                     <label class="custom-control-label" for="status-false">Ngừng Hoạt
                                                         Động</label>
                                                 </div>
+                                                <div v-if="$v.status.$error" class="text-danger">
+                                                    {{ $v.status.$errors[0].$message }}
+                                                </div>
                                             </div>
+
 
                                         </div>
                                         <div class="col-lg-6">
@@ -97,7 +119,11 @@
                                         <textarea rows="4" class="form-control form-control-alternative"
                                             placeholder="Mô tả về bài học của bạn ..."
                                             v-model="form.description"></textarea>
+                                        <div v-if="$v.description.$error" class="text-danger">
+                                            {{ $v.description.$errors[0].$message }}
+                                        </div>
                                     </div>
+
                                 </div>
                                 <hr class="my-4" />
                                 <div class="d-flex justify-content-between">
@@ -114,6 +140,8 @@
 </template>
 
 <script setup>
+import useVuelidate from '@vuelidate/core'
+import { required, numeric, helpers } from '@vuelidate/validators'
 import { ref, reactive, watch, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { showSuccess, showError, showConfirm, showAlert } from '@/assets/Admin/js/alert'
@@ -133,7 +161,7 @@ const courses = ref([])
 
 const formatDate = (date) => {
     const d = new Date(date)
-    const day = String(d.getDate()).padStart(2, '0')
+    const day = String(d.getDate() + 1).padStart(2, '0')
     const month = String(d.getMonth() + 1).padStart(2, '0')
     const year = d.getFullYear()
     return `${day}/${month}/${year}`
@@ -145,10 +173,46 @@ const form = reactive({
     description: '',
     videoUrl: '',
     exerciseUrl: '',
-    createdDate: new Date(),
+    postedDate: new Date(),
     status: true,
-    courseId: -1
+    courseId: ''
 })
+
+
+const rules = computed(() => ({
+    title: { required: helpers.withMessage("Tên không được để trống", required) },
+    lesson: {
+        required: helpers.withMessage("Tiết không được để trống", required),
+        numeric: helpers.withMessage("Tiết phải là số", numeric)
+    },
+    courseId: {
+        required: helpers.withMessage("Vui lòng chọn khoá học", value => value !== -1)
+    },
+    description: {
+        required: helpers.withMessage("Mô tả không được để trống", required)
+    },
+   
+    exerciseUrl: {
+        required: helpers.withMessage("Vui lòng chọn bài tập", value => value !== '')
+    },
+    postedDate: {
+        required: helpers.withMessage("Vui lòng chọn ngày", value => value !== null && value !== '')
+    }   
+}))
+
+
+
+
+const $v = useVuelidate(rules, form);
+
+const v$ = $v;
+
+
+
+
+
+
+
 
 const loadLesson = async () => {
     try {
@@ -164,7 +228,7 @@ const loadLesson = async () => {
         form.description = data.description
         form.videoUrl = data.videoUrl
         form.exerciseUrl = data.exerciseUrl
-        form.postedDate = data.postedDate
+
         form.status = data.status
         form.courseId = data.courseId
 
@@ -180,11 +244,14 @@ onMounted(async () => {
     await loadLesson()
 })
 
+
 const handleUpdate = async () => {
-    if (
-        form.title === -1
-    ) {
-        showError("Vui lòng điền đầy đủ thông tin.")
+
+
+    await $v.value.$validate()
+
+    if ($v.value.$invalid) {
+        showError("Vui lòng kiểm tra lại các trường nhập!")
         return
     }
 
@@ -194,7 +261,7 @@ const handleUpdate = async () => {
         description: form.description,
         videoUrl: form.videoUrl,
         exerciseUrl: form.exerciseUrl,
-        createdDate: formatDate(form.createdDate),
+        postedDate: formatDate(form.postedDate),
         status: form.status,
         courseId: form.courseId
     }
@@ -205,9 +272,10 @@ const handleUpdate = async () => {
         router.push('/admin/lesson/list')
     } catch (err) {
         showError("Cập nhật thất bại!")
-        console.error("Lỗi cập nhật")
+        console.error("Lỗi cập nhật:", err)
     }
 }
+
 const handleDelete = async () => {
     const result = await Swal.fire({
         title: `Xác nhận xoá`,
@@ -232,11 +300,11 @@ const handleDelete = async () => {
 }
 const handleFileChange = (e) => {
     const file = e.target.files[0]
-    form.image = file?.name || ''
+    form.exerciseUrl = file?.name || ''
 }
 const handleFileChange1 = (e) => {
     const file = e.target.files[0]
-    form.image = file?.name || ''
+    form.videoUrl = file?.name || ''
 }
 
 </script>
