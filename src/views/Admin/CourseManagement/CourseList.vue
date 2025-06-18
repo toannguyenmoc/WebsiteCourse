@@ -32,7 +32,7 @@
                                     <th scope="row">
                                         <div class="media align-items-center">
                                             <a href="#" class="avatar rounded-circle mr-3 overflow-hidden">
-                                                <img :src="course.image" alt="Logo Course"/>
+                                                <img :src="course.image" alt="Logo Course" />
                                             </a>
                                             <div class="media-body">
                                                 <span class="mb-0 text-sm">{{ course.title }}</span>
@@ -49,15 +49,12 @@
                                         <span class="badge badge-dot mr-4">
                                             <i :class="course.status === true ? 'bg-success' : 'bg-danger'"></i>
                                             <span class="h6">{{ course.status ? 'Hoạt động' : 'Ngừng Hoạt động'
-                                                }}</span>
+                                            }}</span>
                                         </span>
                                     </td>
                                     <td class="text-right">
-                                        <DropdownActionCustom
-                                            :item="course" 
-                                            @edit="handleEdit"
-                                            @delete="handleDelete"
-                                        />
+                                        <DropdownActionCustom :item="course" @edit="handleEdit"
+                                            @delete="handleDelete" />
                                     </td>
                                 </tr>
                             </tbody>
@@ -103,13 +100,8 @@
                         </div>
                         </div> -->
 
-                        <PaginationAdminCustom
-                            :currentPage="currentPage"
-                            :totalPages="totalPages"
-                            :pageSize="pageSize"
-                            @update:currentPage="goToPage"
-                            @update:pageSize="handlePageSizeChange"
-                        />
+                        <PaginationAdminCustom :currentPage="currentPage" :totalPages="totalPages" :pageSize="pageSize"
+                            @update:currentPage="goToPage" @update:pageSize="handlePageSizeChange" />
 
                     </div>
                 </div>
@@ -128,39 +120,42 @@ import PaginationAdminCustom from '@/components/Common/PaginationAdminCustom.vue
 const router = useRouter()
 
 const {
-  courses,
-  loading,
-  error,
-  fetchCourses,
-  removeCourse,
-  currentPage,
-  totalPages,
-  pageSize,
-  keyword
+    courses,
+    loading,
+    error,
+    fetchCourses,
+    removeCourse,
+    currentPage,
+    totalPages,
+    pageSize,
+    keyword,
+    minPrice,
+    maxPrice,
+    courseTypeIds
 } = useCourses()
 
 const goToPage = (page) => {
-  if (page < 0 || page >= totalPages.value) return
-  fetchCourses(page, pageSize.value, keyword.value)
+    if (page < 0 || page >= totalPages.value) return
+    fetchCourses(page, pageSize.value, keyword.value, minPrice.value, maxPrice.value, courseTypeIds.value)
 }
 
 const handlePageSizeChange = (newPageSize) => {
-  pageSize.value = newPageSize
-  fetchCourses(0, newPageSize, keyword.value)
+    pageSize.value = newPageSize
+    fetchCourses(0, newPageSize, keyword.value, minPrice.value, maxPrice.value, courseTypeIds.value)
 }
 
 
 //function chuyên trang
 const handleEdit = (course) => {
-  //Chuyển trang để sửa
-  router.push(`/admin/course/update/${course.id}`)
+    //Chuyển trang để sửa
+    router.push(`/admin/course/update/${course.id}`)
 }
 
 //function xóa
-const handleDelete = (course) =>{
-    if(course){
+const handleDelete = (course) => {
+    if (course) {
         //Thực hiện xóa ở đây
-        removeCourse(course.id)    
+        removeCourse(course.id)
 
         //Thông báo xóa thành công
         showSuccess("Xóa thành công!");
