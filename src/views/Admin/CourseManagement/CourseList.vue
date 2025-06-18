@@ -135,17 +135,18 @@ const {
   removeCourse,
   currentPage,
   totalPages,
-  pageSize
+  pageSize,
+  keyword
 } = useCourses()
 
 const goToPage = (page) => {
   if (page < 0 || page >= totalPages.value) return
-  fetchCourses(page, pageSize.value)
+  fetchCourses(page, pageSize.value, keyword.value)
 }
 
 const handlePageSizeChange = (newPageSize) => {
   pageSize.value = newPageSize
-  fetchCourses(0, newPageSize)
+  fetchCourses(0, newPageSize, keyword.value)
 }
 
 

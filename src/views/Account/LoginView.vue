@@ -108,12 +108,6 @@ import githubIcon from '@/assets/Admin/img/icons/common/github.svg'
 import googleIcon from '@/assets/Admin/img/icons/common/google.svg'
 import ButtonCustom from '@/components/Common/ButtonCustom.vue'
 
-import axios from 'axios';
-import { ref , onMounted} from 'vue';
-import { useRouter, RouterLink } from 'vue-router';
-import CryptoJS from 'crypto-js';
-import { jwtDecode } from "jwt-decode";
-import { Role, TOKEN } from "@/utils/constants.js";
 
 
 export default {

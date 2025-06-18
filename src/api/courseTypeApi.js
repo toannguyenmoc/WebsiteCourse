@@ -1,9 +1,4 @@
-import axios from 'axios'
-import api from "@/services/axiosMiddleware.js";
-
-// const api = axios.create({
-//   baseURL: import.meta.env.VITE_API_BASE_URL
-// })
+import api from '@/services/axiosMiddleware';
 
 export const getCourseTypes = (page = 0, size = 10) => {
   return api.get('/course-type', {

@@ -18,11 +18,12 @@ export function useCourses() {
   const pageSize = ref(5)
   const totalPages = ref(0)
   const totalItems = ref(0)
+  const keywordDefault = ref("")
 
-  const fetchCourses = async (page = currentPage.value, size = pageSize.value) => {
+  const fetchCourses = async (page = currentPage.value, size = pageSize.value, keyword = keywordDefault.value) => {
     loading.value = true
     try {
-      const res = await getCourses(page, size)
+      const res = await getCourses(page, size, keyword)
       courses.value = res.data.data
       currentPage.value = res.data.currentPage
       totalPages.value = res.data.totalPages
@@ -115,6 +116,7 @@ export function useCourses() {
     fetchCourseById,
     addCourse,
     editCourse,
-    removeCourse
+    removeCourse,
+    keyword: keywordDefault
   }
 }
