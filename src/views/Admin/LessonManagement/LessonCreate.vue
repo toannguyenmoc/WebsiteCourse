@@ -22,22 +22,35 @@
                                             <div class="form-group">
                                                 <label class="form-control-label" for="">Khoá Học</label>
                                                 <select class="form-select form-control form-control-alternative"
-                                                    v-model="form.courseId" aria-label="Default select example">
-                                                    <option disabled value="-1" selected>-- Chọn loại khoá học --
-                                                    </option>
+                                                    v-model="form.courseId" @blur="$v.courseId.$touch()"
+                                                    @change="$v.courseId.$touch()">
+                                                    <option disabled value="-1">-- Chọn loại khoá học --</option>
                                                     <option v-for="courses in course" :key="courses.id"
                                                         :value="courses.id">
                                                         {{ courses.title }}
                                                     </option>
                                                 </select>
+                                                <small class="text-danger" v-if="$v.courseId.$error">
+                                                    <span>{{ $v.courseId.$errors[0].$message }}</span>
+                                                </small>
+
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label class="form-control-label" for="lesson-name">Tên Bài Học</label>
-                                                <input v-model="form.title" type="text" id="lesson-name"
-                                                    class="form-control form-control-alternative"
+                                                <input v-model="form.title" @blur="$v.title.$touch()" type="text"
+                                                    id="lesson-name" class="form-control form-control-alternative"
                                                     placeholder="Tên bài học">
+
+                                                <small class="text-danger" v-if="$v.title.$error">
+                                                    <span>{{ $v.title.$errors[0].$message }}</span>
+
+                                                </small>
+
+
+
+
 
                                             </div>
                                         </div>
@@ -47,18 +60,24 @@
                                             <div class="form-group">
                                                 <label class="form-control-label" for="lesson-no">Bài Học Số</label>
 
-                                                <input v-model="form.lesson"
+                                                <input v-model="form.lesson" @blur="$v.lesson.$touch()"
                                                     class="form-control form-control-alternative"
                                                     placeholder="Nhập bài học">
+                                                <small class="text-danger" v-if="$v.lesson.$error">
+                                                    <span>{{ $v.lesson.$errors[0].$message }}</span>
+
+                                                </small>
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <label class="form-control-label" for="">Video URL</label>
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input form-control-alternative"
-                                                    id="customFileLang" @change="handleFileChange">
+                                                    id="customFileLang" @change="handleUpload">
                                                 <label class="custom-file-label" for="customFileLang">Chọn file</label>
                                             </div>
+
+
                                         </div>
                                     </div>
                                     <div class="row">
@@ -68,20 +87,25 @@
                                                     <label class="form-control-label" for="unit-price">Trạng
                                                         Thái</label><br>
                                                     <div class="custom-control custom-radio custom-control-inline">
-                                                        <input type="radio" id="status-true" name="status"
+                                                        <input type="radio" checked id="status-true" name="status"
                                                             class="custom-control-input" v-model="form.status"
-                                                            :value="true">
+                                                             >
                                                         <label class="custom-control-label" for="status-true">Hoạt
                                                             Động</label>
+
                                                     </div>
                                                     <div class="custom-control custom-radio custom-control-inline">
                                                         <input type="radio" id="status-false" name="status"
-                                                            class="custom-control-input" v-model="form.status"
-                                                            :value="false">
+                                                            class="custom-control-input" v-model="form.status">
                                                         <label class="custom-control-label" for="status-false">Ngừng
                                                             Hoạt Động</label>
                                                     </div>
+
+
+
+
                                                 </div>
+                                                
                                             </div>
 
                                         </div>
@@ -89,7 +113,7 @@
                                             <label class="form-control-label" for="">Bài Tập URL</label>
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input form-control-alternative"
-                                                    id="customFileLang" @change=handleFileChange1>
+                                                    id="customFileLang" @change="handleFileChange">
                                                 <label class="custom-file-label" for="customFileLang">Chọn file</label>
                                             </div>
                                         </div>
@@ -100,9 +124,13 @@
                                 <div class="pl-lg-12">
                                     <div class="form-group">
                                         <label>Mô tả</label>
-                                        <textarea v-model="form.description" rows="4"
+                                        <textarea v-model="form.description" @blur="$v.description.$touch()" rows="4"
                                             class="form-control form-control-alternative"
                                             placeholder="Mô tả về bài học của bạn ..."></textarea>
+                                        <small class="text-danger" v-if="$v.description.$error">
+                                            <span>{{ $v.description.$errors[0].$message }}</span>
+
+                                        </small>
                                     </div>
                                 </div>
                                 <hr class="my-4" />
@@ -121,19 +149,20 @@
 
 <script setup>
 import { RouterLink } from 'vue-router'
+import useVuelidate from "@vuelidate/core"
 import { showSuccess, showError } from '@/assets/Admin/js/alert'
 import { onMounted, reactive, ref, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useLessons } from '@/composables/useLessons'
 import { useCourses } from '@/composables/useCourses'
-
+import { createVideo, uploadVideoSource, normalizeTitle } from '@/utils/uploadVideoUtils'
 
 const router = useRouter()
 const { addLesson } = useLessons()
 const { fetchAllCourses } = useCourses()
 
 const course = ref([])
-
+const videoUrl = ref('')
 
 onMounted(async () => {
     course.value = await fetchAllCourses()
@@ -141,17 +170,7 @@ onMounted(async () => {
 })
 //function thêm 
 
-const form = reactive({
-    title: '',
-    lesson: '',
-    description: '',
-    videoUrl: '',
-    exerciseUrl: '',
-    postedDate: new Date(),
-    status: true,
-    courseId: -1,
 
-})
 const formatDate = (date) => {
     const d = new Date(date)
     const day = String(d.getDate()).padStart(2, '0')
@@ -161,20 +180,16 @@ const formatDate = (date) => {
 }
 
 const handleSubmit = async () => {
-    console.log(form.title),
-    console.log(form.description),
-    console.log(form.exerciseUrl),
-    console.log(form.videoUrl),
-    console.log(form.status),
-    console.log(form.lesson)
-    if (
-        form.courseId === -1 ||
-        !form.title.trim()
-    ) {
-        showError("Vui lòng điền đầy đủ thông tin.")
-        return
+    // Chạy tất cả rule validations
+    const isValid = await $v.value.$validate();
+
+    // Nếu lỗi thì show lỗi và dừng lại
+    if (!isValid) {
+        showError("Vui lòng kiểm tra lại thông tin!");
+        return;
     }
 
+    // Format payload đúng chuẩn
     const payload = {
         title: form.title,
         lesson: form.lesson,
@@ -185,6 +200,7 @@ const handleSubmit = async () => {
         status: form.status,
         courseId: form.courseId
     }
+
     try {
         await addLesson(payload)
         await showSuccess("Thêm thành công!")
@@ -193,17 +209,43 @@ const handleSubmit = async () => {
         showError("Thêm thất bại!")
         console.error("Lỗi khi thêm tiết học:", err?.response?.data || err.message || err)
     }
-
-
 }
-const handleFileChange = (e) => {
+
+const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+        const imageUrl = await uploadImageToCloudinary(file);
+        form.image = imageUrl;
+        console.log("Upload thành công:", imageUrl);
+    } catch (err) {
+        console.error("Không thể upload ảnh:", err);
+    }
+};
+const handleFileChange1 = (e) => {
     const file = e.target.files[0]
     form.exerciseUrl = file?.name || ''
 }
-const handleFileChange1 = (e) => {
-    const file = e.target.files[0]
-    form.videoUrl = file?.name || ''
+
+const handleUpload = async (e) => {
+  const file = e.target.files[0]
+  if (!file) return
+
+  try {
+    const publicId = await createVideo(file.name)
+    const url = await uploadVideoSource(publicId, file)
+
+    form.videoUrl = url
+    videoUrl.value = url
+  } catch (err) {
+    console.error('Lỗi upload:', err?.response?.data || err.message)
+    showError('Không thể upload video!')
+  }
 }
+
+
+
 </script>
 
 <style scoped></style>

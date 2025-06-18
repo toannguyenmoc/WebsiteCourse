@@ -136,6 +136,13 @@ import bieuDo from '@/assets/Client/images/BieuDo.png'
 import ButtonCustom from '@/components/Common/ButtonCustom.vue';
 
 
+import { useRoute } from 'vue-router'
+const route = useRoute()
+
+const slug = route.params.slug
+const id = sessionStorage.getItem("courseId");
+console.log(id )
+
 const course = {
     typeCourse: 'software',
     title: 'Lập trình Spring boot 3',

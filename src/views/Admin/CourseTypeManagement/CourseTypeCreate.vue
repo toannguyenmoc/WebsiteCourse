@@ -22,9 +22,13 @@
                                             <div class="form-group">
                                                 <label class="form-control-label" for="course-name">Tên Loại Khoá
                                                     Học</label>
-                                              <input v-model="form.name" type="text" id="lesson-name"
+                                              <input v-model="form.name" @blur="$v.name.$touch()" type="text" id="lesson-name"
                                                     class="form-control form-control-alternative"
                                                     placeholder="Tên khóa học">
+                                                     <small class="text-danger" v-if="$v.name.$error">
+                                                    <span>{{ $v.name.$errors[0].$message }}</span>
+
+                                                </small>
                                             </div>
                                         </div>
 
@@ -38,18 +42,27 @@
                                                     <div class="custom-control custom-radio custom-control-inline">
                                                         <input type="radio" id="status-true" name="status"
                                                             class="custom-control-input" v-model="form.status"
-                                                            :value="true">
+                                                            :value="true" @change="$v.status.$touch()">
                                                         <label class="custom-control-label" for="status-true">Hoạt
                                                             Động</label>
+
                                                     </div>
                                                     <div class="custom-control custom-radio custom-control-inline">
                                                         <input type="radio" id="status-false" name="status"
                                                             class="custom-control-input" v-model="form.status"
-                                                            :value="false">
+                                                            :value="false" @change="$v.status.$touch()">
                                                         <label class="custom-control-label" for="status-false">Ngừng
                                                             Hoạt Động</label>
                                                     </div>
+
+
+
+
                                                 </div>
+                                                <small v-if="$v.status.$error" class="text-danger">
+                                                    <span> {{ $v.status.$errors[0].$message }}</span>
+
+                                                </small>
                                             </div>
                                         </div>
                                     </div>
@@ -104,35 +117,42 @@
 </template>
 
 <script setup>
+
+import useVuelidate from "@vuelidate/core"
 import { RouterLink } from 'vue-router'
 import { showSuccess, showError } from '@/assets/Admin/js/alert'
 import { onMounted, reactive, ref, watch, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCourseTypes } from '@/composables/useCourseTypes'
-//function thêm 
-
-
-const router = useRouter()
-const { addCourseType } = useCourseTypes()
-
+import { required, numeric, helpers } from "@vuelidate/validators";
 const form = reactive({
      name:'',
-    status: true
+    status: null
   
 
 })
 
+const router = useRouter()
+const { addCourseType } = useCourseTypes()
+const rules = computed(() => ({
+     name: { required: helpers.withMessage("Tên khóa học không được để trống", required) },
+     status: {
+        required: helpers.withMessage("Vui lòng chọn trạng thái", value => value === true || value === false)
+    }
+}));
 
+
+const $v = useVuelidate(rules, form);
 
 const handleSubmit = async () => {
 
-    if (
-        form.name=== -1 
-    ) {
-        showError("Vui lòng điền đầy đủ thông tin.")
-        return
-    }
+      const isValid = await $v.value.$validate();
 
+    // Nếu lỗi thì show lỗi và dừng lại
+    if (!isValid) {
+        showError("Vui lòng kiểm tra lại thông tin!");
+        return;
+    }
     const payload = {
         name: form.name,
         status: form.status,

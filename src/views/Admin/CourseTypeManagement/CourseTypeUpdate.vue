@@ -101,6 +101,8 @@
 </template>
 
 <script setup>
+import useVuelidate from '@vuelidate/core'
+import { required, numeric, helpers } from '@vuelidate/validators'
 import { ref, reactive, watch, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { showSuccess, showError, showConfirm, showAlert } from '@/assets/Admin/js/alert'
@@ -121,8 +123,15 @@ const form = reactive({
     status: true
    
 })
+const rules = computed(() => ({
+     name: { required: helpers.withMessage("Tên khóa học không được để trống", required) },
+     status: {
+        required: helpers.withMessage("Vui lòng chọn trạng thái", value => value === true || value === false)
+    }
+}));
 
 
+const $v = useVuelidate(rules, form);
 const loadCourseType= async () => {
     try {
         const data = await fetchCourseTypeById(courseTypeId)
