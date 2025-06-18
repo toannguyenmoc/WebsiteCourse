@@ -43,30 +43,9 @@
 
                         </table>
                     </div>
-                    <div class="card-footer py-4">
-                        <nav aria-label="...">
-                            <ul class="pagination justify-content-end mb-0">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">
-                                        <i class="fas fa-angle-left"></i>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                </li>
-                                <li class="page-item active">
-                                    <a class="page-link" href="#">1</a>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#">
-                                        <i class="fas fa-angle-right"></i>
-                                        <span class="sr-only">Next</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
+                     <div class="card-footer py-4">
+                        <PaginationAdminCustom :currentPage="currentPage" :totalPages="totalPages" :pageSize="pageSize"
+                            @update:currentPage="goToPage" @update:pageSize="handlePageSizeChange" />
                     </div>
                 </div>
             </div>
@@ -75,31 +54,58 @@
 </template>
 
 <script setup>
-import CheckboxCustom from '@/components/Common/CheckboxCustom.vue'
-import { ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
+import apiClient from "@/services/axiosMiddleware.js";
 import { showConfirm, showSuccess} from '@/assets/Admin/js/alert';
-const teachers = ref([
-    {
-        id: 1,
-        name: 'Nguyễn Văn A',
-        email: 'vana@gmail.com',
-        gender: 'Nam',
-        registerDate: '2025-05-10',
-        status: true
-    },
-    {
-        id: 2,
-        name: 'Trần Thị B',
-        email: 'thib@gmail.com',
-        gender: 'Nữ',
-        registerDate: '2025-05-12',
-        status: true
-    },
-])
-const  formatDate = (date) => {
+import PaginationAdminCustom from '@/components/Common/PaginationAdminCustom.vue';
+
+
+const API = "/teacher";
+const searchQuery = ref("")
+
+const teachers = ref([])
+const currentPage = ref(0);
+const totalPages = ref();
+const pageSize = ref(5);
+
+
+const getUsersList = async (page, size) => {
+    try {
+        const response = await apiClient.get(API, {
+            params: {
+                page,
+                size
+            }
+        });
+
+        console.log("data :" + response.data.data)
+        teachers.value = response.data.data
+        currentPage.value = response.data.currentPage
+        totalPages.value = response.data.totalPages
+    } catch (error) {
+        console.error("Lỗi!", error);
+    }
+};
+
+const goToPage = (page) => {
+    if (page < 0 || page >= totalPages.value) return;
+    getUsersList(page, pageSize.value)
+}
+
+const handlePageSizeChange = (newPageSize) => {
+    pageSize.value = newPageSize
+    getUsersList(0, newPageSize)
+}
+
+function formatDate(date) {
     const d = new Date(date)
     return d.toLocaleDateString('vi-VN')
 }
+
+function blockAccount(){}
+
+onMounted(getUsersList);
+
 </script>
 
 <style lang="scss" scoped></style>

@@ -4,14 +4,14 @@
         <form action="#" class="browse-form">
             <label class="d-block" v-for="(option, index) in options" :key="index" :for="'option-category-' + index">
                 <input type="checkbox" :id="'option-category-' + index" :value="option.id || option"
-                    v-model="selectedValues" />
+                    v-model="internalValue" />
                 {{ option.name || option }}
             </label>
         </form>
     </div>
 </template>
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed} from 'vue';
 
 const props = defineProps({
     options: {
@@ -26,14 +26,19 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const selectedValues = ref([...props.modelValue])
-
-watch(selectedValues, (newVal) => {
-  emit('update:modelValue', newVal);
-}, { deep: true });
-watch(() => props.modelValue, (newVal) => {
-    selectedValues.value = [...newVal]
+const internalValue = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val),
 });
+
+// const selectedValues = ref([...props.modelValue])
+
+// watch(selectedValues, (newVal) => {
+//   emit('update:modelValue', newVal);
+// }, { deep: true });
+// watch(() => props.modelValue, (newVal) => {
+//     selectedValues.value = [...newVal]
+// });
 
 </script>
 <style scoped>
