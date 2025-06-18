@@ -1,4 +1,5 @@
-import api from '@/services/axiosMiddleware';
+
+import api from '@/services/axiosMiddleware'
 
 export const getComments = (page = 0, size = 10) => {
   return api.get('/comment', {

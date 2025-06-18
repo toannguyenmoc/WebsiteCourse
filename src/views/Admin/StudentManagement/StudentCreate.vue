@@ -21,7 +21,7 @@
                                         <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label class="form-control-label" for="name">Tên Học Viên</label>
-                                                <input type="text" id="name"
+                                                <input type="text" id="name" v-module=""
                                                     class="form-control form-control-alternative"
                                                     placeholder="Tên học viên" value="">
                                             </div>
@@ -123,7 +123,7 @@ const createStudent = () => {
 
 
     //Thông báo khi lỗi khi thêm thất bại
-    // showError("Thêm thất bại!");
+    showError("Thêm thất bại!");
 }
 </script>
 
