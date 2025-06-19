@@ -8,7 +8,10 @@
               <div
                 class="embed-responsive embed-responsive-16by9 bg-light d-flex align-items-center justify-content-center position-relative"
                 style="min-height: 400px;">
-                <img :src="work1img" class="img-fluid" style="max-height: 100%; max-width: 100%;">
+                <video autoplay muted controls :key="useLesson.videoUrl" :src="useLesson.videoUrl" controlsList="nodownload">
+                    Trình duyệt của bạn không hỗ trợ video.
+                </video>
+                <!-- <img :src="useLesson.img " class="img-fluid" style="max-height: 100%; max-width: 100%;">
                 <div class="position-absolute d-flex align-items-center justify-content-center w-100 h-100"
                   style="background-color: rgba(0, 0, 0, 0.3);">
                   <svg class="play-icon" viewBox="0 0 24 24" fill="red" width="60px" height="60px"
@@ -16,17 +19,14 @@
                     <path d="M8 5v14l11-7z" />
                     <path d="M0 0h24v24H0z" fill="none" />
                   </svg>
-                </div>
+                </div> -->
               </div>
               <div class="d-flex justify-content-between">
-                <h4 class="mt-3 ">Giới thiệu C++ là gì?</h4>
+                <h4 class="mt-3 ">{{ useLesson.title }}</h4>
                 <RouterLink to="/report" class="mt-3"><i class="fa fa-flag"></i> Báo cáo</RouterLink>
               </div>
               <h6 class="text-left mt-4">Giới thiệu khóa học</h6>
-              <p>Sự bùng nổ của công nghệ Robot, trí nhân tạo Al dẫn đến sự thay đổi trong các lĩnh vực ngành nghề. CNTT
-                trở thành lựa chọn số 1 giúp con người kiểm soát và phát triển các công nghệ đỉnh cao. Để đáp ứng được
-                nhu cầu phát triển xã hội, Codelearn xây dựng hệ thống học lập trình trực tuyến nhằm giúp các bạn trẻ &
-                người mới bắt đầu dễ dàng tiếp cận với môn học, khơi dậy đam mê công nghệ.</p>
+              <p>{{ useLesson.description }}</p>
             </div>
 
           </div>
@@ -40,20 +40,21 @@
               </h6>
             </div>
             <ul class="list-group list-group-flush" style="max-height: 500px; overflow-y: auto;">
-              <li v-for="(module, index) in courseModules" :key="index"
+              <li v-for="(module, index) in lessons" :key="index"
                 class="list-group-item d-flex justify-content-between align-items-center"
-                :class="{ 'bg-light': currentModuleIndex === index }" @click="selectModule(index)"
+                :class="{ 'bg-light': currentModuleIndex === module.lesson }" @click="selectModule(module.id)"
                 style="cursor: pointer;">
 
                 <div>
                   <span class="text-dark">
-                    {{ module.title }}
+                    {{ module.lesson }}. {{ module.title }}
                   </span>
                   <small class="text-muted d-block"> {{ module.duration }}</small>
                 </div>
-                <i class="fa fa-play"></i>
+                <i v-if="currentModuleIndex != module.lesson" class="fa fa-play"></i>
+                <i v-if="currentModuleIndex === module.lesson" class="fa fa-pause"></i>
+                
               </li>
-
             </ul>
           </div>
         </div>
@@ -61,10 +62,10 @@
     </div>
 
     <div class="fixed-bottom bg-white p-3 border-top d-flex justify-content-center">
-      <button class="btn btn-outline-primary mr-3">
+      <button @click="goToPreviousLesson" class="btn btn-outline-primary mr-3">
         <i class="fas fa-angle-left mr-2"></i> BÀI TRƯỚC
       </button>
-      <button class="btn btn-primary">
+      <button @click="goToNextLesson" class="btn btn-primary">
         BÀI TIẾP THEO <i class="fas fa-angle-right ml-2"></i>
       </button>
     </div>
@@ -72,30 +73,71 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
-import work1img from '@/assets/Client/images/work-1.jpg'
+import { computed, onMounted, ref, watch } from 'vue';
+import { RouterLink, useRoute, useRouter } from 'vue-router';
+import { useLessons } from '@/composables/useLessons';
+import { getData } from '@/services/apiMiddleware';
+const router = useRouter();
+const route = useRoute();
+const useLesson = ref({});
+const { lesson, fetchLessonById } = useLessons();
+const lessons = ref([]);
+const id = ref(0);
 
 
-const courseModules = ref([
-  { title: '1. Giới thiệu', completedLessons: 0, totalLessons: 3, duration: '07:07' },
-  { title: '2. Biến và kiểu dữ liệu', completedLessons: 0, totalLessons: 21, duration: '01:15:29' },
-  { title: '3. Cấu trúc điều khiển và vòng lặp', completedLessons: 0, totalLessons: 28, duration: '01:28:08' },
-  { title: '4. Mảng', completedLessons: 0, totalLessons: 18, duration: '01:22:56' },
-  { title: '5. String', completedLessons: 0, totalLessons: 6, duration: '50:05' },
-  { title: '6. Hàm', completedLessons: 0, totalLessons: 30, duration: '01:04:15' },
-  { title: '7. Con trỏ', completedLessons: 0, totalLessons: 4, duration: '50:14' },
-  { title: '8. Struct', completedLessons: 0, totalLessons: 4, duration: '01:05:08' },
-  { title: '9. Làm việc với file', completedLessons: 0, totalLessons: 3, duration: '40:34' },
-  { title: '10. Hướng đối tượng (OOP)', completedLessons: 0, totalLessons: 10, duration: '?' },
-]);
-
+const currentLessonId = ref(Number(route.params.id));
+fetchLessonById(route.params.id);
+//bien theo gioi acctive cho video dang chon
 const currentModuleIndex = ref(0);
+//theo doi lesson lay du lieu len
+watch(lesson, () => {
+  useLesson.value = lesson.value;
+  currentModuleIndex .value = useLesson.value.lesson
+})
+
+//theo gioi id lesson cap nhat du lieu
+watch(() => route.params.id, async (newValue)=>{
+  await fetchLessonById(newValue);
+  currentModuleIndex.value = lesson.value.lesson;
+  currentLessonId.value = Number(newValue);
+})
+
+//load data
+onMounted(async() => {
+  try {
+    id.value = sessionStorage.getItem("courseId");
+    const data = await getData("/lesson", {courseId: id.value, page: 0, size: 9999});
+    lessons.value = data.data.filter(ls => ls.status).sort((a, b) => a.lesson - b.lesson);
+  } catch (error) {
+    console.log(error);
+  } 
+});
 
 
+
+//function click chuyen bai
 const selectModule = (index) => {
-  currentModuleIndex.value = index;
-  console.log('Selected module:', courseModules.value[index].title);
+  router.push("/lesson/"+index);
+};
+
+//theo gioi du lieu next previous
+const currentIndex = computed(() => {
+  return lessons.value.findIndex(item => item.id === currentLessonId.value);
+});
+
+//previous video
+const goToPreviousLesson = () => {
+  if (currentIndex.value > 0) {
+    const prevLesson = lessons.value[currentIndex.value - 1];
+    router.push(`/lesson/${prevLesson.id}`);
+  }
+};
+//next video
+const goToNextLesson = () => {
+  if (currentIndex.value < lessons.value.length - 1) {
+    const nextLesson = lessons.value[currentIndex.value + 1];
+    router.push(`/lesson/${nextLesson.id}`);
+  }
 };
 
 </script>

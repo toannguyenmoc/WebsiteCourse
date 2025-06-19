@@ -8,9 +8,9 @@
                             <div class="col">
                                 <h3 class="mb-0">Danh Sách Học Viên</h3>
                             </div>
-                            <div class="col text-right">
+                            <!-- <div class="col text-right">
                                 <a href="/admin/student/create" class="btn btn-sm btn-primary">Thêm mới</a>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class="table">
@@ -34,11 +34,9 @@
                                     <td>{{ student.gender ? 'Nam' : 'Nữ' }}</td>
                                     <td>{{ formatDate(student.registeredDate) }}</td>
                                     <td>
-                                        <CheckboxCustom v-model:model-value="student.active" />
+                                        <CheckboxCustom v-model:model-value="student.active" @click="changeStatus(student.id)" />
                                     </td>
-
                                 </tr>
-
                             </tbody>
 
                         </table>
@@ -55,18 +53,40 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref, computed, watch } from 'vue';
 import apiClient from "@/services/axiosMiddleware.js";
 import CheckboxCustom from '@/components/Common/CheckboxCustom.vue';
 import PaginationAdminCustom from '@/components/Common/PaginationAdminCustom.vue';
+import { showConfirm, showSuccess, showError } from '@/assets/Admin/js/alert';
 
 const API = "/student";
+const API_UPDATE = "/student/change-status"
 const searchQuery = ref("")
 
 const students = ref([])
 const currentPage = ref(0);
 const totalPages = ref();
 const pageSize = ref(5);
+
+
+const changeStatus = async (id) => {
+    const confirmed = showConfirm("Bạn có chắc muốn thay đổi trạng thái?");
+    if (!confirmed) {
+        return;
+    }
+    try {
+        // const student = await apiClient.get(`${API_UPDATE}/${id}`)
+        // console.log("student:" + JSON.stringify(student.data));
+        const result = await apiClient.put(`${API_UPDATE}/${id}`, id);
+        console.log("result:"+ JSON.stringify(result.data));
+        showSuccess("Cập nhật trạng thái thành công!");
+        getUsersList();
+    } catch (error) {
+        console.error("Lỗi!", error);
+        showError("Cập nhật trạng thái thất bại!");
+    }
+};
+
 
 
 const getUsersList = async (page, size) => {
@@ -78,9 +98,7 @@ const getUsersList = async (page, size) => {
             }
         });
 
-        console.log("data :" + response.data.data)
         students.value = response.data.data
-
         currentPage.value = response.data.currentPage
         totalPages.value = response.data.totalPages
     } catch (error) {
@@ -103,31 +121,7 @@ function formatDate(date) {
     return d.toLocaleDateString('vi-VN')
 }
 
-const handleDelete = async (id) => {
-    Swal.fire({
-        title: "Bạn có chắc muốn xóa?",
-        text: "Hành động này không thể hoàn tác!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: "Xóa",
-        cancelButtonText: "Hủy"
-    }).then(async (result) => {
-        if (result.isConfirmed) {
-            try {
-                await apiClient(API + `/${id}`, {
-                    method: "DELETE",
-                });
-                await Swal.fire("Đã xóa!", "Dữ liệu đã được xóa thành công.", "success");
-                await getUsersList();
-            } catch (error) {
-                console.error("Lỗi!", error);
-                await Swal.fire("Lỗi!", "Có lỗi xảy ra khi xóa.", "error");
-            }
-        }
-    });
-};
+
 
 onMounted(getUsersList);
 

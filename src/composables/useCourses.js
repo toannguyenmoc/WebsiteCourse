@@ -4,7 +4,8 @@ import {
   getCourseById,
   createCourse,
   updateCourse,
-  deleteCourse
+  deleteCourse,
+  checkSlug
 } from '@/api/courseApi'
 
 export function useCourses() {
@@ -86,6 +87,17 @@ export function useCourses() {
     }
   }
 
+  const checkSlugExistence = async (slug) => {
+  try {
+    const res = await checkSlug(slug);
+    return res.data === true;
+  } catch (err) {
+    error.value = err;
+    return false; // fallback nếu xảy ra lỗi
+  }
+};
+
+
   const fetchAllCourses = async () => {
   loading.value = true
   try {
@@ -135,6 +147,7 @@ export function useCourses() {
     fetchCourseById,
     addCourse,
     editCourse,
-    removeCourse
+    removeCourse,
+    checkSlugExistence
   }
 }
