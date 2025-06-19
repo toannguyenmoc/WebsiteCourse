@@ -22,6 +22,7 @@
                                     <th scope="col">Khoá Học</th>
                                     <th scope="col">Bài Học Số</th>
                                     <th scope="col">Ngày Đăng</th>
+                                    <th class="d-flex justify-content-center" scope="col">Watchs</th>
                                     <th scope="col">Trạng thái</th>
                                     <th scope="col" style="width: 20px;">Hoạt động</th>
                                 </tr>
@@ -36,9 +37,9 @@
                                     <td>{{ lesson.postedDate }}</td>
                                     <td><iframe
   :src="lesson.videoUrl"
-  width="160"
-  height="96"
-  frameborder="0"
+  width="180"
+  height="120"
+  frameborder="1"
   allowfullscreen
 ></iframe>
 </td>
