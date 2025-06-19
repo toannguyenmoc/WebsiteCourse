@@ -25,9 +25,8 @@
                                                     class="form-control form-control-alternative"
                                                     placeholder="Tên khoá học" value="">
                                                 <small class="text-danger" v-if="$v.title.$error">
-                                                    <span v-if="$v.title.required.$invalid">Tên khoá học không được bỏ
-                                                        trống</span>
-                                                    <!-- <span v-else-if="v$.title.minLength.$invalid">Tên phim ít nhất 3 ký tự.</span> -->
+                                                    <span v-if="$v.title.required.$invalid">Tên khoá học không được bỏ trống</span>
+                                                    <span v-else-if="$v.title.isUniqueTitle.$invalid">Tên khoá học đã tồn tại</span>
                                                 </small>
                                             </div>
                                         </div>
@@ -35,8 +34,13 @@
                                             <div class="form-group">
                                                 <label class="form-control-label" for="preview-slug">Slug</label>
                                                 <input type="text" id="preview-slug"
-                                                    class="form-control form-control-alternative" :value="form.slug"
-                                                    disabled>
+                                                    class="form-control form-control-alternative" 
+                                                    v-model="form.slug"
+                                                    readonly
+                                                    @input="$v.slug.$validate()">
+                                                <small class="text-danger" v-if="$v.slug.$error">
+                                                    <span v-if="$v.slug.isNotDuplicateSlug">Slug đã tồn tại</span>
+                                                </small>
                                             </div>
                                         </div>
 
@@ -52,8 +56,7 @@
                                                     </option>
                                                 </select>
                                                 <small class="text-danger" v-if="$v.courseTypeId.$error">
-                                                    <span v-if="$v.courseTypeId.required.$invalid">Vui lòng chọn loại
-                                                        khoá học</span>
+                                                    <span v-if="$v.courseTypeId.required.$invalid">Vui lòng chọn loại khoá học</span>
                                                 </small>
                                             </div>
                                         </div>
@@ -152,7 +155,7 @@ import useVuelidate from '@vuelidate/core';
 import { required, minLength, numeric, helpers, minValue, maxValue } from '@vuelidate/validators';
 
 const router = useRouter()
-const { addCourse, fetchCourses } = useCourses()
+const { addCourse, checkSlugExistence } = useCourses()
 const { fetchAllCourseTypes } = useCourseTypes()
 const { fetchAllCommissions } = useCommissions()
 
@@ -260,9 +263,28 @@ const checkDate = helpers.withMessage(
     }
 );
 
+const isDuplicateSlug = ref(false)
+let checkSlugTimeout = null
+
+const checkSlugDebounced = (slug) => {
+  clearTimeout(checkSlugTimeout)
+  checkSlugTimeout = setTimeout(async () => {
+    if (!slug || !slug.trim()) {
+      isDuplicateSlug.value = false
+      return
+    }
+    const exists = await checkSlugExistence(slug)
+    isDuplicateSlug.value = exists
+  }, 500)
+}
+
+watch(() => form.slug, (newSlug) => {
+  checkSlugDebounced(newSlug)
+})
+
 const rules = {
-    title: { required, minLength: minLength(3) },
-    slug: { required },
+    title: { required },
+    slug: { isNotDuplicateSlug: helpers.withMessage('Slug đã tồn tại!', () => !isDuplicateSlug.value) },
     image: { required },
     description: { required },
     price: { required, numeric, minValue: minValue(0), maxValue: maxValue(1000*1000*1000)},

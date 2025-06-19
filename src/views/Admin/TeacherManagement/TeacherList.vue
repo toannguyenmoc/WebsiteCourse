@@ -18,10 +18,10 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">STT</th>
-                                    <th scope="col">Tên Khóa Học</th>
-                                    <th scope="col">Số lượng tiết học</th>
-                                    <th scope="col">Số lượng học viên</th>
-                                    <th scope="col">Doanh Thu</th>
+                                    <th scope="col">Tên Học Viên</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Giới Tính</th>
+                                    <th scope="col">Ngày Đăng Ký</th>
                                     <th scope="col">Chi tiết</th>
                                 </tr>
                             </thead>
@@ -29,9 +29,9 @@
                             <tbody>
                                 <tr v-for="(item, index) in teachers" :key="item.id">
                                     <td>{{ index + 1 }}</td>
-                                    <td>{{ item.name }}</td>
+                                    <td>{{ item.fullname }}</td>
                                     <td>{{ item.email }}</td>
-                                    <td>{{ item.gender }}</td>
+                                    <td>{{ item.gender ? 'Nam' : 'Nữ'}}</td>
                                     <td>{{ formatDate(item.registerDate) }}</td>
                                     <td>
                                        <RouterLink to="/admin/teacher/detail"><i class="ml-4 ni ni-curved-next"></i></RouterLink>
@@ -78,7 +78,7 @@ const getUsersList = async (page, size) => {
             }
         });
 
-        console.log("data :" + response.data.data)
+        console.log("data :" + JSON.stringify(response.data.data))
         teachers.value = response.data.data
         currentPage.value = response.data.currentPage
         totalPages.value = response.data.totalPages
@@ -101,8 +101,6 @@ function formatDate(date) {
     const d = new Date(date)
     return d.toLocaleDateString('vi-VN')
 }
-
-function blockAccount(){}
 
 onMounted(getUsersList);
 
