@@ -1,4 +1,5 @@
 <template>
+
   <body class="bg-default">
     <div class="main-content">
       <!-- Navbar -->
@@ -45,38 +46,70 @@
                 </div>
               </div>
               <div class="card-body px-lg-5 py-lg-5">
-                <div class="text-center text-muted mb-4">
+                <div class="text-center text-muted mb-1">
 
                 </div>
                 <form role="form" @submit.prevent="register">
-                  <div class="form-group">
-                    <div class="input-group input-group-alternative mb-3">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text bg-white"><i class="ni ni-hat-3"></i></span>
+                  <div>
+                    <label class="text-sm">Họ tên</label>
+                    <div class="form-group">
+                      <div class="input-group input-group-alternative mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-white"><i class="ni ni-hat-3"></i></span>
+                        </div>
+                        <input class="form-control" v-model="form.fullname" placeholder="Họ tên" type="text">
                       </div>
-                      <input class="form-control" v-model="form.fullname" placeholder="Họ tên" type="text">
                     </div>
+  
+                    <small class="text-danger" v-if="$v.fullname.$error">
+                      <span v-if="$v.fullname.required.$invalid">Họ tên không được bỏ
+                        trống</span>
+                      <span v-else-if="$v.fullname.minLength.$invalid">Họ tên ít nhất 6 ký
+                        tự.</span>
+                    </small>
+
                   </div>
-                  <div class="form-group">
-                    <div class="input-group input-group-alternative mb-3">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text bg-white"><i class="ni ni-email-83"></i></span>
+                  <div>
+                    <label class="text-sm">Email</label>
+                    <div class="form-group">
+                      <div class="input-group input-group-alternative mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-white"><i class="ni ni-email-83"></i></span>
+                        </div>
+                        <input class="form-control" v-model="form.email" placeholder="Email" type="email">
                       </div>
-                      <input class="form-control" v-model="form.email" placeholder="Email" type="email">
                     </div>
+                    <small class="text-danger" v-if="$v.email.$error">
+                      <span v-if="$v.email.required.$invalid">Email không được bỏ
+                        trống</span>
+                      <span v-else-if="$v.email.email.$invalid">Email không đúng định
+                        dạng.</span>
+                    </small>
+
                   </div>
-                  <div class="form-group">
-                    <div class="input-group input-group-alternative">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text bg-white"><i class="ni ni-lock-circle-open"></i></span>
+                  <div>
+                    <label class="text-sm">Password</label>
+                    <div class="form-group">
+                      <div class="input-group mb-0 input-group-alternative">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text bg-white"><i class="ni ni-lock-circle-open"></i></span>
+                        </div>
+                        <input class="form-control" v-model="form.password" placeholder="Mật khẩu" type="password">
                       </div>
-                      <input class="form-control" v-model="form.password" placeholder="Mật khẩu" type="password">
                     </div>
+                    <small class="text-danger" v-if="$v.password.$error">
+                      <span v-if="$v.password.required.$invalid">Password không được bỏ
+                        trống</span>
+                      <span v-else-if="$v.password.minLength.$invalid">Password ít nhất 6 ký
+                        tự.</span>
+                    </small>
+
                   </div>
+
                   <div class="form-group">
                     <div class="input-group input-group-alternative">
                       <select name="" id="" v-model="form.role" class="form-control" required>
-                        <option value="-1">Chọn vai trò</option>
+                        <option value="-1" disabled>Chọn vai trò</option>
                         <option value=3>Học viên</option>
                         <option value=2>Giáo viên</option>
                       </select>
@@ -119,44 +152,63 @@
 <script setup>
 import githubIcon from '@/assets/Admin/img/icons/common/github.svg'
 import googleIcon from '@/assets/Admin/img/icons/common/google.svg'
-import { ref} from 'vue';
+import { ref } from 'vue';
 import { useRouter, RouterLink } from 'vue-router';
 import { showSuccess, showError } from '@/assets/Admin/js/alert';
 import api from "@/services/axiosMiddleware.js";
-
+import useVuelidate from '@vuelidate/core'
+import { required, minLength, email } from '@vuelidate/validators'
 
 const API = "/auth/register";
 const router = useRouter();
+
 const form = ref({
-    fullname: "",
-    email: "",
-    password:  "",
-    role: 3,
-    active: true
+  fullname: "",
+  email: "",
+  password: "",
+  role: 3,
+  active: true
 });
 
+const rules = {
+  email: { required, email },
+  password: { required, minLength: minLength(6) },
+  fullname: { required, minLength: minLength(6) }
+};
+
+const $v = useVuelidate(rules, form);
+
 const register = async () => {
-   
-    try {
-        console.log("Dữ liệu gửi đi:", JSON.stringify(form.value));
-        const payload = {
-            email: form.value.email,
-            password: form.value.password,
-            fullname: form.value.fullname,
-            role: form.value.role,
-            active: true
-        }
-        console.log(payload);
+  const isValid = await $v.value.$validate();
 
-        await api.post(API, payload);
-        showSuccess("Đăng ký thành công!");
-
-        router.push("/login");
-    } catch (error) {
-        console.error("Lỗi:", error);
-        showError("Đăng ký thất bại!");
+  if (!isValid) {
+    showError("Vui lòng kiểm tra lại thông tin!");
+    return;
+  }
+  try {
+    console.log("Dữ liệu gửi đi:", JSON.stringify(form.value));
+    const payload = {
+      email: form.value.email,
+      password: form.value.password,
+      fullname: form.value.fullname,
+      role: form.value.role,
+      active: true
     }
+    console.log(payload);
+
+    await api.post(API, payload);
+    showSuccess("Đăng ký thành công!");
+
+    router.push("/login");
+  } catch (error) {
+    console.error("Lỗi:", error);
+    showError("Email đã tồn tại, Đăng ký thất bại!");
+  }
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.form-group, input-group {
+  margin-bottom: 0;
+}
+</style>

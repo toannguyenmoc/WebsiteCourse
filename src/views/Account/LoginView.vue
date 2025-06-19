@@ -50,6 +50,7 @@
 
                                 </div>
                                 <form role="form" @submit.prevent="login">
+                                    <label class="text-sm">Email</label>
                                     <div class="form-group mb-3">
                                         <div class="input-group input-group-alternative">
                                             <div class="input-group-prepend">
@@ -59,14 +60,15 @@
                                             <input class="form-control" v-model="form.email" placeholder="Email"
                                                 type="email">
 
-                                            <small class="text-danger" v-if="$v.email.$error">
-                                                <span v-if="$v.email.required.$invalid">Email không được bỏ
-                                                    trống</span>
-                                                <span v-else-if="v$.email.minLength.$invalid">Email không đúng định
-                                                    dạng.</span>
-                                            </small>
                                         </div>
+                                        <small class="text-danger" v-if="$v.email.$error">
+                                            <span v-if="$v.email.required.$invalid">Email không được bỏ
+                                                trống</span>
+                                            <span v-else-if="$v.email.email.$invalid">Email không đúng định
+                                                dạng.</span>
+                                        </small>
                                     </div>
+                                    <label class="text-sm">Password</label>
                                     <div class="form-group">
                                         <div class="input-group input-group-alternative">
                                             <div class="input-group-prepend">
@@ -75,17 +77,17 @@
                                             </div>
                                             <input class="form-control" v-model="form.password" placeholder="Mật khẩu"
                                                 type="password">
-                                            <small class="text-danger" v-if="$v.email.$error">
-                                                <span v-if="$v.password.required.$invalid">Password không được bỏ
-                                                    trống</span>
-                                                <span v-else-if="v$.password.minLength.$invalid">Password ít nhất 6 ký
-                                                    tự.</span>
-                                            </small>
                                         </div>
+                                        <small class="text-danger" v-if="$v.password.$error">
+                                            <span v-if="$v.password.required.$invalid">Password không được bỏ
+                                                trống</span>
+                                            <span v-else-if="$v.password.minLength.$invalid">Password ít nhất 6 ký
+                                                tự.</span>
+                                        </small>
                                     </div>
                                     <div class="custom-control custom-control-alternative custom-checkbox">
-                                        <input class="custom-control-input" id=" customCheckLogin" type="checkbox">
-                                        <label class="custom-control-label" for=" customCheckLogin">
+                                        <input class="custom-control-input" id="customCheckLogin" type="checkbox">
+                                        <label class="custom-control-label" for="customCheckLogin">
                                             <span class="text-muted">Ghi nhớ</span>
                                         </label>
                                     </div>
@@ -115,13 +117,14 @@
 import githubIcon from '@/assets/Admin/img/icons/common/github.svg'
 import googleIcon from '@/assets/Admin/img/icons/common/google.svg'
 import useVuelidate from '@vuelidate/core'
-import { required, minLength } from '@vuelidate/validators'
+import { required, minLength, email } from '@vuelidate/validators'
 import { ref } from 'vue';
 import { useRouter, RouterLink } from 'vue-router';
 import CryptoJS from 'crypto-js';
 import { jwtDecode } from "jwt-decode";
 import { Role, TOKEN } from "@/utils/constants.js";
 import api from "@/services/axiosMiddleware.js";
+import { showSuccess, showError } from '@/assets/Admin/js/alert'
 
 const API = "/auth/login";
 // const code = "859703373367639792F=="
@@ -132,13 +135,18 @@ const form = ref({
     password: "",
 });
 
+const showPassword = ref(false);
+
+const togglePassword = () => {
+    showPassword.value = !showPassword.value;
+};
+
 const rules = {
-    email: { required },
-    password: { required, minLength: minLength(3) }
+    email: { required, email },
+    password: { required, minLength: minLength(6) }
 };
 
 const $v = useVuelidate(rules, form);
-
 
 const login = async () => {
     const isValid = await $v.value.$validate();
@@ -147,8 +155,8 @@ const login = async () => {
         showError("Vui lòng kiểm tra lại thông tin!");
         return;
     }
-    try {
 
+    try {
         console.log("Dữ liệu gửi đi:", JSON.stringify(form.value));
         const payload = {
             email: form.value.email,
@@ -159,23 +167,26 @@ const login = async () => {
         const response = await api.post(API, payload)
 
         if (response?.data?.length > 0) {
-            console.log("TOKEN" + response.data)
+            // console.log("TOKEN" + response.data)
             sessionStorage.setItem(TOKEN, response.data);
 
             const decoded = jwtDecode(response?.data);
+            const role = decoded.role[0].authority;
+            // console.log("role:", JSON.stringify(decoded.role[0].authority, null, 2))
 
-            console.log("role:", JSON.stringify(decoded.role[0].authority, null, 2))
-            if (decoded.role[0].authority === 'Admin') {
+            if (role === 'Admin') {
                 await router.push("/admin");
             } else {
                 await router.push("/");
             }
+            window.location.reload();
         } else {
             console.log(response.data);
         }
 
     } catch (error) {
         console.error("Lỗi: ", error.response.status);
+        showError("Lỗi đăng nhập")
     }
 };
 
