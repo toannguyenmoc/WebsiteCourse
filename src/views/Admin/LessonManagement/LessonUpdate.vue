@@ -71,7 +71,7 @@
                                             <label class="form-control-label" for="">Video URL</label>
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input form-control-alternative"
-                                                    id="customFileLang" @change="handleFileChange" />
+                                                    id="customFileLang" @change="handleUpdateUpload" />
                                                 <label class="custom-file-label" for="customFileLang">Chọn file</label>
                                             </div>
                                         </div>
@@ -94,9 +94,7 @@
                                                     <label class="custom-control-label" for="status-false">Ngừng Hoạt
                                                         Động</label>
                                                 </div>
-                                                <div v-if="$v.status.$error" class="text-danger">
-                                                    {{ $v.status.$errors[0].$message }}
-                                                </div>
+                                               
                                             </div>
 
 
@@ -147,6 +145,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { showSuccess, showError, showConfirm, showAlert } from '@/assets/Admin/js/alert'
 import { useLessons } from '@/composables/useLessons'
 import { useCourses } from '@/composables/useCourses'
+import { createVideo, uploadVideoSource, updateVideoSource } from '@/utils/uploadVideoUtils'
 import Swal from 'sweetalert2'
 
 const router = useRouter()
@@ -192,9 +191,6 @@ const rules = computed(() => ({
         required: helpers.withMessage("Mô tả không được để trống", required)
     },
    
-    exerciseUrl: {
-        required: helpers.withMessage("Vui lòng chọn bài tập", value => value !== '')
-    },
     postedDate: {
         required: helpers.withMessage("Vui lòng chọn ngày", value => value !== null && value !== '')
     }   
@@ -306,6 +302,24 @@ const handleFileChange1 = (e) => {
     const file = e.target.files[0]
     form.videoUrl = file?.name || ''
 }
+const handleUpdateUpload = async (e) => {
+  const file = e.target.files[0]
+  if (!file) return
+
+  try {
+    const publicId = await createVideo(file.name)
+    const url = await updateVideoSource(publicId, file)
+
+    form.videoUrl = url  // Chỉ cần dòng này
+    // videoUrl.value = url  → xoá dòng này
+
+  } catch (err) {
+    console.error('Lỗi upload:', err?.response?.data || err.message)
+    showError('Không thể cập nhật video!')
+  }
+}
+
+
 
 </script>
 
