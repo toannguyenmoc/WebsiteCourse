@@ -21,9 +21,13 @@
                                         <div class="col-lg-12">
                                              <div class="form-group">
                                                 <label class="form-control-label" for="courseType-name">Tên Loại khóa học</label>
-                                                <input type="text" id="courseType-name" v-model="form.name"
+                                                <input type="text" id="courseType-name" v-model="form.name" @blur="$v.name.$touch()"
                                                     class="form-control form-control-alternative"
                                                     placeholder="Tên loại khoá học" value="">
+                                                     <small class="text-danger" v-if="$v.name.$error">
+                                                    <span>{{ $v.name.$errors[0].$message }}</span>
+
+                                                </small>
                                             </div>
                                         </div>
 
@@ -124,10 +128,7 @@ const form = reactive({
    
 })
 const rules = computed(() => ({
-     name: { required: helpers.withMessage("Tên khóa học không được để trống", required) },
-     status: {
-        required: helpers.withMessage("Vui lòng chọn trạng thái", value => value === true || value === false)
-    }
+     name: { required: helpers.withMessage("Tên khóa học không được để trống", required) }
 }));
 
 
@@ -159,11 +160,12 @@ onMounted(async () => {
 })
 
 const handleUpdate = async () => {
-    if (
-        form.name === -1
-    ) {
-        showError("Vui lòng điền đầy đủ thông tin.")
-        return
+     const isValid = await $v.value.$validate();
+
+    // Nếu lỗi thì show lỗi và dừng lại
+    if (!isValid) {
+        showError("Vui lòng kiểm tra lại thông tin!");
+        return;
     }
 
     const payload = {
