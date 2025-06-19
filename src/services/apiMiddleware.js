@@ -1,4 +1,4 @@
-import apiClient from './apiClient';
+import apiClient from '@/services/axiosMiddleware';
 
 export const getData = async (endpoint, params = {}) => {
   try {

@@ -71,7 +71,9 @@ export function showInput(title = 'Nhập thông tin', placeholder = '') {
     input: 'text',
     inputPlaceholder: placeholder,
     showCancelButton: true,
-    confirmButtonText: 'Gửi',
-
+    confirmButtonText: 'Thêm',
+    inputAttributes:{
+      input: "form-control"
+    }
   });
 }

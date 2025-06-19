@@ -15,7 +15,7 @@
                                     động, phía sau những
                                     bức tường firewall vững chắc, tồn tại một thế giới của các lập trình viên
                                     đam mê.</p>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -50,27 +50,44 @@
 
                                 </div>
                                 <form role="form" @submit.prevent="login">
+                                    <label class="text-sm">Email</label>
                                     <div class="form-group mb-3">
                                         <div class="input-group input-group-alternative">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text bg-white"><i
                                                         class="ni ni-email-83"></i></span>
                                             </div>
-                                            <input class="form-control"  v-model="form.email"  placeholder="Email" type="email">
+                                            <input class="form-control" v-model="form.email" placeholder="Email"
+                                                type="email">
+
                                         </div>
+                                        <small class="text-danger" v-if="$v.email.$error">
+                                            <span v-if="$v.email.required.$invalid">Email không được bỏ
+                                                trống</span>
+                                            <span v-else-if="$v.email.email.$invalid">Email không đúng định
+                                                dạng.</span>
+                                        </small>
                                     </div>
+                                    <label class="text-sm">Password</label>
                                     <div class="form-group">
                                         <div class="input-group input-group-alternative">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text bg-white"><i
                                                         class="ni ni-lock-circle-open"></i></span>
                                             </div>
-                                            <input class="form-control" v-model="form.password" placeholder="Mật khẩu" type="password">
+                                            <input class="form-control" v-model="form.password" placeholder="Mật khẩu"
+                                                type="password">
                                         </div>
+                                        <small class="text-danger" v-if="$v.password.$error">
+                                            <span v-if="$v.password.required.$invalid">Password không được bỏ
+                                                trống</span>
+                                            <span v-else-if="$v.password.minLength.$invalid">Password ít nhất 6 ký
+                                                tự.</span>
+                                        </small>
                                     </div>
                                     <div class="custom-control custom-control-alternative custom-checkbox">
-                                        <input class="custom-control-input" id=" customCheckLogin" type="checkbox">
-                                        <label class="custom-control-label" for=" customCheckLogin">
+                                        <input class="custom-control-input" id="customCheckLogin" type="checkbox">
+                                        <label class="custom-control-label" for="customCheckLogin">
                                             <span class="text-muted">Ghi nhớ</span>
                                         </label>
                                     </div>
@@ -99,23 +116,46 @@
 <script setup>
 import githubIcon from '@/assets/Admin/img/icons/common/github.svg'
 import googleIcon from '@/assets/Admin/img/icons/common/google.svg'
-
+import useVuelidate from '@vuelidate/core'
+import { required, minLength, email } from '@vuelidate/validators'
 import { ref } from 'vue';
 import { useRouter, RouterLink } from 'vue-router';
 import CryptoJS from 'crypto-js';
 import { jwtDecode } from "jwt-decode";
 import { Role, TOKEN } from "@/utils/constants.js";
 import api from "@/services/axiosMiddleware.js";
+import { showSuccess, showError } from '@/assets/Admin/js/alert'
 
 const API = "/auth/login";
 // const code = "859703373367639792F=="
 const router = useRouter();
+
 const form = ref({
     email: "",
     password: "",
 });
 
+const showPassword = ref(false);
+
+const togglePassword = () => {
+    showPassword.value = !showPassword.value;
+};
+
+const rules = {
+    email: { required, email },
+    password: { required, minLength: minLength(6) }
+};
+
+const $v = useVuelidate(rules, form);
+
 const login = async () => {
+    const isValid = await $v.value.$validate();
+
+    if (!isValid) {
+        showError("Vui lòng kiểm tra lại thông tin!");
+        return;
+    }
+
     try {
         console.log("Dữ liệu gửi đi:", JSON.stringify(form.value));
         const payload = {
@@ -123,27 +163,30 @@ const login = async () => {
             password: form.value.password
         }
         console.log(payload);
-        
-        const response =await api.post(API, payload)
-        
+
+        const response = await api.post(API, payload)
+
         if (response?.data?.length > 0) {
-            console.log("TOKEN" + response.data)
+            // console.log("TOKEN" + response.data)
             sessionStorage.setItem(TOKEN, response.data);
 
             const decoded = jwtDecode(response?.data);
-           
-            console.log("role:", JSON.stringify(decoded.role[0].authority, null, 2))
-            if (decoded.role[0].authority === 'Admin') {
+            const role = decoded.role[0].authority;
+            // console.log("role:", JSON.stringify(decoded.role[0].authority, null, 2))
+
+            if (role === 'Admin') {
                 await router.push("/admin");
             } else {
                 await router.push("/");
             }
+            window.location.reload();
         } else {
             console.log(response.data);
         }
-        
+
     } catch (error) {
         console.error("Lỗi: ", error.response.status);
+        showError("Lỗi đăng nhập")
     }
 };
 
