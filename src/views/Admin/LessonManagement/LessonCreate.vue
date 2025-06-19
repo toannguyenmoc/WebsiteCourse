@@ -22,34 +22,23 @@
                                             <div class="form-group">
                                                 <label class="form-control-label" for="">Khoá Học</label>
                                                 <select class="form-select form-control form-control-alternative"
-                                                    v-model="form.courseId" @blur="$v.courseId.$touch()"
-                                                    @change="$v.courseId.$touch()">
+                                                    v-model="form.courseId">
                                                     <option disabled value="-1">-- Chọn loại khoá học --</option>
                                                     <option v-for="courses in course" :key="courses.id"
                                                         :value="courses.id">
                                                         {{ courses.title }}
                                                     </option>
                                                 </select>
-                                                <small class="text-danger" v-if="$v.courseId.$error">
-                                                    <span>{{ $v.courseId.$errors[0].$message }}</span>
-                                                </small>
+                                               
 
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="form-group">
                                                 <label class="form-control-label" for="lesson-name">Tên Bài Học</label>
-                                                <input v-model="form.title" @blur="$v.title.$touch()" type="text"
+                                                <input v-model="form.title" type="text"
                                                     id="lesson-name" class="form-control form-control-alternative"
                                                     placeholder="Tên bài học">
-
-                                                <small class="text-danger" v-if="$v.title.$error">
-                                                    <span>{{ $v.title.$errors[0].$message }}</span>
-
-                                                </small>
-
-
-
 
 
                                             </div>
@@ -60,13 +49,10 @@
                                             <div class="form-group">
                                                 <label class="form-control-label" for="lesson-no">Bài Học Số</label>
 
-                                                <input v-model="form.lesson" @blur="$v.lesson.$touch()"
+                                                <input v-model="form.lesson" 
                                                     class="form-control form-control-alternative"
                                                     placeholder="Nhập bài học">
-                                                <small class="text-danger" v-if="$v.lesson.$error">
-                                                    <span>{{ $v.lesson.$errors[0].$message }}</span>
-
-                                                </small>
+                                        
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
@@ -100,10 +86,6 @@
                                                         <label class="custom-control-label" for="status-false">Ngừng
                                                             Hoạt Động</label>
                                                     </div>
-
-
-
-
                                                 </div>
                                                 
                                             </div>
@@ -113,7 +95,7 @@
                                             <label class="form-control-label" for="">Bài Tập URL</label>
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input form-control-alternative"
-                                                    id="customFileLang" @change="handleFileChange">
+                                                    id="customFileLang" @change="handleImageUpload">
                                                 <label class="custom-file-label" for="customFileLang">Chọn file</label>
                                             </div>
                                         </div>
@@ -124,13 +106,10 @@
                                 <div class="pl-lg-12">
                                     <div class="form-group">
                                         <label>Mô tả</label>
-                                        <textarea v-model="form.description" @blur="$v.description.$touch()" rows="4"
+                                        <textarea v-model="form.description" rows="4"
                                             class="form-control form-control-alternative"
                                             placeholder="Mô tả về bài học của bạn ..."></textarea>
-                                        <small class="text-danger" v-if="$v.description.$error">
-                                            <span>{{ $v.description.$errors[0].$message }}</span>
-
-                                        </small>
+                                        
                                     </div>
                                 </div>
                                 <hr class="my-4" />
@@ -163,6 +142,17 @@ const { fetchAllCourses } = useCourses()
 
 const course = ref([])
 const videoUrl = ref('')
+
+const form = reactive({
+    title: '',
+    lesson: 0,
+    description: '',
+    videoUrl: '',
+    exerciseUrl: '',
+    postedDate: new Date(),
+    status: true,
+    courseId: ''
+})
 
 onMounted(async () => {
     course.value = await fetchAllCourses()
@@ -223,10 +213,7 @@ const handleImageUpload = async (event) => {
         console.error("Không thể upload ảnh:", err);
     }
 };
-const handleFileChange1 = (e) => {
-    const file = e.target.files[0]
-    form.exerciseUrl = file?.name || ''
-}
+
 
 const handleUpload = async (e) => {
   const file = e.target.files[0]

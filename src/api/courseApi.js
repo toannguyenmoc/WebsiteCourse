@@ -16,8 +16,6 @@ export const getCourses = (
     maxPrice,
   };
 
-  
-
   // Xoá key có giá trị null hoặc undefined
   Object.keys(params).forEach(key => {
     if (params[key] === null || params[key] === undefined) {
@@ -46,3 +44,8 @@ export const getCourseById = id => api.get(`/course/${id}`)
 export const createCourse = payload => api.post('/course', payload)
 export const updateCourse = (id, payload) => api.put(`/course/${id}`, payload)
 export const deleteCourse = id => api.delete(`/course/${id}`)
+export const checkSlug = slug => 
+  api.get(`/course/check-slug`, {
+    params: { slug }
+  });
+
