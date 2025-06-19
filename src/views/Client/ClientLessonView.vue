@@ -8,7 +8,7 @@
               <div
                 class="embed-responsive embed-responsive-16by9 bg-light d-flex align-items-center justify-content-center position-relative"
                 style="min-height: 400px;">
-                <video autoplay muted controls :key="useLesson.videoUrl" :src="useLesson.videoUrl">
+                <video autoplay muted controls :key="useLesson.videoUrl" :src="useLesson.videoUrl" controlsList="nodownload">
                     Trình duyệt của bạn không hỗ trợ video.
                 </video>
                 <!-- <img :src="useLesson.img " class="img-fluid" style="max-height: 100%; max-width: 100%;">
@@ -51,7 +51,9 @@
                   </span>
                   <small class="text-muted d-block"> {{ module.duration }}</small>
                 </div>
-                <i class="fa fa-play"></i>
+                <i v-if="currentModuleIndex != module.lesson" class="fa fa-play"></i>
+                <i v-if="currentModuleIndex === module.lesson" class="fa fa-pause"></i>
+                
               </li>
             </ul>
           </div>
