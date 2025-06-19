@@ -201,14 +201,6 @@ const rules = computed(() => ({
 
 const $v = useVuelidate(rules, form);
 
-const v$ = $v;
-
-
-
-
-
-
-
 
 const loadLesson = async () => {
     try {
