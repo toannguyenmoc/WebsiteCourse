@@ -52,6 +52,7 @@ const router = createRouter({
         { path: 'about', name: 'about', component: ClientAboutView },
         { path: 'course', name: 'course', component: ClientCourseView },
         { path: 'course-detail/:id', name: 'course-detail', component: ClientCourseDetailView },
+        { path: 'course-detail', name: 'course-detail-no-id', component: ClientCourseDetailView },
         { path: 'instructor', name: 'instructor', component: ClientInstructorView },
         { path: 'blog', name: 'blog', component: ClientBlogView, props: true },
         { path: 'contact', name: 'contact', component: ClientContactView},
