@@ -36,9 +36,8 @@ import ClientLessonView from '@/views/Client/ClientLessonView.vue';
 import ClientPaymentView from '@/views/Client/ClientPaymentView.vue';
 import ClientReportView from '@/views/Client/ClientReportView.vue';
 import { createRouter, createWebHistory } from 'vue-router'
-import {Role, TOKEN} from "@/utils/constants.js";
 import {jwtDecode} from "jwt-decode";
-import Swal from "sweetalert2";
+import { showError } from '@/assets/Admin/js/alert'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -73,7 +72,7 @@ const router = createRouter({
       path: '/admin',
       component: AdminLayout, 
       redirect: "/admin/dashboard",
-      //meta: { requiresAdmin: true , role: 'Admin'}, // Chỉ admin mới truy cập được
+      meta: { requiresAdmin: true , role: ['Admin']}, // Chỉ admin mới truy cập được
       children: [
         { path: 'dashboard', name: 'dashboard', component: AdminDashboardView },
         {
@@ -136,47 +135,23 @@ const router = createRouter({
   ],
 });
 
-
 router.beforeEach(async (to, from) => {
-  if (to.meta.requiresAuth) {
-    const token = sessionStorage.getItem(TOKEN);
+  if (to.meta.requiresAdmin) {
+    const token = sessionStorage.getItem('TOKEN');
     if (!token) {
-      Swal.fire("Lỗi!", "Không thể truy cập trang này.", "error");
-      return "/login"
-    };
-    const decoded = jwtDecode(token);
-    if (decoded[Role] === undefined) {
-      errorHandle()
-      return false;
+      showError("Không có quyền truy cập!");
+      return { path: '/login' };
     }
-    console.log(to.meta.role?.length < 0 || !to.meta.role.includes(decoded[Role]));
-    
-    if (to.meta.role?.length < 0 || !to.meta.role.includes(decoded[Role])) {
-      errorHandle()
-      return false;
+
+    const decoded = jwtDecode(token);
+    const role = decoded.role[0].authority;
+
+    if (!role || !to.meta.role || !to.meta.role.includes(role)) {
+      showError("Bạn không có quyền truy cập!");
+      return { path: '/login' };
     }
   }
 });
 
-function errorHandle() {
-      Swal.fire({
-        title: "Error",
-        text: "Account này không có quyền truy cập",
-        icon: "warning",
-        showCancelButton: false,
-        confirmButtonColor: "#d33",
-        confirmButtonText: "Ok",
-      }).then( async (result) => {
-        if (result.isConfirmed) {
-          try {
-            if (sessionStorage.getItem(TOKEN)) {
-              sessionStorage.removeItem(TOKEN);
-            }
-            router.push({ path: '/login'})
-          } catch (error) {
-          }
-        }
-      });
-}
 
 export default router
