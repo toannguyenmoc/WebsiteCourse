@@ -16,94 +16,81 @@
                         </div>
                         <div class="card-body">
                             <form @submit.prevent="handleSubmit">
-                                <div class="pl-lg-12">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="course-name">Tên Khoá Học</label>
-                                                <input type="text" id="course-name" v-model="form.title"
-                                                    class="form-control form-control-alternative"
-                                                    placeholder="Tên khoá học" value="">
-                                                <small class="text-danger" v-if="$v.title.$error">
-                                                    <span v-if="$v.title.required.$invalid">Tên khoá học không được bỏ trống</span>
-                                                    <span v-else-if="$v.title.isUniqueTitle.$invalid">Tên khoá học đã tồn tại</span>
-                                                </small>
-                                            </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label">Loại Khoá Học</label>
+                                            <select class="form-select form-control form-control-alternative"
+                                                v-model="form.courseTypeId">
+                                                <option disabled value="">-- Chọn loại khoá học --</option>
+                                                <option v-for="type in courseTypes" :key="type.id" :value="type.id">{{
+                                                    type.name }}</option>
+                                            </select>
+                                            <small class="text-danger" v-if="$v.courseTypeId.$error">
+                                                <span v-if="$v.courseTypeId.required.$invalid">Vui lòng chọn loại khoá
+                                                    học</span>
+                                            </small>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="preview-slug">Slug</label>
-                                                <input type="text" id="preview-slug"
-                                                    class="form-control form-control-alternative" 
-                                                    v-model="form.slug"
-                                                    readonly
-                                                    @input="$v.slug.$validate()">
-                                                <small class="text-danger" v-if="$v.slug.$error">
-                                                    <span v-if="$v.slug.isNotDuplicateSlug">Slug đã tồn tại</span>
-                                                </small>
-                                            </div>
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="course-name">Tên Khoá Học</label>
+                                            <input type="text" id="course-name" v-model="form.title"
+                                                class="form-control form-control-alternative"
+                                                placeholder="Tên khoá học">
+                                            <small class="text-danger" v-if="$v.title.$error">
+                                                <span v-if="$v.title.required.$invalid">Tên khoá học không được bỏ
+                                                    trống</span>
+                                                <span v-else-if="$v.title.isUniqueTitle.$invalid">Tên khoá học đã tồn
+                                                    tại</span>
+                                            </small>
                                         </div>
-
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="">Loại Khoá Học</label>
-                                                <select class="form-select form-control form-control-alternative"
-                                                    v-model="form.courseTypeId" aria-label="Default select example">
-                                                    <option disabled value="" selected>-- Chọn loại khoá học --
-                                                    </option>
-                                                    <option v-for="type in courseTypes" :key="type.id" :value="type.id">
-                                                        {{ type.name }}
-                                                    </option>
-                                                </select>
-                                                <small class="text-danger" v-if="$v.courseTypeId.$error">
-                                                    <span v-if="$v.courseTypeId.required.$invalid">Vui lòng chọn loại khoá học</span>
-                                                </small>
-                                            </div>
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="preview-slug">Slug</label>
+                                            <input type="text" id="preview-slug"
+                                                class="form-control form-control-alternative" v-model="form.slug"
+                                                readonly @input="$v.slug.$validate()">
+                                            <small class="text-danger" v-if="$v.slug.$error">
+                                                <span v-if="$v.slug.isNotDuplicateSlug">Slug đã tồn tại</span>
+                                            </small>
                                         </div>
-                                        <div class="col-lg-3">
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="">Chiết khấu</label>
-                                                <select class="form-select form-control form-control-alternative"
-                                                    v-model="form.commissionId" aria-label="Default select example">
-                                                    <option disabled value="" selected>-- Chọn ngày áp dụng --
-                                                    </option>
-                                                    <option v-for="c in commissions" :key="c.id" :value="c.id">
-                                                        {{ c.effectiveDate }}
-                                                    </option>
-                                                </select>
-                                                <small class="text-danger" v-if="$v.commissionId.$error">
-                                                    <span v-if="$v.commissionId.required.$invalid">Vui lòng chọn ngày áp dụng</span>
-                                                </small>
-                                            </div>
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="unit-price">Giá Tiền</label>
+                                            <input type="text" id="unit-price" v-model="form.price"
+                                                class="form-control form-control-alternative"
+                                                placeholder="Nhập giá tiền">
+                                            <small class="text-danger" v-if="$v.price.$error">
+                                                <span v-if="$v.price.required.$invalid">Giá tiền không được bỏ
+                                                    trống</span>
+                                                <span v-else-if="$v.price.numeric.$invalid">Giá tiền không chứa ký
+                                                    tự</span>
+                                                <span v-else-if="$v.price.minValue.$invalid">Giá tiền phải lớn hơn
+                                                    0</span>
+                                                <span v-else-if="$v.price.maxValue.$invalid">Giá tiền phải nhỏ hơn
+                                                    1,000,000,000</span>
+                                            </small>
                                         </div>
-                                        <div class="col-lg-3">
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="percentage">Phần trăm chiết
-                                                    khấu</label>
-                                                <input type="text" id="percentage"
-                                                    class="form-control form-control-alternative"
-                                                    :value="selectedCommission ? selectedCommission.percentage + '%' : '0%'"
-                                                    disabled>
+                                        <div class="form-group">
+                                            <label class="form-control-label">Trạng Thái</label>
+                                            <div class="d-flex">
+                                                <div class="custom-control custom-radio custom-radio-inline">
+                                                    <input class="custom-control-input" type="radio" name="status"
+                                                        id="status-true" :checked="form.status === true"
+                                                        @change="form.status = true" />
+                                                    <label class="custom-control-label" for="status-true">Đang Hoạt
+                                                        Động</label>
+                                                </div>
+                                                <div class="custom-control custom-radio custom-radio-inline ml-3">
+                                                    <input class="custom-control-input" type="radio" name="status"
+                                                        id="status-false" :checked="form.status === false"
+                                                        @change="form.status = false" />
+                                                    <label class="custom-control-label" for="status-false">Ngừng Hoạt
+                                                        Động</label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group">
-                                                <label class="form-control-label" for="unit-price">Giá Tiền</label>
-                                                <input type="text" min="10000" step="1000" id="unit-price"
-                                                    v-model="form.price" class="form-control form-control-alternative"
-                                                    placeholder="Nhập giá tiền">
-                                                <small class="text-danger" v-if="$v.price.$error">
-                                                    <span v-if="$v.price.required.$invalid">Giá tiền không được bỏ trống</span>
-                                                    <span v-else-if="$v.price.numeric.$invalid">Giá tiền không chứa ký tự</span>
-                                                    <span v-else-if="$v.price.minValue.$invalid">Giá tiền phải lớn hơn 0</span>
-                                                    <span v-else-if="$v.price.maxValue.$invalid">Giá tiền phải nhỏ hơn 1,000,000,000</span>
-                                                </small>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <label class="form-control-label" for="">Hình Ảnh</label>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="customFileLang">Hình Ảnh</label>
                                             <div class="custom-file">
                                                 <input type="file" class="custom-file-input form-control-alternative"
                                                     id="customFileLang" @change="handleImageUpload">
@@ -113,8 +100,23 @@
                                                 <span v-if="$v.image.required.$invalid">Vui lòng chọn hình ảnh</span>
                                             </small>
                                         </div>
+                                        <div class="form-group mt-3">
+                                            <label class="form-control-label">Xem Trước Hình Ảnh</label>
+                                            <div class="image-preview-wrapper" @click="triggerFileInput">
+                                                <img v-if="previewImage" :src="previewImage" alt="Xem trước ảnh"
+                                                    class="image-preview" />
+                                                <div v-else class="image-empty-placeholder">
+                                                    <i class="fas fa-image fa-2x mb-2"></i><br>
+                                                    <span>Chưa có hình ảnh</span>
+                                                </div>
+                                            </div>
+                                            <!-- Input file hidden chỉ kích hoạt khi click -->
+                                            <input ref="hiddenFileInput" type="file" accept="image/*"
+                                                style="display: none" @change="handleImageUpload" />
+                                        </div>
                                     </div>
                                 </div>
+
                                 <hr class="my-4" />
                                 <!-- Description -->
                                 <div class="pl-lg-12">
@@ -124,7 +126,8 @@
                                             placeholder="Mô tả về khoá học của bạn ..."
                                             v-model="form.description"></textarea>
                                         <small class="text-danger" v-if="$v.description.$error">
-                                            <span v-if="$v.description.required.$invalid">Mô tả không được bỏ trống</span>
+                                            <span v-if="$v.description.required.$invalid">Mô tả không được bỏ
+                                                trống</span>
                                         </small>
                                     </div>
                                 </div>
@@ -155,12 +158,14 @@ import useVuelidate from '@vuelidate/core';
 import { required, minLength, numeric, helpers, minValue, maxValue } from '@vuelidate/validators';
 
 const router = useRouter()
-const { addCourse, checkSlugExistence } = useCourses()
+const { addCourse, fetchAllCourses } = useCourses()
 const { fetchAllCourseTypes } = useCourseTypes()
 const { fetchAllCommissions } = useCommissions()
 
 const courseTypes = ref([])
 const commissions = ref([])
+const previewImage = ref(null)
+const hiddenFileInput = ref(null)
 
 onMounted(async () => {
     courseTypes.value = await fetchAllCourseTypes()
@@ -191,6 +196,7 @@ const form = reactive({
 // Slug tự động theo title
 watch(() => form.title, (newTitle) => {
     form.slug = slugify(newTitle)
+    validateSlug()
 })
 
 const selectedCommission = computed(() => {
@@ -224,7 +230,7 @@ const handleSubmit = async () => {
         status: form.status,
         accountId: 1,
         courseTypeId: form.courseTypeId,
-        commissionId: form.commissionId
+        commissionId: 1
     }
 
     try {
@@ -238,6 +244,10 @@ const handleSubmit = async () => {
     }
 }
 
+const triggerFileInput = () => {
+    hiddenFileInput.value.click();
+};
+
 const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -245,6 +255,7 @@ const handleImageUpload = async (event) => {
     try {
         const imageUrl = await uploadImageToCloudinary(file);
         form.image = imageUrl;
+        previewImage.value = imageUrl;
         console.log("Upload thành công:", imageUrl);
     } catch (err) {
         console.error("Không thể upload ảnh:", err);
@@ -264,32 +275,26 @@ const checkDate = helpers.withMessage(
 );
 
 const isDuplicateSlug = ref(false)
-let checkSlugTimeout = null
 
-const checkSlugDebounced = (slug) => {
-  clearTimeout(checkSlugTimeout)
-  checkSlugTimeout = setTimeout(async () => {
-    if (!slug || !slug.trim()) {
-      isDuplicateSlug.value = false
-      return
+const validateSlug = async () => {
+    try {
+        const allCourses = await fetchAllCourses()
+        const currentSlug = form.slug.trim().toLowerCase()
+
+        isDuplicateSlug.value = allCourses.some(c => c.slug.toLowerCase() === currentSlug)
+    } catch (err) {
+        console.error("Lỗi kiểm tra slug:", err)
+        isDuplicateSlug.value = false
     }
-    const exists = await checkSlugExistence(slug)
-    isDuplicateSlug.value = exists
-  }, 500)
 }
-
-watch(() => form.slug, (newSlug) => {
-  checkSlugDebounced(newSlug)
-})
 
 const rules = {
     title: { required },
     slug: { isNotDuplicateSlug: helpers.withMessage('Slug đã tồn tại!', () => !isDuplicateSlug.value) },
     image: { required },
     description: { required },
-    price: { required, numeric, minValue: minValue(0), maxValue: maxValue(1000*1000*1000)},
-    courseTypeId: { required },
-    commissionId: { required }
+    price: { required, numeric, minValue: minValue(0), maxValue: maxValue(1000 * 1000 * 1000) },
+    courseTypeId: { required }
 };
 
 // Sử dụng Vuelidate
@@ -298,6 +303,34 @@ const $v = useVuelidate(rules, form);
 
 </script>
 
+<style scoped>
+.image-preview-wrapper {
+    height: 300px;
+    border: 1px dashed #bbb;
+    border-radius: 6px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
 
+.image-preview-wrapper:hover {
+    border-color: #5e72e4;
+}
 
-<style scoped></style>
+.image-preview {
+    width: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.image-empty-placeholder {
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+}
+</style>
