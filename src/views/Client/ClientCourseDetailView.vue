@@ -166,7 +166,7 @@ const payment = async () => {
 const create = async () => {
     try {
         const data = {
-            totalAmount: route.query.vnp_Amount,
+            totalAmount: route.query.vnp_Amount / 100,
             discount: 0,
             transactionCode: route.query.vnp_OrderInfo,
             accountId: route.query.vnp_OrderInfo.split("_")[1],
