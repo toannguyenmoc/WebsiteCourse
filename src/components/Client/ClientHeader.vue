@@ -29,48 +29,48 @@
             <RouterLink to="/contact" class="nav-link">Liên hệ</RouterLink>
           </li>
         </ul>
-        <div class="mt-2"  v-if="isLoggedIn">
+        <div class="" v-if="isLoggedIn">
           <div class="dropdown">
-            <p class="dropdown-toggle d-flex align-items-center bg-white border-0" type="button"
-              data-toggle="dropdown">
-              <div class="media align-items-center">
+            <div class="dropdown-toggle d-flex align-items-center bg-white border-0" type="button" data-toggle="dropdown">
+            <div class="media align-items-center">
               <span class="avatar avatar-sm rounded-circle">
-                <img alt="" src="./assets/img/theme/team-4-800x800.jpg">
+                <img alt="" src="">
               </span>
-              <div class="media-body ml-2 d-none d-lg-block">
-                <span class="mb-0 text-sm  font-weight-bold">{{ userName }}</span>
+              <div class="media-body ml-2 d-none d-lg-block mt-2">
+                <span class="mb-0 text-sm text-dark " style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block;">{{ userName }}</span>
               </div>
             </div>
-          </p>
-            <ul class="dropdown-menu">
-              <li>
-                <RouterLink to="/information" class="dropdown-item">
-                  <i class="fas fa-user"></i>
-                  Trang cá nhân
-                </RouterLink>
-              </li>
-              <li>
-                <RouterLink to="/change-password" class="dropdown-item">
-                  <i class="fas fa-key"></i>
-                  Đổi mật khẩu
-                </RouterLink>
-              </li>
-              <hr>
-              <li>
-                <a class="dropdown-item" @click.prevent="logout">
-                  <i class="fa fa-sign-out"></i>
-                  Đăng xuất
-                </a>
-              </li>
-            </ul>
           </div>
-        </div>
-        <div v-else>
-          <RouterLink to="/login">
-            <ButtonCustom :variant="pink">Đăng nhập</ButtonCustom>
-          </RouterLink>
+          
+          <ul class="dropdown-menu">
+            <li>
+              <RouterLink to="/information" class="dropdown-item">
+                <i class="fas fa-user"></i>
+                Trang cá nhân
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink to="/change-password" class="dropdown-item">
+                <i class="fas fa-key"></i>
+                Đổi mật khẩu
+              </RouterLink>
+            </li>
+            <hr>
+            <li>
+              <a class="dropdown-item" @click.prevent="logout">
+                <i class="fa fa-sign-out"></i>
+                Đăng xuất
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
+      <div v-else>
+        <RouterLink to="/login">
+          <ButtonCustom :variant="pink">Đăng nhập</ButtonCustom>
+        </RouterLink>
+      </div>
+    </div>
     </div>
   </nav>
 </template>
@@ -79,15 +79,17 @@ import { RouterLink, useRouter } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import ButtonCustom from '../Common/ButtonCustom.vue'
 import { TOKEN } from '@/utils/constants.js'
-
+import { jwtDecode } from "jwt-decode";
 
 const router = useRouter()
 const isLoggedIn = ref(false)
-const userName = ref("Kim Ngân")
-
+const userName = ref("")
 
 onMounted(() => {
-  if(sessionStorage.getItem(TOKEN)?.length > 0){
+  if (sessionStorage.getItem(TOKEN)?.length > 0) {
+    const session  = sessionStorage.getItem(TOKEN);
+    const decoded = jwtDecode(session);
+    userName.value = decoded.sub
     isLoggedIn.value = true;
   } else {
     isLoggedIn.value = false
@@ -104,7 +106,7 @@ const logout = () => {
 
 </script>
 <style scoped>
-CircleImageCustom>span{
+CircleImageCustom>span {
   display: none;
 }
 </style>
