@@ -45,15 +45,15 @@
                   </RouterLink>
                 </div>
               </div>
-              <div class="card-body px-lg-5 py-lg-5">
+              <div class="card-body px-lg-5 pb-lg-5">
                 <div class="text-center text-muted mb-1">
 
                 </div>
                 <form role="form" @submit.prevent="register">
                   <div>
                     <label class="text-sm">Họ tên</label>
-                    <div class="form-group">
-                      <div class="input-group input-group-alternative mb-3">
+                    <div class="form-group mb-0">
+                      <div class="input-group input-group-alternative">
                         <div class="input-group-prepend">
                           <span class="input-group-text bg-white"><i class="ni ni-hat-3"></i></span>
                         </div>
@@ -70,9 +70,9 @@
 
                   </div>
                   <div>
-                    <label class="text-sm">Email</label>
-                    <div class="form-group">
-                      <div class="input-group input-group-alternative mb-3">
+                    <label class="text-sm mt-3">Email</label>
+                    <div class="form-group mb-0">
+                      <div class="input-group input-group-alternative">
                         <div class="input-group-prepend">
                           <span class="input-group-text bg-white"><i class="ni ni-email-83"></i></span>
                         </div>
@@ -88,8 +88,8 @@
 
                   </div>
                   <div>
-                    <label class="text-sm">Password</label>
-                    <div class="form-group">
+                    <label class="text-sm mt-3">Password</label>
+                    <div class="form-group mb-0">
                       <div class="input-group mb-0 input-group-alternative">
                         <div class="input-group-prepend">
                           <span class="input-group-text bg-white"><i class="ni ni-lock-circle-open"></i></span>
@@ -105,13 +105,13 @@
                     </small>
 
                   </div>
-
-                  <div class="form-group">
+                  <label class="text-sm mt-3">Chọn vai trò</label>
+                  <div class="form-group mb-0">
                     <div class="input-group input-group-alternative">
                       <select name="" id="" v-model="form.role" class="form-control" required>
-                        <option value="-1" disabled>Chọn vai trò</option>
-                        <option value=3>Học viên</option>
-                        <option value=2>Giáo viên</option>
+                        <option value="-1" disabled >Chọn vai trò</option>
+                        <option value=3 >Học viên</option>
+                        <option value=2 >Giáo viên</option>
                       </select>
                     </div>
                   </div>
@@ -120,7 +120,7 @@
                   <div class="row my-4">
                     <div class="col-12">
                       <div class="custom-control custom-control-alternative custom-checkbox">
-                        <input class="custom-control-input" id="customCheckRegister" type="checkbox">
+                        <input class="custom-control-input" id="customCheckRegister" type="checkbox" v-model="agree">
                         <label class="custom-control-label" for="customCheckRegister">
                           <span class="text-muted">Tôi đông ý với <a href="#!">chính sách sử dụng</a></span>
                         </label>
@@ -128,7 +128,7 @@
                     </div>
                   </div>
                   <div class="text-center">
-                    <button type="submit" class="btn btn-primary mt-4">Tạo tài khoản</button>
+                    <button type="submit" class="btn btn-primary mt-4" :disabled="!agree">Tạo tài khoản</button>
                   </div>
                 </form>
               </div>
@@ -159,9 +159,10 @@ import api from "@/services/axiosMiddleware.js";
 import useVuelidate from '@vuelidate/core'
 import { required, minLength, email } from '@vuelidate/validators'
 
+
 const API = "/auth/register";
 const router = useRouter();
-
+const agree = ref(false);
 const form = ref({
   fullname: "",
   email: "",
@@ -173,7 +174,8 @@ const form = ref({
 const rules = {
   email: { required, email },
   password: { required, minLength: minLength(6) },
-  fullname: { required, minLength: minLength(6) }
+  fullname: { required, minLength: minLength(6) },
+
 };
 
 const $v = useVuelidate(rules, form);
@@ -197,12 +199,11 @@ const register = async () => {
     console.log(payload);
 
     await api.post(API, payload);
-    showSuccess("Đăng ký thành công!");
-
+    // showSuccess("Đăng ký thành công!");
     router.push("/login");
   } catch (error) {
     console.error("Lỗi:", error);
-    showError("Email đã tồn tại, Đăng ký thất bại!");
+    showError("Email đã tồn tại!");
   }
 };
 </script>
