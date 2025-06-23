@@ -66,8 +66,8 @@
                                                 </button>
                                             </div>
                                         </div>
-                                        <div class="small">
-                                            <label>Mã OTP sẽ hết hạn sau {{ countdown }}s</label>
+                                        <div class="small" v-if="countdown > 0">
+                                            <label class="text-danger">Mã OTP sẽ hết hạn sau {{ countdown }}s</label>
                                         </div>
                                     </div>
 
@@ -75,25 +75,32 @@
                                     <div class="form-group">
                                         <label>Nhập Mã OTP</label>
                                         <div class="d-flex justify-content-between">
-                                            <input v-for="(digit, index) in otp" :key="index" maxlength="1" type="text"
+                                            <input v-for="(digit, index) in otp" :key="index" ref="otpInputs"
+                                                maxlength="1" type="text" inputmode="numeric" pattern="[0-9]*"
                                                 class="form-control text-center mx-1" style="max-width: 40px;"
-                                                v-model="otp[index]" />
+                                                v-model="otp[index]" @input="handleInput($event, index)"
+                                                @keydown.backspace="handleBackspace($event, index)" />
                                         </div>
                                     </div>
 
-                                    <!-- Xác nhận -->
-                                    <div class="text-center mt-4">
-                                        <button class="btn btn-primary" type="button" @click="confirmOTP">Xác
-                                            nhận</button>
-                                    </div>
-
                                     <!-- Đổi mật khẩu nếu OTP đúng -->
-                                    <div v-if="otpVerified" class="form-group mt-4">
-                                        <label for="new-password">Mật khẩu mới</label>
-                                        <input class="form-control" id="new-password" type="password"
-                                            v-model="newPassword" placeholder="Nhập mật khẩu mới" />
-                                        <button class="btn btn-success mt-3" type="button" @click="resetPassword">Đổi
+                                    
+                                        <div class="form-group mt-4 position-relative">
+                                            <label for="new-password">Mật khẩu mới</label>
+                                            <input :type="showPassword ? 'text' : 'password'" class="form-control"
+                                                id="new-password" v-model="newPassword"
+                                                placeholder="Nhập mật khẩu mới" />
+                                            <span class="position-absolute" @click="togglePassword"
+                                                style="top: 38px; right: 15px; cursor: pointer">
+                                                <i :class="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'" class="text-dark"></i>
+                                            </span>
+                                        </div>
+                                    
+
+                                    <div class="text-center">
+                                        <button class="btn btn-primary mt-3" type="button" @click="resetPassword">Đổi
                                             mật khẩu</button>
+
                                     </div>
                                 </form>
 
@@ -117,24 +124,62 @@
 <script setup>
 import githubIcon from '@/assets/Admin/img/icons/common/github.svg'
 import googleIcon from '@/assets/Admin/img/icons/common/google.svg'
-import { ref } from 'vue'
 import axios from 'axios'
+import { useRouter, RouterLink } from 'vue-router';
+import { showSuccess, showError } from '@/assets/Admin/js/alert';
+import { ref, nextTick, onMounted } from 'vue'
 
-const email = ref('')
 const otp = ref(Array(6).fill(''))
+const otpInputs = ref([])
+const showPassword = ref(false)
+const email = ref('')
 const countdown = ref(0)
 const otpVerified = ref(false)
 const newPassword = ref('')
 let timer = null
 
+const router = useRouter();
+
+const togglePassword = () => {
+  showPassword.value = !showPassword.value
+}
+const handleInput = (event, index) => {
+    const value = event.target.value
+    if (!/^[0-9]$/.test(value)) {
+        otp.value[index] = ''
+        return
+    }
+
+    // Chuyển sang ô tiếp theo
+    if (value && index < 5) {
+        nextTick(() => {
+            otpInputs.value[index + 1]?.focus()
+        })
+    }
+}
+
+const handleBackspace = (event, index) => {
+    if (!otp.value[index] && index > 0) {
+        nextTick(() => {
+            otpInputs.value[index - 1]?.focus()
+        })
+    }
+}
+
+onMounted(() => {
+    otpInputs.value = Array.from(document.querySelectorAll('input[maxlength="1"]'))
+})
+
+
+
 // Gửi OTP
 const sendOTP = async () => {
     try {
-        await axios.post('/api/auth/send-otp', { email: email.value })
+        await axios.post('http://localhost:8080/api/auth/send-otp', { email: email.value })
         countdown.value = 60
         startCountdown()
     } catch (err) {
-        alert('Lỗi khi gửi OTP!')
+        console.log("Lỗi:" + err)
     }
 }
 
@@ -150,7 +195,7 @@ const startCountdown = () => {
 const confirmOTP = async () => {
     const otpCode = otp.value.join('')
     try {
-        const res = await axios.post('/api/auth/verify-otp', {
+        const res = await axios.post('http://localhost:8080/api/auth/verify-otp', {
             email: email.value,
             otp: otpCode
         })
@@ -158,23 +203,33 @@ const confirmOTP = async () => {
             otpVerified.value = true
         }
     } catch (err) {
-        alert('Mã OTP không đúng hoặc đã hết hạn!')
+        console.log('Mã OTP không đúng hoặc đã hết hạn!' + err)
     }
 }
 
 // Reset mật khẩu
 const resetPassword = async () => {
     try {
-        await axios.post('/api/auth/reset-password', {
-            email: email.value,
-            newPassword: newPassword.value
-        })
-        alert('Đổi mật khẩu thành công!')
-    } catch (err) {
-        alert('Lỗi khi đổi mật khẩu!')
-    }
-}
+        confirmOTP()
 
+        if (otpVerified) {
+            await axios.post('http://localhost:8080/api/auth/reset-password', {
+                email: email.value,
+                newPassword: newPassword.value
+            })
+            showSuccess("Đổi password thành công!")
+            router.push("/login");
+
+        } else {
+            showError("Mã OTP không đúng! hoặc hết hạn")
+        }
+
+
+
+    } catch (err) {
+        console.log("Lỗi:" + err)
+    }
+};
 
 </script>
 <style lang="scss" scoped></style>
