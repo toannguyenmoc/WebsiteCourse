@@ -8,9 +8,6 @@
                             <div class="col">
                                 <h3 class="mb-0">Danh Sách Học Viên</h3>
                             </div>
-                            <!-- <div class="col text-right">
-                                <a href="/admin/student/create" class="btn btn-sm btn-primary">Thêm mới</a>
-                            </div> -->
                         </div>
                     </div>
                     <div class="table">
@@ -34,7 +31,7 @@
                                     <td>{{ student.gender ? 'Nam' : 'Nữ' }}</td>
                                     <td>{{ formatDate(student.registeredDate) }}</td>
                                     <td>
-                                        <CheckboxCustom v-model:model-value="student.active" @click="changeStatus(student.id)" />
+                                        <CheckboxCustom v-model="student.active"  @update:modelValue="changeStatus(student.id)" />
                                     </td>
                                 </tr>
                             </tbody>
@@ -53,16 +50,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 import apiClient from "@/services/axiosMiddleware.js";
 import CheckboxCustom from '@/components/Common/CheckboxCustom.vue';
 import PaginationAdminCustom from '@/components/Common/PaginationAdminCustom.vue';
-import { showConfirm, showSuccess, showError } from '@/assets/Admin/js/alert';
+import { showSuccess, showError } from '@/assets/Admin/js/alert';
 
 const API = "/student";
 const API_UPDATE = "/student/change-status"
-const searchQuery = ref("")
-
 const students = ref([])
 const currentPage = ref(0);
 const totalPages = ref();
@@ -70,15 +65,9 @@ const pageSize = ref(5);
 
 
 const changeStatus = async (id) => {
-    const confirmed = showConfirm("Bạn có chắc muốn thay đổi trạng thái?");
-    if (!confirmed) {
-        return;
-    }
     try {
-        // const student = await apiClient.get(`${API_UPDATE}/${id}`)
-        // console.log("student:" + JSON.stringify(student.data));
-        const result = await apiClient.put(`${API_UPDATE}/${id}`, id);
-        console.log("result:"+ JSON.stringify(result.data));
+        const result = await apiClient.get(`${API_UPDATE}/${id}`);
+        console.log("active:"+ JSON.stringify(result.data.active));
         showSuccess("Cập nhật trạng thái thành công!");
         getUsersList();
     } catch (error) {
@@ -86,8 +75,6 @@ const changeStatus = async (id) => {
         showError("Cập nhật trạng thái thất bại!");
     }
 };
-
-
 
 const getUsersList = async (page, size) => {
     try {
@@ -121,17 +108,7 @@ function formatDate(date) {
     return d.toLocaleDateString('vi-VN')
 }
 
-
-
 onMounted(getUsersList);
-
-//Search by key word
-const filteredUser = computed(() => {
-    return users.value.filter(user =>
-        user.email.toLowerCase().includes(searchQuery.value.toLowerCase())
-    );
-});
-
 
 </script>
 

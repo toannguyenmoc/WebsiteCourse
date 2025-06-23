@@ -50,7 +50,7 @@
               <span>Support</span>
             </a>
             <div class="dropdown-divider"></div>
-            <a href="#!" class="dropdown-item">
+            <a href="" class="dropdown-item">
               <i class="ni ni-user-run"></i>
               <span>Logout</span>
             </a>
@@ -160,6 +160,19 @@
 </template>
 
 <script setup>
+import { RouterLink, useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { TOKEN } from '@/utils/constants.js'
+
+
+const router = useRouter()
+const isLoggedIn = ref(false)
+
+const logout = () => {
+  sessionStorage.removeItem(TOKEN)
+  isLoggedIn.value = false
+  router.push('/login')
+};
 
 </script>
 

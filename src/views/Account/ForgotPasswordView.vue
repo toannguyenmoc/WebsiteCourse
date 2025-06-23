@@ -44,14 +44,14 @@
                                     </RouterLink>
                                 </div>
                             </div>
-                            <div class="card-body px-lg-5 py-lg-5">
+                            <div class="card-body px-lg-5 pb-lg-5">
                                 <div class="text-center text-muted mb-4">
 
                                 </div>
                                 <form role="form">
                                     <!-- Email -->
                                     <div class="form-group mb-3">
-                                        <label for="email">Email</label>
+                                        <label for="email" class="text-sm">Email</label>
                                         <div class="input-group input-group-alternative">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text bg-white"><i
@@ -103,28 +103,9 @@
         </div>
     </body>
 </template>
-<script>
-import whiteLogo from '@/assets/Admin/img/brand/white.png'
-import blueLogo from '@/assets/Admin/img/brand/blue.png'
+<script setup>
 import githubIcon from '@/assets/Admin/img/icons/common/github.svg'
 import googleIcon from '@/assets/Admin/img/icons/common/google.svg'
 
-export default {
-    name: 'LoginView',
-    data() {
-        return {
-            whiteLogo,
-            githubIcon,
-            googleIcon,
-            blueLogo
-        }
-    }
-
-}
-import ButtonCustom from '@/components/Common/ButtonCustom.vue'
-
-function handleClick() {
-    console.log('Button clicked!')
-}
 </script>
 <style lang="scss" scoped></style>
