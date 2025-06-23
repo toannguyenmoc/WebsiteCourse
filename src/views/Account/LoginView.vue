@@ -45,8 +45,8 @@
                                     </RouterLink>
                                 </div>
                             </div>
-                            <div class="card-body px-lg-5 py-lg-5">
-                                <div class="text-center text-muted mb-4">
+                            <div class="card-body px-lg-5 pb-lg-5">
+                                <div class="text-center text-muted mb-1">
 
                                 </div>
                                 <form role="form" @submit.prevent="login">
@@ -122,12 +122,11 @@ import { ref } from 'vue';
 import { useRouter, RouterLink } from 'vue-router';
 import CryptoJS from 'crypto-js';
 import { jwtDecode } from "jwt-decode";
-import { Role, TOKEN } from "@/utils/constants.js";
-import api from "@/services/axiosMiddleware.js";
+import { TOKEN } from "@/utils/constants.js";
 import { showSuccess, showError } from '@/assets/Admin/js/alert'
+import axios from 'axios';
 
-const API = "/auth/login";
-// const code = "859703373367639792F=="
+const API = "http://localhost:8080/api/auth/login";
 const router = useRouter();
 
 const form = ref({
@@ -156,40 +155,50 @@ const login = async () => {
         return;
     }
 
-    try {
-        console.log("Dữ liệu gửi đi:", JSON.stringify(form.value));
-        const payload = {
-            email: form.value.email,
-            password: form.value.password
-        }
-        console.log(payload);
 
-        const response = await api.post(API, payload)
+    console.log("Dữ liệu gửi đi:", JSON.stringify(form.value));
+    const payload = {
+        email: form.value.email,
+        password: form.value.password
+    }
+    console.log(payload);
+    try {
+        const response = await axios.post(API, payload)
+        console.log("response:" + response);
 
         if (response?.data?.length > 0) {
-            // console.log("TOKEN" + response.data)
+
             sessionStorage.setItem(TOKEN, response.data);
 
             const decoded = jwtDecode(response?.data);
             const role = decoded.role[0].authority;
-            // console.log("role:", JSON.stringify(decoded.role[0].authority, null, 2))
+
+            console.log("decode", JSON.stringify(decoded, null, 2))
 
             if (role === 'Admin') {
                 await router.push("/admin");
             } else {
                 await router.push("/");
+                window.location.reload();
             }
-            window.location.reload();
         } else {
+            showError("Tài khoản không có quyền truy cập");
             console.log(response.data);
         }
-
     } catch (error) {
-        console.error("Lỗi: ", error.response.status);
-        showError("Lỗi đăng nhập")
+        console.log(error);
+        if (error.response) {
+            const status = error.response.status;
+            const message = error.response.data;
+
+            if (status !== 200) {
+                showError(message);
+            }
+        } 
     }
 };
 
+// const code = "859703373367639792F=="
 // function encryptData(plainText, base64Key) {
 //     var key = CryptoJS.enc.Base64.parse(base64Key);
 //     var iv = CryptoJS.lib.WordArray.random(16);
