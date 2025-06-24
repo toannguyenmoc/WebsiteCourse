@@ -77,6 +77,9 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { useLessons } from '@/composables/useLessons';
 import { getData } from '@/services/apiMiddleware';
+import { getUserId } from '@/utils/getUserIdUtils';
+import {showAlert} from '@/assets/Admin/js/alert';
+
 const router = useRouter();
 const route = useRoute();
 const useLesson = ref({});
@@ -105,6 +108,11 @@ watch(() => route.params.id, async (newValue)=>{
 //load data
 onMounted(async() => {
   try {
+    if(!getUserId()){
+      router.push('/login');
+      await showAlert("Đăng nhập để tiếp tục!");
+      return;
+    }
     id.value = sessionStorage.getItem("courseId");
     const data = await getData("/lesson", {courseId: id.value, page: 0, size: 9999});
     lessons.value = data.data.filter(ls => ls.status).sort((a, b) => a.lesson - b.lesson);

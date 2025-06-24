@@ -3,7 +3,7 @@
     <section class="ftco-section bg-light">
         <div class="container">
             <form class="report-form" @submit.prevent="create">
-                <h2>🚩 Báo Cáo Video Vi Phạm</h2>
+                <h2>Báo Cáo Video Vi Phạm</h2>
                 <div class="form-group">
                     <div class="card mb-3 w-100">
                         <div class="row no-gutters">
@@ -12,7 +12,7 @@
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
-                                    <RouterLink :to="`/course-detail/${getCourse.id}`" class="card-title h5">{{
+                                    <RouterLink :to="`/course-detail/${getCourse.slug}`" class="card-title h5">{{
                                         getCourse.title }}</RouterLink>
                                     <p class="card-text">
                                         Giáo viên: <span class="text-primary">{{ getCourse.accountTeacher }}</span><br>
@@ -81,11 +81,15 @@
 import ClientBanner from '@/components/Client/ClientBanner.vue';
 import { useCourses } from '@/composables/useCourses';
 import { useReports } from '@/composables/useReports';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch, onMounted } from 'vue';
 import { showError, showSuccess } from '@/assets/Admin/js/alert';
 import { required, minLength, helpers } from '@vuelidate/validators';
 import useVuelidate from '@vuelidate/core';
+import { getUserId } from '@/utils/getUserIdUtils';
+import { useRouter } from 'vue-router';
 
+
+const router = useRouter();
 const { course, fetchCourseById } = useCourses();
 const getCourse = ref({});
 const courseId = sessionStorage.getItem("courseId");
@@ -95,12 +99,20 @@ const isOrther = ref(false);
 const form = ref({
     reason: '',
     description: '',
-    accountId: 1,
+    accountId: getUserId(),
     courseId: courseId,
     orther: ''
 });
 
-fetchCourseById(courseId);
+onMounted( async() => {
+    if(!getUserId()){
+        router.push('/login');
+        return;
+    }
+    await fetchCourseById(courseId);
+    
+});
+
 watch(course, () => {
     getCourse.value = course.value;
 });
