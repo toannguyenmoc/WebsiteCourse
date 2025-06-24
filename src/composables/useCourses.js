@@ -5,7 +5,8 @@ import {
   createCourse,
   updateCourse,
   deleteCourse,
-  checkSlug
+  checkSlug,
+  getCoursesByAccount
 } from '@/api/courseApi'
 
 export function useCourses() {
@@ -97,6 +98,20 @@ export function useCourses() {
   }
 };
 
+const fetchCoursesByAccount = async (accountId, page = currentPage.value, size = pageSize.value) => {
+  loading.value = true
+  try {
+    const res = await getCoursesByAccount(accountId, page, size)
+    courses.value = res.data.data
+    currentPage.value = res.data.currentPage
+    totalPages.value = res.data.totalPages
+    totalItems.value = res.data.totalItems
+  } catch (err) {
+    error.value = err
+  } finally {
+    loading.value = false
+  }
+}
 
   const fetchAllCourses = async () => {
   loading.value = true
@@ -148,6 +163,7 @@ export function useCourses() {
     addCourse,
     editCourse,
     removeCourse,
-    checkSlugExistence
+    checkSlugExistence,
+    fetchCoursesByAccount
   }
 }

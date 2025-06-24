@@ -49,3 +49,16 @@ export const checkSlug = slug =>
     params: { slug }
   });
 
+export const getCoursesByAccount = (
+  accountId,
+  page = 0,
+  size = 5
+) => {
+  const params = new URLSearchParams();
+  params.append('accountId', accountId);
+  params.append('page', page);
+  params.append('size', size);
+
+  return api.get('/course/by-account?' + params.toString());
+};
+

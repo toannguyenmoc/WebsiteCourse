@@ -9,7 +9,7 @@
                                 <h3 class="mb-0">Danh Sách Khoá Học</h3>
                             </div>
                             <div class="col text-right">
-                                <a href="/admin/course/create" class="btn btn-sm btn-primary">Thêm mới</a>
+                                <a href="/teacher/course/create" class="btn btn-sm btn-primary">Thêm mới</a>
                             </div>
                         </div>
                     </div>
@@ -116,32 +116,35 @@ import LogoBootstrap from '@/assets/Admin/images/theme/bootstrap.jpg'
 import DropdownActionCustom from '@/components/Common/DropdownActionCustom.vue';
 import { useCourses } from '@/composables/useCourses'
 import PaginationAdminCustom from '@/components/Common/PaginationAdminCustom.vue';
+import { getUserId } from '@/utils/getUserIdUtils'
+import { onMounted } from 'vue'
 
 const router = useRouter()
+const userId = getUserId()
 
 const {
     courses,
     loading,
     error,
-    fetchCourses,
+    fetchCoursesByAccount,
     removeCourse,
     currentPage,
     totalPages,
-    pageSize,
-    keyword,
-    minPrice,
-    maxPrice,
-    courseTypeIds
+    pageSize
 } = useCourses()
+
+onMounted(() => {
+  fetchCoursesByAccount(userId, currentPage.value, pageSize.value)
+})
 
 const goToPage = (page) => {
     if (page < 0 || page >= totalPages.value) return
-    fetchCourses(page, pageSize.value, keyword.value, minPrice.value, maxPrice.value, courseTypeIds.value)
+    fetchCoursesByAccount(userId, page, pageSize.value)
 }
 
 const handlePageSizeChange = (newPageSize) => {
     pageSize.value = newPageSize
-    fetchCourses(0, newPageSize, keyword.value, minPrice.value, maxPrice.value, courseTypeIds.value)
+    fetchCoursesByAccount(userId, 0, newPageSize)
 }
 
 const formatDate = (date) => {
@@ -155,7 +158,7 @@ const formatDate = (date) => {
 //function chuyên trang
 const handleEdit = (course) => {
     //Chuyển trang để sửa
-    router.push(`/admin/course/update/${course.id}`)
+    router.push(`/teacher/course/update/${course.id}`)
 }
 
 //function xóa
@@ -166,6 +169,7 @@ const handleDelete = (course) => {
 
         //Thông báo xóa thành công
         showSuccess("Xóa thành công!");
+        fetchCoursesByAccount(userId, currentPage.value, pageSize.value)
     }
 }
 
