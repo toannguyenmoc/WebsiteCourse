@@ -86,7 +86,7 @@ const router = createRouter({
       path: '/admin',
       component: AdminLayout, 
       redirect: "/admin/dashboard",
-      meta: { requiresAdmin: true , role: ['Admin']}, // Chỉ admin mới truy cập được
+     // meta: { requiresAdmin: true , role: ['Admin']}, // Chỉ admin mới truy cập được
       children: [
         { path: 'dashboard', name: 'dashboard', component: AdminDashboardView },
         {
