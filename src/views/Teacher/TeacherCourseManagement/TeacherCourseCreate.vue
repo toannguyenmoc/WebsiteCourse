@@ -82,7 +82,7 @@
                                                     <input class="custom-control-input" type="radio" name="status"
                                                         id="status-false" :checked="form.status === false"
                                                         @change="form.status = false" />
-                                                    <label class="custom-control-label" for="status-false">Chưa Hoạt
+                                                    <label class="custom-control-label" for="status-false">Ngừng Hoạt
                                                         Động</label>
                                                 </div>
                                             </div>
@@ -247,7 +247,7 @@ const handleSubmit = async () => {
         price: form.price,
         createdDate: form.createdDate,
         status: form.status,
-        accountId: userId,
+        accountId: 1,
         courseTypeId: form.courseTypeId,
         commissionId: form.commissionId
     }

@@ -38,6 +38,18 @@ import ClientReportView from '@/views/Client/ClientReportView.vue';
 import { createRouter, createWebHistory } from 'vue-router'
 import {jwtDecode} from "jwt-decode";
 import { showError } from '@/assets/Admin/js/alert'
+import TeacherLayout from '@/layouts/TeacherLayout.vue';
+import TeacherDashboardView from '@/views/Teacher/TeacherDashboardView.vue';
+import TeacherCourseList from '@/views/Teacher/TeacherCourseManagement/TeacherCourseList.vue';
+import TeacherCourseCreate from '@/views/Teacher/TeacherCourseManagement/TeacherCourseCreate.vue';
+import TeacherCourseUpdate from '@/views/Teacher/TeacherCourseManagement/TeacherCourseUpdate.vue';
+import TeacherLessonList from '@/views/Teacher/TeacherLessonManagement/TeacherLessonList.vue';
+import TeacherLessonCreate from '@/views/Teacher/TeacherLessonManagement/TeacherLessonCreate.vue';
+import TeacherLessonUpdate from '@/views/Teacher/TeacherLessonManagement/TeacherLessonUpdate.vue';
+import TeacherStudentList from '@/views/Teacher/TeacherStudentManagement/TeacherStudentList.vue';
+import TeacherStudentCreate from '@/views/Teacher/TeacherStudentManagement/TeacherStudentCreate.vue';
+import TeacherPaymentList from '@/views/Teacher/TeacherPayment/TeacherPaymentList.vue';
+import TeacherStatisticalView from '@/views/Teacher/TeacherStatistical/TeacherStatisticalView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -132,6 +144,48 @@ const router = createRouter({
 
       ],
     },
+
+    //teacher
+    {
+      path: '/teacher',
+      component: TeacherLayout, 
+      redirect: "/teacher/teacher-dashboard",
+      meta: { requiresTeacher: true , role: ['Teacher']}, // Chỉ teacher mới truy cập được
+      children: [
+        { path: 'dashboard', name: 'teacher-dashboard', component: TeacherDashboardView },
+        {
+          path: 'course',
+          children: [
+            { path: 'list', name: 'teacher-course-list', component: TeacherCourseList },
+            { path: 'create', name: 'teacher-course-create', component: TeacherCourseCreate },
+            { path: 'update/:id', name: 'teacher-course-update', component: TeacherCourseUpdate },
+          ],
+        },
+        {
+          path: 'lesson',
+          children: [
+            { path: 'list', name: 'teacher-lesson-list', component: TeacherLessonList },
+            { path: 'create', name: 'teacher-lesson-create', component: TeacherLessonCreate },
+            { path: 'update/:id', name: 'teacher-lesson-update', component: TeacherLessonUpdate },
+          ],
+        },
+        {
+          path: 'student',
+          children: [
+            { path: 'list', name: 'teacher-student-list', component: TeacherStudentList },
+            { path: 'create', name: 'teacher-student-create', component: TeacherStudentCreate },
+          ],
+        },
+        {
+          path: 'payment',
+          children: [
+            { path: 'list', name: 'teacher-payment-list', component: TeacherPaymentList },
+          ],
+        },
+        { path: 'statistical', name: 'teacher-statistical', component: TeacherStatisticalView }
+
+      ],
+    }
   ],
 });
 
