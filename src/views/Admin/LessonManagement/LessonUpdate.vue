@@ -22,16 +22,16 @@
 
                                             <div class="form-group">
                                                 <label class="form-control-label">Khoá Học</label>
-                                                <select v-model="form.courseId" @blur="v$.courseId.$touch()"
-                                                    @change="v$.courseId.$touch()"
+                                                <select v-model="form.courseId" @blur="$v.courseId.$touch()"
+                                                    @change="$v.courseId.$touch()"
                                                     class="form-select form-control form-control-alternative">
                                                     <option v-for="type in courses" :key="type.id" :value="type.id">
                                                         {{ type.title }}
                                                     </option>
                                                 </select>
                                                 <small class="text-danger"
-                                                    v-if="v$.courseId.$dirty && v$.courseId.$error">
-                                                    <span>{{ v$.courseId.$errors[0].$message }}</span>
+                                                    v-if="$v.courseId.$dirty && $v.courseId.$error">
+                                                    <span>{{ $v.courseId.$errors[0].$message }}</span>
                                                 </small>
 
 
@@ -46,9 +46,9 @@
                                                 <input type="text" id="lesson-name" v-model="form.title"
                                                     class="form-control form-control-alternative"
                                                     placeholder="Tên bài học">
-                                                <div v-if="$v.title.$error" class="text-danger">
-                                                    {{ $v.title.$errors[0].$message }}
-                                                </div>
+                                               <small class="text-danger" v-if="$v.title.$error">
+                                                    <span>{{ $v.title.$errors[0].$message }}</span>
+                                                </small>
                                             </div>
 
                                         </div>
@@ -61,9 +61,9 @@
                                                 <input type="number" min="1" step="1" id="lesson-no"
                                                     v-model="form.lesson" class="form-control form-control-alternative"
                                                     placeholder="Nhập số thứ tự bài học">
-                                                <div v-if="$v.lesson.$error" class="text-danger">
-                                                    {{ $v.lesson.$errors[0].$message }}
-                                                </div>
+                                                <small class="text-danger" v-if="$v.lesson.$error">
+                                                    <span>{{ $v.lesson.$errors[0].$message }}</span>
+                                                </small>
                                             </div>
 
                                         </div>
@@ -117,9 +117,11 @@
                                         <textarea rows="4" class="form-control form-control-alternative"
                                             placeholder="Mô tả về bài học của bạn ..."
                                             v-model="form.description"></textarea>
-                                        <div v-if="$v.description.$error" class="text-danger">
-                                            {{ $v.description.$errors[0].$message }}
-                                        </div>
+                                        <small class="text-danger" v-if="$v.description.$error">
+                                                    <span>{{ $v.description.$errors[0].$message }}</span>
+                                                </small>
+
+                                        
                                     </div>
 
                                 </div>

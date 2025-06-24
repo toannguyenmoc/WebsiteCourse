@@ -16,7 +16,8 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">STT</th>
-                                    <th scope="col">Tên</th>
+                                    <th scope="col">Tên Giáo Viên</th>
+                                    <th scope="col">Tên Học Sinh</th>
                                     <th scope="col">Tên Khoá Học</th>
                                     <th scope="col">Ngày thanh toán</th>
                                     <th scope="col">Chiết khấu</th>
@@ -27,7 +28,8 @@
                             <tbody>
                                 <tr v-for="(payment, index) in payments" :key="payment.id">
                                     <td>{{ index + 1 }}</td>
-                                    <td>{{ payment.accountFullname }}</td>
+                                    <td>{{ payment.accountTeacherName }}</td>
+                                    <td>{{ payment.accountStudentName }}</td>
                                     <td>{{ payment.courseName }}</td>
                                      <td>{{ formatDate(payment.registrationDate)}}</td>
                                     <td>{{ payment.discount}}%</td>
