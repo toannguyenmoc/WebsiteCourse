@@ -172,7 +172,7 @@ const create = async () => {
             accountId: route.query.vnp_OrderInfo.split("_")[1],
             courseId: route.query.vnp_OrderInfo.split("_")[2],
         }
-        const res = await postData('/payment' + window.location.search,data);;
+        const res = await postData('/payment' + window.location.search,data);
         if (res) {
             await checkCoursePayment();
             await showSuccess('Thanh toán thành công!');
@@ -287,6 +287,7 @@ const formatPrice = (value) => {
 .truncate-3-lines {
     display: -webkit-box !important;
     -webkit-line-clamp: 3 !important;
+    line-clamp: 3 !important;
     /* Số dòng muốn hiển thị */
     -webkit-box-orient: vertical !important;
     overflow: hidden !important;
