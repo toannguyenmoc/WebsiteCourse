@@ -76,7 +76,7 @@
 </template>
 <script setup>
 import { RouterLink, useRouter } from 'vue-router'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watchEffect } from 'vue'
 import ButtonCustom from '../Common/ButtonCustom.vue'
 import { TOKEN } from '@/utils/constants.js'
 import { jwtDecode } from "jwt-decode";
@@ -85,18 +85,17 @@ const router = useRouter()
 const isLoggedIn = ref(false)
 const userName = ref("")
 
-onMounted(() => {
-  if (sessionStorage.getItem(TOKEN)?.length > 0) {
-    const session  = sessionStorage.getItem(TOKEN);
-    const decoded = jwtDecode(session);
+watchEffect(() => {
+  const token = sessionStorage.getItem(TOKEN)
+  if (token) {
+    const decoded = jwtDecode(token)
     userName.value = decoded.sub
-    isLoggedIn.value = true;
+    isLoggedIn.value = true
   } else {
     isLoggedIn.value = false
+    userName.value = ''
   }
-
-  console.log("logined:" + isLoggedIn.value)
-});
+})
 
 const logout = () => {
   sessionStorage.removeItem(TOKEN)

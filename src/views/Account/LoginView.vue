@@ -118,7 +118,7 @@ import githubIcon from '@/assets/Admin/img/icons/common/github.svg'
 import googleIcon from '@/assets/Admin/img/icons/common/google.svg'
 import useVuelidate from '@vuelidate/core'
 import { required, minLength, email } from '@vuelidate/validators'
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter, RouterLink } from 'vue-router';
 import CryptoJS from 'crypto-js';
 import { jwtDecode } from "jwt-decode";
@@ -139,6 +139,12 @@ const showPassword = ref(false);
 const togglePassword = () => {
     showPassword.value = !showPassword.value;
 };
+
+const resetSession = () => {
+  sessionStorage.removeItem(TOKEN)
+};
+
+onMounted(resetSession)
 
 const rules = {
     email: { required, email },

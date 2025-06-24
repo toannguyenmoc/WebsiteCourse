@@ -130,18 +130,14 @@ const $v = useVuelidate(rules, form);
 
 const changePassword = async () => {
 	const isValid = await $v.value.$validate();
-
 	if (!isValid) {
 		showError("Vui lòng kiểm tra lại thông tin!");
 		return;
 	}
-
-
 	if (form.value.newPassword !== form.value.confirmPassword) {
 		showError("Xác nhận mật khẩu không đúng!");
 		return;
 	}
-
 	const id = getUserId();
 	console.log("id :" + id);
 	try {
@@ -151,16 +147,16 @@ const changePassword = async () => {
 			newPassword: form.value.newPassword
 		}
 
-		console.log("payload :" + JSON.stringify(payload));
+		// console.log("payload :" + JSON.stringify(payload));
 
 		const result = await apiClient.put(`${API}/${id}`, payload);
 
-		console.log("Cập nhật mật khẩu thành công:", JSON.stringify(result.data));
+		// console.log("Cập nhật mật khẩu thành công:", JSON.stringify(result.data));
 
 		showSuccess("Cập nhật thành công!")
 
 		sessionStorage.removeItem('TOKEN')
-		// router.push("/login");
+		router.push("/login");
 		// window.location.reload();
 	} catch (error) {
 		console.error("Lỗi khi cập nhật thông tin:", error);
