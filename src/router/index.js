@@ -50,10 +50,11 @@ import TeacherStudentList from '@/views/Teacher/TeacherStudentManagement/Teacher
 import TeacherStudentCreate from '@/views/Teacher/TeacherStudentManagement/TeacherStudentCreate.vue';
 import TeacherPaymentList from '@/views/Teacher/TeacherPayment/TeacherPaymentList.vue';
 import TeacherStatisticalView from '@/views/Teacher/TeacherStatistical/TeacherStatisticalView.vue';
+import NotFoundView from '@/views/NotFoundView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
+  routes: [ 
     //client
     {
       path: '/',
@@ -76,6 +77,7 @@ const router = createRouter({
         { path: 'report', name: 'report', component: ClientReportView },
         { path: 'information', name: 'information', component: InformationUserView },
         { path: 'change-password', name: 'change-password', component: ChangePasswordView },
+        { path: "/:pathMatch(.*)*", name: "NotFound", component: NotFoundView }
       ],
     },
 
@@ -149,7 +151,7 @@ const router = createRouter({
     {
       path: '/teacher',
       component: TeacherLayout, 
-      redirect: "/teacher/teacher-dashboard",
+      redirect: "/teacher/dashboard",
       meta: { requiresTeacher: true , role: ['Teacher']}, // Chỉ teacher mới truy cập được
       children: [
         { path: 'dashboard', name: 'teacher-dashboard', component: TeacherDashboardView },
@@ -190,7 +192,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from) => {
-  if (to.meta.requiresAdmin) {
+  if (to.meta.requiresAdmin ) {
     const token = sessionStorage.getItem('TOKEN');
     if (!token) {
       showError("Không có quyền truy cập!");
@@ -199,7 +201,23 @@ router.beforeEach(async (to, from) => {
 
     const decoded = jwtDecode(token);
     const role = decoded.role[0].authority;
+    // console.log("role:" + role)
+    if (!role || !to.meta.role || !to.meta.role.includes(role)) {
+      showError("Bạn không có quyền truy cập!");
+      return { path: '/login' };
+    }
+  }
 
+  if (to.meta.requiresTeacher) {
+    const token = sessionStorage.getItem('TOKEN');
+    if (!token) {
+      showError("Không có quyền truy cập!");
+      return { path: '/login' };
+    }
+
+    const decoded = jwtDecode(token);
+    const role = decoded.role[0].authority;
+    console.log("role:" + role)
     if (!role || !to.meta.role || !to.meta.role.includes(role)) {
       showError("Bạn không có quyền truy cập!");
       return { path: '/login' };
