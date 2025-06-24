@@ -203,7 +203,7 @@ const handleImageUpload = async (event) => {
 
 const formatDate = (date) => {
   const d = new Date(date)
-  const day = String(d.getDate() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
   const month = String(d.getMonth() + 1).padStart(2, '0')
   const year = d.getFullYear()
   return `${day}/${month}/${year}`
@@ -223,6 +223,7 @@ const loadCourse = async () => {
     form.description = data.description
     form.image = data.image
     form.price = data.price
+    form.createdDate = data.createdDate
     form.status = data.status
     form.accountId = data.accountId
     form.courseTypeId = data.courseTypeId
@@ -246,11 +247,11 @@ const handleUpdate = async () => {
     description: form.description,
     image: form.image,
     price: form.price,
-    createdDate: formatDate(form.createdDate),
+    createdDate: form.createdDate,
     status: form.status,
     accountId: 1,
     courseTypeId: form.courseTypeId,
-    commissionId: 1
+    commissionId: form.commissionId
   }
 
   try {

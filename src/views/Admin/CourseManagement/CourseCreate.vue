@@ -170,7 +170,26 @@ const hiddenFileInput = ref(null)
 onMounted(async () => {
     courseTypes.value = await fetchAllCourseTypes()
     commissions.value = await fetchAllCommissions()
+
+    form.commissionId = findValidCommissionId(commissions.value, form.createdDate);
 })
+
+const parseDate = (dateStr) => {
+    const [day, month, year] = dateStr.split('/');
+    return new Date(`${year}-${month}-${day}`);
+};
+
+const findValidCommissionId = (commissionsList, createdDate) => {
+    const created = new Date(createdDate); 
+
+    const valid = commissionsList.filter(c => {
+        const effDate = parseDate(c.effectiveDate);
+        return effDate <= created;
+    });
+
+    return valid.length > 0 ? valid[0].id : '';
+};
+
 
 const slugify = (text) =>
     text
@@ -199,14 +218,10 @@ watch(() => form.title, (newTitle) => {
     validateSlug()
 })
 
-const selectedCommission = computed(() => {
-    return commissions.value.find(c => c.id === form.commissionId)
-})
-
 // Format ngày sang dd/MM/yyyy
 const formatDate = (date) => {
     const d = new Date(date)
-    const day = String(d.getDate() + 1).padStart(2, '0')
+    const day = String(d.getDate()).padStart(2, '0')
     const month = String(d.getMonth() + 1).padStart(2, '0')
     const year = d.getFullYear()
     return `${day}/${month}/${year}`
@@ -226,11 +241,11 @@ const handleSubmit = async () => {
         image: form.image,
         description: form.description,
         price: form.price,
-        createdDate: formatDate(form.createdDate),
+        createdDate: form.createdDate,
         status: form.status,
         accountId: 1,
         courseTypeId: form.courseTypeId,
-        commissionId: 1
+        commissionId: form.commissionId
     }
 
     try {
