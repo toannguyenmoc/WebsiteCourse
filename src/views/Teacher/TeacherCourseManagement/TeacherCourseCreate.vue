@@ -133,7 +133,7 @@
                                 </div>
                                 <hr class="my-4" />
                                 <div class="d-flex justify-content-between">
-                                    <RouterLink to="/admin/course/list" class="btn btn-secondary">Quay lại</RouterLink>
+                                    <RouterLink to="/teacher/course/list" class="btn btn-secondary">Quay lại</RouterLink>
                                     <button class="btn btn-primary">Thêm Khoá học</button>
                                 </div>
                             </form>
@@ -247,7 +247,7 @@ const handleSubmit = async () => {
         price: form.price,
         createdDate: form.createdDate,
         status: form.status,
-        accountId: 1,
+        accountId: userId,
         courseTypeId: form.courseTypeId,
         commissionId: form.commissionId
     }
@@ -256,7 +256,7 @@ const handleSubmit = async () => {
         await addCourse(payload)
 
         await showSuccess("Thêm thành công!")
-        router.push('/admin/course/list')
+        router.push('/teacher/course/list')
     } catch (err) {
         showError("Thêm thất bại!")
         console.error("Lỗi khi thêm khoá học:")
