@@ -163,7 +163,6 @@ const login = async () => {
         return;
     }
 
-
     console.log("Dữ liệu gửi đi:", JSON.stringify(form.value));
     const payload = {
         email: form.value.email,
@@ -185,6 +184,8 @@ const login = async () => {
 
             if (role === 'Admin') {
                 await router.push("/admin");
+            } else if(role === 'Teacher') {
+                await router.push("/teacher");
             } else {
                 await router.push("/");
                 window.location.reload();
