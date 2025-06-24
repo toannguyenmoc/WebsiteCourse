@@ -156,6 +156,7 @@ import { useCommissions } from '@/composables/useCommissions'
 import { uploadImageToCloudinary } from "@/utils/uploadImageUtils";
 import useVuelidate from '@vuelidate/core';
 import { required, minLength, numeric, helpers, minValue, maxValue } from '@vuelidate/validators';
+import { getUserId } from '@/utils/getUserIdUtils'
 
 const router = useRouter()
 const { addCourse, fetchAllCourses } = useCourses()
@@ -166,6 +167,9 @@ const courseTypes = ref([])
 const commissions = ref([])
 const previewImage = ref(null)
 const hiddenFileInput = ref(null)
+const userId = getUserId()
+
+console.log(userId);
 
 onMounted(async () => {
     courseTypes.value = await fetchAllCourseTypes()

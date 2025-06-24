@@ -249,7 +249,7 @@ const handleUpdate = async () => {
     price: form.price,
     createdDate: form.createdDate,
     status: form.status,
-    accountId: 1,
+    accountId: form.accountId,
     courseTypeId: form.courseTypeId,
     commissionId: form.commissionId
   }
