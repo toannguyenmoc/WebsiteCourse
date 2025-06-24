@@ -57,7 +57,7 @@
             </li>
             <hr>
             <li>
-              <a class="dropdown-item" @click.prevent="logout">
+              <a class="dropdown-item" @click.prevent="handleLogout">
                 <i class="fa fa-sign-out"></i>
                 Đăng xuất
               </a>
@@ -78,30 +78,17 @@
 import { RouterLink, useRouter } from 'vue-router'
 import { ref, onMounted, watchEffect } from 'vue'
 import ButtonCustom from '../Common/ButtonCustom.vue'
-import { TOKEN } from '@/utils/constants.js'
-import { jwtDecode } from "jwt-decode";
 
+import { useAuth } from '@/utils/authStore'
+
+const { isLoggedIn, userName, logout } = useAuth()
 const router = useRouter()
-const isLoggedIn = ref(false)
-const userName = ref("")
 
-watchEffect(() => {
-  const token = sessionStorage.getItem(TOKEN)
-  if (token) {
-    const decoded = jwtDecode(token)
-    userName.value = decoded.sub
-    isLoggedIn.value = true
-  } else {
-    isLoggedIn.value = false
-    userName.value = ''
-  }
-})
-
-const logout = () => {
-  sessionStorage.removeItem(TOKEN)
-  isLoggedIn.value = false
+const handleLogout = () => {
+  logout()
   router.push('/login')
-};
+}
+
 
 </script>
 <style scoped>

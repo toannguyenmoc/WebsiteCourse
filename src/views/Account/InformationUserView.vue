@@ -152,7 +152,7 @@ const updateUser = async () => {
     const isValid = await $v.value.$validate();
 
     if (!isValid) {
-        showError("Vui lòng kiểm tra lại thông tin!");
+        // showError("Vui lòng kiểm tra lại thông tin!");
         return;
     }
 
