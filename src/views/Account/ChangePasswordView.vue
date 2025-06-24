@@ -109,6 +109,10 @@ import apiClient from "@/services/axiosMiddleware.js";
 import { getUserId } from '@/utils/getUserIdUtils';
 import { ref } from 'vue';
 import { useRouter, RouterLink } from 'vue-router';
+import { useAuth } from '@/utils/authStore'
+
+const { logout } = useAuth()
+
 
 
 const API = '/auth/change-password'
@@ -131,7 +135,7 @@ const $v = useVuelidate(rules, form);
 const changePassword = async () => {
 	const isValid = await $v.value.$validate();
 	if (!isValid) {
-		showError("Vui lòng kiểm tra lại thông tin!");
+		// showError("Vui lòng kiểm tra lại thông tin!");
 		return;
 	}
 	if (form.value.newPassword !== form.value.confirmPassword) {
@@ -155,7 +159,7 @@ const changePassword = async () => {
 
 		showSuccess("Cập nhật thành công!")
 
-		sessionStorage.removeItem('TOKEN')
+		logout()
 		router.push("/login");
 		// window.location.reload();
 	} catch (error) {

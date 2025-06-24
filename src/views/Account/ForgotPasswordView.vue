@@ -223,9 +223,6 @@ const resetPassword = async () => {
         } else {
             showError("Mã OTP không đúng! hoặc hết hạn")
         }
-
-
-
     } catch (err) {
         console.log("Lỗi:" + err)
     }
