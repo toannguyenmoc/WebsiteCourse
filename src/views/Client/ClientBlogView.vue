@@ -13,7 +13,7 @@
             :comments="blog.comments"
             :link="blog.link" />
           <div class="mx-auto">
-            <PaginationCustom />
+            <!-- <PaginationCustom /> -->
           </div>
         </div>
       </div>
@@ -44,6 +44,33 @@ const blogs = [
     author: 'Admin',
     comments: 5,
     link: '/bai-viet/ky-nang-lap-trinh'
+  },
+  {
+    image: new URL('@/assets/Client/images/image_3.jpg', import.meta.url).href,
+    title: 'Lộ trình học lập trình cho người mới',
+    description: 'Tổng hợp các bước học hiệu quả từ căn bản đến nâng cao.',
+    date: '27/05/2025',
+    author: 'Admin',
+    comments: 7,
+    link: '/bai-viet/lo-trinh-hoc-lap-trinh'
+  },
+  {
+    image: new URL('@/assets/Client/images/image_3.jpg', import.meta.url).href,
+    title: 'Lộ trình học lập trình cho người mới',
+    description: 'Tổng hợp các bước học hiệu quả từ căn bản đến nâng cao.',
+    date: '27/05/2025',
+    author: 'Admin',
+    comments: 7,
+    link: '/bai-viet/lo-trinh-hoc-lap-trinh'
+  },
+  {
+    image: new URL('@/assets/Client/images/image_3.jpg', import.meta.url).href,
+    title: 'Lộ trình học lập trình cho người mới',
+    description: 'Tổng hợp các bước học hiệu quả từ căn bản đến nâng cao.',
+    date: '27/05/2025',
+    author: 'Admin',
+    comments: 7,
+    link: '/bai-viet/lo-trinh-hoc-lap-trinh'
   },
   {
     image: new URL('@/assets/Client/images/image_3.jpg', import.meta.url).href,
