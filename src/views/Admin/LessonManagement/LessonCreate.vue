@@ -42,7 +42,9 @@
                                                 <input v-model="form.title" type="text"
                                                     id="lesson-name" class="form-control form-control-alternative"
                                                     placeholder="Tên bài học">
-
+<small class="text-danger" v-if="$v.title.$error">
+                                                    <span>{{ $v.title.$errors[0].$message }}</span>
+                                                </small>
 
                                             </div>
                                         </div>
@@ -55,13 +57,16 @@
                                                 <input v-model="form.lesson" 
                                                     class="form-control form-control-alternative"
                                                     placeholder="Nhập bài học">
+                                                    <small class="text-danger" v-if="$v.lesson.$error">
+                                                    <span>{{ $v.lesson.$errors[0].$message }}</span>
+                                                </small>
                                         
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
                                             <label class="form-control-label" for="">Video URL</label>
                                             <div class="custom-file">
-                                                <input type="file" class="custom-file-input form-control-alternative"
+                                                <input type="file"  class="custom-file-input form-control-alternative"
                                                     id="customFileLang" @change="handleUploadVideo">
                                                 <label class="custom-file-label" for="customFileLang">
                                                     {{ form.videoUrl ? 'Đã upload xong video' : 'Chọn file' }}
@@ -105,7 +110,7 @@
                                          <div class="col-lg-6">
                                             <label class="form-control-label" for="">Exercise URL</label>
                                             <div class="custom-file">
-                                                <input type="file" class="custom-file-input form-control-alternative"
+                                                <input type="file"  class="custom-file-input form-control-alternative"
                                                     id="customFileLang" @change="handleImageUpload">
                                                 <label class="custom-file-label" for="customFileLang">
                                                     {{ form.exerciseUrl ? 'Đã upload xong video' : 'Chọn file' }}
@@ -131,13 +136,16 @@
                                         <textarea v-model="form.description" rows="4"
                                             class="form-control form-control-alternative"
                                             placeholder="Mô tả về bài học của bạn ..."></textarea>
-                                        
+                                        <small class="text-danger" v-if="$v.description.$error">
+                                                    <span>{{ $v.description.$errors[0].$message }}</span>
+                                                </small>
                                     </div>
                                 </div>
                                 <hr class="my-4" />
                                 <div class="d-flex justify-content-between">
                                     <RouterLink to="/admin/lesson/list" class="btn btn-secondary">Quay lại</RouterLink>
-                                    <button class="btn btn-primary">Thêm Mới</button>
+                                    <input type="submit" :value="isUploading ? 'Loading...' : 'Cập nhật'" :disabled="isUploading" class="btn btn-primary"></input>
+                                    
                                 </div>
                             </form>
                         </div>
@@ -163,7 +171,7 @@ import { uploadImageToCloudinary } from '@/utils/uploadImageUtils'
 const router = useRouter()
 const { addLesson } = useLessons()
 const { fetchAllCourses } = useCourses()
-
+const isUploading = ref(false);
 const course = ref([])
 
 
